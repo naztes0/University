@@ -1,4 +1,4 @@
-//Linear lists.Realization of addition, subtraction, result and derivative 
+//Linear lists.Realization of addition, subtraction, result and derivative for polynomials
 #include <iostream>
 #include<vector>
 using namespace std;
