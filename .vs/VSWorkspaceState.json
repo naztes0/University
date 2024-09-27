@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\sem3",
+    "\\sem3\\GroupLab_TheorAlg",
+    "\\sem3\\GroupLab_TheorAlg\\GroupLab_TheorAlg"
   ],
-  "SelectedNode": "\\C:\\Users\\ASUS TUF\\Source\\Repos\\University",
+  "SelectedNode": "\\sem3\\GroupLab_TheorAlg\\.gitignore.txt",
   "PreviewInSolutionExplorer": false
 }
