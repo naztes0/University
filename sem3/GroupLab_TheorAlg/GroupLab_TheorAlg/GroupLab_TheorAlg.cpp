@@ -53,7 +53,6 @@ int main() {
 	cout << "Enter the size n of matrix:";
 	cin >> n;
 
-	cout << "Hello world!!!!!!!";
 
 	matrixA = createMatrix(n);
 	matrixL = createMatrix(n);
