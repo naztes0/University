@@ -138,7 +138,23 @@ public:
 
 };
 
+class ExpenseTransaction : public Transaction {
+private:
+	std::string category;
+public:
+	ExpenseTransaction(double amount, const Date& dt, const std::string& descrip, const std::string& category)
+		: Transaction(amount, dt, descrip, category) {
+		
+	}
+	void printDetails() const override {
+		Transaction::printDetails(); 
+		std::cout << "Category: " << category << std::endl; 
+	}
 
+	
+	std::string getCategory() const { return category; }
+	void setCategory(const std::string& newCategory) { category = newCategory; }
+};
 
 
 class TransactionManager {
