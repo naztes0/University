@@ -278,12 +278,27 @@ private:
 		return -1;
 	}
 };
-#include <iostream>
-#include <string>
-#include <stdexcept>
-#include <vector>
 
-// Assume the classes Date, Transaction, TransactionManager, and CategoryManager are already implemented as discussed above.
+
+class BudgetManager {
+
+};
+
+class ReportGenerator {
+
+};
+
+class Goal {
+
+};
+
+class GoalManager {
+
+};
+
+class User {
+
+};
 
 int main() {
 	try {
