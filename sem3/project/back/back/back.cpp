@@ -49,8 +49,8 @@ public:
 		return false;
 	}
 	std::string toString() const {
-		std::string dayString = (day < 10 ? 0 : "") + std::to_string(day);
-		std::string monthString = (month < 10 ? 0 : "") + std::to_string(month);
+		std::string dayString = (day < 10 ? "0" : "") + std::to_string(day);
+		std::string monthString = (month < 10 ? "0" : "") + std::to_string(month);
 		std::string yearString = std::to_string(year);
 		return  dayString + "." + monthString + "." + yearString;
 	}
@@ -135,12 +135,11 @@ public:
 	*  TransactionManager(const std::string& dbPath) : databasePath(dbPath) {}
 	*/
     // Destructor
-    ~TransactionManager() {
-        for (auto trans : transactions) {
-            delete trans; // Free memory allocated for each transaction
-        }
-    }
-
+	/*~TransactionManager() {
+		for (Transaction* trans : transactions) {
+			delete trans;
+		}
+	}*/
 	
 	
 	bool indexChecker(int index) {
@@ -160,16 +159,30 @@ public:
 	}
 	void removeTransaction(int index) {
 		if (indexChecker(index)) {
-			delete transactions[index]; // Free memory allocated for the transaction
-			transactions.erase(transactions.begin() + index); // Remove from vector
+				transactions.erase(transactions.begin() + index); // Remove from vector
+		}
+
+		else {
+			std::cerr << "Error: Invalid index!" << std::endl;
 		}
 	}
 	Transaction* getTransaction(int index) {
 		if (indexChecker(index)) {
-			return transactions[index]; 
+			if (transactions[index] != nullptr) {
+				return transactions[index];
+			}
+			else {
+				std::cerr << "Error: Attempted to access a null transaction." << std::endl;
+				return nullptr;
+			}
 		}
 		return nullptr;
 	}
+
+	size_t getTransactionCount() const {
+		return transactions.size();
+	}
+
 
 	//ADD FUNC FOR LOADING TRANSACTIONS FROM DB
 	//ADD FUNC FOR SAVING  TRANSACTIONS FROM DB
@@ -221,6 +234,7 @@ public:
 		return result;
 	}
 
+
 private: 
 	int findCategoryIndex(const std::string& category) const {
 		for (size_t i = 0; i < categories.size(); ++i) {
@@ -231,38 +245,80 @@ private:
 		return -1;
 	}
 };
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <vector>
+
+// Assume the classes Date, Transaction, TransactionManager, and CategoryManager are already implemented as discussed above.
+
 int main() {
 	try {
-		// Create a transaction manager
-		TransactionManager manager;
+		// =======================
+		// Testing the Date class
+		// =======================
+		std::cout << "Testing Date class:\n";
+		Date date1(5, 10, 2023);
+		Date date2(15, 11, 2023);
+		std::cout << "Date 1: " << date1.toString() << "\n";
+		std::cout << "Date 2: " << date2.toString() << "\n";
+		std::cout << "Is Date 1 earlier than Date 2? " << (date1.isEarlier(date1, date2) ? "Yes" : "No") << "\n\n";
 
-		// Create several transactions (without using new)
+		// ==============================
+		// Testing the Transaction class
+		// ==============================
+		std::cout << "Testing Transaction class:\n";
 		Transaction t1(1500.0, Date(5, 10, 2023), "Rent payment", "Expenses");
 		Transaction t2(2500.0, Date(10, 10, 2023), "Freelance work", "Income");
 		Transaction t3(350.0, Date(15, 10, 2023), "Groceries", "Expenses");
 
-		// Add transactions to the manager
+		t1.printDetails();
+		t2.printDetails();
+		t3.printDetails();
+		std::cout << "\n";
+
+		// =====================================
+		// Testing the TransactionManager class
+		// =====================================
+		std::cout << "Testing TransactionManager class:\n";
+		TransactionManager manager;
+
 		manager.addTransaction(&t1);
 		manager.addTransaction(&t2);
 		manager.addTransaction(&t3);
 
-		// Print all transactions before any removal
-		std::cout << "Printing all transactions:" << std::endl;
-		for (int i = 0; i < 2; i++) {
-			Transaction* trans = manager.getTransaction(i);
-			trans->printDetails();
+		std::cout << "All transactions:\n";
+		for (size_t i = 0; i < manager.getTransactionCount(); ++i) {
+			manager.getTransaction(i)->printDetails();
 		}
 
-		// Remove one transaction
-		std::cout << "\nRemoving transaction at index 1 (Freelance work):" << std::endl;
+		// Remove a transaction and test
+		std::cout << "\nRemoving transaction at index 1 (Freelance work):\n";
 		manager.removeTransaction(1);
 
-		// Print remaining transactions after removal
-		std::cout << "\nTransactions after removal:" << std::endl;
-		for (int i = 0; i < 2; i++) {
-			Transaction* trans = manager.getTransaction(i);
-			trans->printDetails();
+		std::cout << "Transactions after removal:\n";
+		for (size_t i = 0; i < manager.getTransactionCount(); ++i) {
+			manager.getTransaction(i)->printDetails();
 		}
+		std::cout << "\n";
+
+		// =====================================
+		// Testing the CategoryManager class
+		// =====================================
+		std::cout << "Testing CategoryManager class:\n";
+		CategoryManager categoryManager;
+		categoryManager.addCategory("Expenses");
+		categoryManager.addCategory("Income");
+		categoryManager.addCategory("Savings");
+
+		std::cout << categoryManager.getCategories() << "\n";
+
+		// Remove a category and test
+		std::string categoryToRemove = "Savings";
+		std::cout << "\nRemoving category '" << categoryToRemove << "'...\n";
+		categoryManager.removeCategory(categoryToRemove);
+
+		std::cout << categoryManager.getCategories() << "\n";
 
 	}
 	catch (const std::exception& e) {
@@ -271,4 +327,6 @@ int main() {
 
 	return 0;
 }
+
+
 
