@@ -121,6 +121,23 @@ public:
 
 };
 
+class IncomeTransaction :public Transaction {
+private:
+	std::string source;
+public:
+	IncomeTransaction(double amount, const Date& dt, const std::string& descrip, const std::string& source)
+		:Transaction(amount, dt, descrip, "Income"), source(source) {
+
+	}
+	void printDetails() const override {
+		Transaction::printDetails();
+		std::cout << "Source: " << source << std::endl;
+	}
+	std::string getSource()const { return source; }
+	void setSource(const std::string& newSource) { source = newSource; }
+
+};
+
 
 
 
@@ -235,7 +252,7 @@ public:
 	}
 
 
-private: 
+private:	
 	int findCategoryIndex(const std::string& category) const {
 		for (size_t i = 0; i < categories.size(); ++i) {
 			if (categories[i] == category) {
@@ -294,7 +311,7 @@ int main() {
 
 		// Remove a transaction and test
 		std::cout << "\nRemoving transaction at index 1 (Freelance work):\n";
-		manager.removeTransaction(1);
+		manager.removeTransaction(0);
 
 		std::cout << "Transactions after removal:\n";
 		for (size_t i = 0; i < manager.getTransactionCount(); ++i) {
