@@ -18,6 +18,8 @@ void deleteMatrix(int** matrix, int n) {
 }
 
 
+
+
 void decomposeLU(int** A, int** L, int** U, int n) {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
@@ -28,6 +30,24 @@ void decomposeLU(int** A, int** L, int** U, int n) {
 				L[j][i] -= L[j][k] * U[k][i];
 			}
 			L[j][i] /= U[i][i];
+		}
+	}
+}
+
+void initOfIdentityMatrix(int n,int** identMatrix) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			identMatrix[i][j] = 0;
+			if(i==j)identMatrix[i][i] = 1;
+		}
+	}
+}
+
+void invertMatrix(int** matrix, int n) {
+	 
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+
 		}
 	}
 }
@@ -47,16 +67,18 @@ int main() {
 	int** matrixA;
 	int** matrixL;
 	int** matrixU;
+	int** matrixI;
 
 
 	int n;
-	cout << "Enter the size n of matrix:";
+	cout << "Enter the size n of matrix: ";
 	cin >> n;
 
 
 	matrixA = createMatrix(n);
 	matrixL = createMatrix(n);
 	matrixU = createMatrix(n);
+	matrixI = createMatrix(n);
 
 
 	cout << "Enter matrix A:\n";
@@ -66,12 +88,17 @@ int main() {
 			matrixU[i][j] = matrixA[i][j];
 		}
 	}
-	cout << "Matrix A:\n";
+
+	initOfIdentityMatrix(n, matrixI);
+	
+	cout << "\nMatrix A:\n";
 	printMatrix(matrixA, n);
 	cout << "Matrix U:\n";
 	printMatrix(matrixU, n);
 	cout << "Matrix L:\n";
 	printMatrix(matrixL, n);
+	
+
 
 	decomposeLU((int**)matrixA, matrixL, matrixU, n);
 	cout << "Matrix L:\n";
@@ -81,7 +108,9 @@ int main() {
 
 }
 /*
+3
 2 3 1
 4 7 2
 6 18 5
+
 */
