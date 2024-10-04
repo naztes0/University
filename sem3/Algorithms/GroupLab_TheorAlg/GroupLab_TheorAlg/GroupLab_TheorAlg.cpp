@@ -6,7 +6,7 @@ float** createMatrix(int n) {
     float** matrix = new float* [n];
     for (int i = 0; i < n; i++) {
         matrix[i] = new float[n]();
-    }
+    } 
     return matrix;
 }
 
@@ -48,46 +48,60 @@ void copyMatrix(float** matrix, float** copiedM, int n) {
     }
 }
 
-void invertMatrix(float** matrix, int n, float** identM, float** invertedM) {
-    // Copy the matrix to invertedM as the working matrix
-    copyMatrix(matrix, invertedM, n);
 
-    // Augment matrix with identity matrix
+void invertMatrix(float** A, int n, float** invertedM) {
+    // Create a copy of matrix A to avoid modifying the original matrix
+    float** copyA = createMatrix(n);
+    copyMatrix(A, copyA, n); // Copy A into copyA
+
+    // Initialize invertedM to identity matrix
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            identM[i][j] = (i == j) ? 1.0f : 0.0f; // Initialize identity matrix
+            invertedM[i][j] = (i == j) ? 1.0f : 0.0f; // Initialize as identity matrix
         }
     }
 
-    // Gaussian elimination process
+    // Perform Gaussian elimination on copyA and invertedM
     for (int i = 0; i < n; i++) {
-        // Check if pivot is zero
-        if (invertedM[i][i] == 0) {
+        // Check for zero pivot and swap rows if needed
+        if (copyA[i][i] == 0) {
+            for (int k = i + 1; k < n; k++) {
+                if (copyA[k][i] != 0) {
+                    // Swap row i with row k in both copyA and invertedM
+                    swap(copyA[i], copyA[k]);
+                    swap(invertedM[i], invertedM[k]);
+                    break;
+                }
+            }
+        }
+
+        float pivot = copyA[i][i];
+        if (pivot == 0) {
             cout << "Matrix can't be inverted (singular matrix)." << endl;
+            deleteMatrix(copyA, n); // Clean up the temporary matrix
             return;
         }
 
-        // Normalize pivot row (divide row i by invertedM[i][i])
-        float pivot = invertedM[i][i];
+        // Normalize the pivot row
         for (int j = 0; j < n; j++) {
+            copyA[i][j] /= pivot;
             invertedM[i][j] /= pivot;
-            identM[i][j] /= pivot;
         }
 
         // Eliminate other rows
         for (int k = 0; k < n; k++) {
             if (k != i) {
-                float factor = invertedM[k][i]; // Element to eliminate
+                float factor = copyA[k][i];
                 for (int j = 0; j < n; j++) {
-                    invertedM[k][j] -= factor * invertedM[i][j]; // Eliminate k-th row
-                    identM[k][j] -= factor * identM[i][j];       // Apply same operations to identity matrix
+                    copyA[k][j] -= factor * copyA[i][j];
+                    invertedM[k][j] -= factor * invertedM[i][j];
                 }
             }
         }
     }
 
-    // The inverted matrix is now stored in identM (the identity matrix has transformed)
-    copyMatrix(identM, invertedM, n); // Copy the result to invertedM
+    // Clean up the copy of A
+    deleteMatrix(copyA, n);
 }
 
 void printMatrix(float** matrix, int n) {
@@ -136,7 +150,7 @@ int main() {
 
     decomposeLU(matrixA, matrixL, matrixU, n);
     initOfIdentityMatrix(n, matrixI);
-    invertMatrix(matrixL, n, matrixI, invertedL);
+    invertMatrix(matrixL, n, invertedL);
 
     cout << "Matrix L:\n";
     printMatrix(matrixL, n);
