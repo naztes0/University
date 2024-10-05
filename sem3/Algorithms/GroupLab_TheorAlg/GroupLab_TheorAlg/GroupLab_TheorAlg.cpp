@@ -1,4 +1,9 @@
-﻿#include<iostream>
+﻿#define DOCTEST_CONFIG_IMPLEMENT
+#include "C:\Users\ASUS TUF\GitRepos\University\sem3\doctest.h"
+#include<iostream>
+#include <cmath>
+
+
 using namespace std;
 const int N = 100;
 
@@ -36,10 +41,27 @@ void initOfIdentityMatrix(int n, float** identMatrix) {
         for (int j = 0; j < n; j++) {
             identMatrix[i][j] = 0.0f;
             if (i == j) identMatrix[i][i] = 1.0f;
-        }
+        }  
     }
 }
 
+TEST_CASE("testin of correctly initial of the ident matrix") {
+    int n = 3;
+    float** matrix = new float* [n];
+    for (int i = 0; i < n; i++) {
+        matrix[i] = new float[n];
+    }
+    initOfIdentityMatrix(n, matrix);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j)
+                CHECK(matrix[i][j] == 1);
+            else {
+                CHECK(matrix[i][j] == 0);
+            }
+        }
+    }
+}
 void copyMatrix(float** matrix, float** copiedM, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -50,59 +72,60 @@ void copyMatrix(float** matrix, float** copiedM, int n) {
 
 
 void invertMatrix(float** A, int n, float** invertedM) {
-    // Create a copy of matrix A to avoid modifying the original matrix
-    float** copyA = createMatrix(n);
-    copyMatrix(A, copyA, n); // Copy A into copyA
-
-    // Initialize invertedM to identity matrix
+    // Create an augmented matrix [A | I]
+    float** augmented = createMatrix(n);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            invertedM[i][j] = (i == j) ? 1.0f : 0.0f; // Initialize as identity matrix
+            augmented[i][j] = A[i][j]; // Original matrix
+            invertedM[i][j] = (i == j) ? 1.0f : 0.0f; // Identity matrix
         }
     }
 
-    // Perform Gaussian elimination on copyA and invertedM
     for (int i = 0; i < n; i++) {
-        // Check for zero pivot and swap rows if needed
-        if (copyA[i][i] == 0) {
-            for (int k = i + 1; k < n; k++) {
-                if (copyA[k][i] != 0) {
-                    // Swap row i with row k in both copyA and invertedM
-                    swap(copyA[i], copyA[k]);
-                    swap(invertedM[i], invertedM[k]);
-                    break;
-                }
+        // Pivot row selection and normalization
+        int pivotRow = i;
+        for (int j = i + 1; j < n; j++) {
+            if (fabs(augmented[j][i]) > fabs(augmented[pivotRow][i])) {
+                pivotRow = j;
             }
         }
 
-        float pivot = copyA[i][i];
-        if (pivot == 0) {
-            cout << "Matrix can't be inverted (singular matrix)." << endl;
-            deleteMatrix(copyA, n); // Clean up the temporary matrix
+        if (fabs(augmented[pivotRow][i]) < 1e-9) {
+            std::cerr << "Matrix can't be inverted (singular matrix)." << std::endl;
+            deleteMatrix(augmented, n); // Clean up
             return;
         }
 
-        // Normalize the pivot row
+        std::swap(augmented[i], augmented[pivotRow]);
+        std::swap(invertedM[i], invertedM[pivotRow]);
+
+        float diag = augmented[i][i];
         for (int j = 0; j < n; j++) {
-            copyA[i][j] /= pivot;
-            invertedM[i][j] /= pivot;
+            augmented[i][j] /= diag;
+            invertedM[i][j] /= diag;
         }
 
-        // Eliminate other rows
-        for (int k = 0; k < n; k++) {
-            if (k != i) {
-                float factor = copyA[k][i];
-                for (int j = 0; j < n; j++) {
-                    copyA[k][j] -= factor * copyA[i][j];
-                    invertedM[k][j] -= factor * invertedM[i][j];
+        for (int j = 0; j < n; j++) {
+            if (j != i) {
+                float factor = augmented[j][i];
+                for (int k = 0; k < n; k++) {
+                    augmented[j][k] -= factor * augmented[i][k];
+                    invertedM[j][k] -= factor * invertedM[i][k];
                 }
             }
         }
     }
 
-    // Clean up the copy of A
-    deleteMatrix(copyA, n);
+    deleteMatrix(augmented, n); // Clean up
 }
+
+void multiplyMatrices(float** A, float** B, float** C, int n) {
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            for (int k = 0; k < n; k++)
+                C[i][j] += A[k][j] * B[i][k];
+}
+
 
 void printMatrix(float** matrix, int n) {
     for (int i = 0; i < n; i++) {
@@ -114,13 +137,21 @@ void printMatrix(float** matrix, int n) {
     cout << "\n";
 }
 
-int main() {
+int main(int argc,char**argv) {
+    doctest::Context context;
+    int res = context.run();
+    if (context.shouldExit()) {
+        return res; // Exit if the tests ran and there is an exit signal
+    }
+
+
     float** matrixA;
     float** matrixL;
     float** matrixU;
     float** matrixI;
     float** invertedL;
     float** invertedU;
+    float** resInvertMult;
 
     int n;
     cout << "Enter the size n of matrix: ";
@@ -132,6 +163,7 @@ int main() {
     matrixI = createMatrix(n);
     invertedL = createMatrix(n);
     invertedU = createMatrix(n);
+    resInvertMult = createMatrix(n);
 
     cout << "Enter matrix A:\n";
     for (int i = 0; i < n; i++) {
@@ -151,6 +183,7 @@ int main() {
     decomposeLU(matrixA, matrixL, matrixU, n);
     initOfIdentityMatrix(n, matrixI);
     invertMatrix(matrixL, n, invertedL);
+    invertMatrix(matrixU, n, invertedU);
 
     cout << "Matrix L:\n";
     printMatrix(matrixL, n);
@@ -160,12 +193,22 @@ int main() {
     cout << "Inverted Matrix L:\n";
     printMatrix(invertedL, n);
 
+    cout << "Inverted Matrix U:\n";
+    printMatrix(invertedU, n);
+
+    multiplyMatrices(invertedL, invertedU, resInvertMult, n);
+    cout << "Result of multiplying of inverted matrix L and U\n";
+    printMatrix(resInvertMult, n);
+
+
     deleteMatrix(matrixA, n);
     deleteMatrix(matrixL, n);
     deleteMatrix(matrixU, n);
     deleteMatrix(matrixI, n);
     deleteMatrix(invertedL, n);
     deleteMatrix(invertedU, n);
+    deleteMatrix(resInvertMult, n);
+
 
     return 0;
 }
