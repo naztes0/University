@@ -14,18 +14,20 @@ using std::iostream;
 class RabinKarp {
 private:
 
-	int raidx = 26;//Size of alph
-	long module = 1e9 + 7;//module
+	int radix = 26;//Size of alph
+	long mod = 1e9 + 7;//module
 	int mRowPower = 1;
 	int mColumnPover = 1;
 
 	//Matrix size
-	int tRow{};
-	int tColumn{};
-	int patternColumn{};
-	int patternRow;
+	int tRows{};
+	int tColumns{};
+	int patternColumns{};
+	int patternRows{};
 
+	long powerUnderMod(int number) ;
 	vector <long> findHash(vector<string>& matrix) const;
+	
 
 
 public:
