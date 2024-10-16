@@ -1,8 +1,11 @@
 ﻿  own_Lab.cpp
 C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\RabinKarp.h(19,17): warning C4244: 'initializing': conversion from 'double' to 'long', possible loss of data
 C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(32,10): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(59,22): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(60,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(61,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(62,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(54): error C4716: 'RabinKarp::check': must return a value
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(73,22): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(74,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(75,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(76,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+own_Lab.obj : error LNK2019: unresolved external symbol "public: struct doctest::detail::TestSuite & __cdecl doctest::detail::TestSuite::operator*(char const *)" (??DTestSuite@detail@doctest@@QEAAAEAU012@PEBD@Z) referenced in function "void __cdecl `dynamic initializer for 'DOCTEST_ANON_VAR_0''(void)" (??__EDOCTEST_ANON_VAR_0@@YAXXZ)
+own_Lab.obj : error LNK2019: unresolved external symbol "int __cdecl doctest::detail::setTestSuite(struct doctest::detail::TestSuite const &)" (?setTestSuite@detail@doctest@@YAHAEBUTestSuite@12@@Z) referenced in function "void __cdecl `dynamic initializer for 'DOCTEST_ANON_VAR_0''(void)" (??__EDOCTEST_ANON_VAR_0@@YAXXZ)
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\x64\Debug\own_Lab.exe : fatal error LNK1120: 3 unresolved externals

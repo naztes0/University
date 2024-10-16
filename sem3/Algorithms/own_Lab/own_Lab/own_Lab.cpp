@@ -45,12 +45,26 @@ void RabinKarp::rollingHash(vector<long long>&textHash, long long textMatrixHash
 	textMatrixHash = (textMatrixHash % mod * radix) % mod;
 	textMatrixHash = (textMatrixHash % mod + textHash[row + patternColumns] % mod) % mod;
 }
-void RabinKarp::collumnRollingHash(vector<string>& text, vector<long long>& textHash, int column) const {
-
+void RabinKarp::collumnRollingHash(vector<string>& text, vector<long long>& textHash, int row) const {
+	for (int i = 0; i < textHash.size(); i++) {
+		textHash[i] = (textHash[i] % mod - ((text[row][i]) % mod * (maxRowPower % mod)) % mod) % mod;
+		textHash[i] = ((textHash[i] % mod) * (radix % mod)) % mod;
+		textHash[i] = (textHash[i] % mod + text[row + patternRows][i] % mod) % mod; 
+	}
 }
 
 bool RabinKarp::check(vector<string>& text, vector<string>& pattern, int row, int column) {
-
+	if (patternRows + row >= textRows || patternColumns + row >= textColumns) {
+		return false;
+	}
+	for (int i = 0; i < patternRows; i++) {
+		for (int j = 0; j < patternColumns; j++) {
+			if (pattern[i][j] != text[i + row][j + row]) {
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 vector<pair<int, int>> RabinKarp:: rabinKarpSearch(vector<string>& text, vector<string>& pattern) {
