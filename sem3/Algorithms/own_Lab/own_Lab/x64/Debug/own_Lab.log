@@ -1,0 +1,8 @@
+﻿  own_Lab.cpp
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\RabinKarp.h(19,17): warning C4244: 'initializing': conversion from 'double' to 'long', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(32,10): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(59,22): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(60,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(61,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(62,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(54): error C4716: 'RabinKarp::check': must return a value

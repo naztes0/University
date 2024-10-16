@@ -10,28 +10,30 @@
 using std::string;
 using std::vector;
 using std::iostream;
+using std::pair;
 
 class RabinKarp {
 private:
 
-	int radix = 26;//Size of alph
+	const int radix = 26;//Size of alph
 	long mod = 1e9 + 7;//module
-	int mRowPower = 1;
-	int mColumnPover = 1;
+	long maxRowPower = 1;
+	long maxColumnPower = 1;
 
 	//Matrix size
-	int tRows{};
-	int tColumns{};
+	int textRows{};
+	int textColumns{};
 	int patternColumns{};
 	int patternRows{};
 
 	long powerUnderMod(int number) ;
-	vector <long> findHash(vector<string>& matrix) const;
-	
-
+	vector <long long> findHash(vector<string>& matrix) const;
+	bool check(vector<string>& text, vector<string>& pattern, int row, int column);
+	void rollingHash(vector<long long>&textHash, long long textMatrixHash, long row);
+	void collumnRollingHash(vector<string>& text, vector<long long>& textHash, int column) const;
 
 public:
-
+	vector<pair<int, int>> rabinKarpSearch(vector<string>&text,vector<string>&pattern);
 };
 
 
