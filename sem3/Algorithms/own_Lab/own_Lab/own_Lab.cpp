@@ -41,7 +41,7 @@ vector<long long>RabinKarp::findHash(vector<string>& matrix) const {
 }
 
 void RabinKarp::rollingHash(vector<long long>&textHash, long long textMatrixHash, long row) {
-	textMatrixHash = (textMatrixHash % mod - (textHash[row] % mod) * (maxColumnPower) % mod + mod) % mod;
+	textMatrixHash = (textMatrixHash % mod - ((textHash[row] % mod) * (maxColumnPower)) % mod + mod) % mod;
 	textMatrixHash = (textMatrixHash % mod * radix) % mod;
 	textMatrixHash = (textMatrixHash % mod + textHash[row + patternColumns] % mod) % mod;
 }
