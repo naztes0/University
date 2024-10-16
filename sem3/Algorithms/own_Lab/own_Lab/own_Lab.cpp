@@ -18,12 +18,12 @@ long RabinKarp::powerUnderMod(int number) {
 	if (number == 1) {
 		return radix % mod;
 	}
-	long power = powerUnderMod(number / 2);
+	long long power = powerUnderMod(number / 2);
 	if (number & 1) {
 		return ((radix % mod) * (power) % mod * (power) % mod) % mod;
 	}
 	else {
-		return ((power% mod) * (power % mod)) % mod;
+		return ((power)% mod * (power)% mod) % mod;
 	}
 }
 
@@ -31,7 +31,7 @@ vector<long long>RabinKarp::findHash(vector<string>& matrix) const {
 	vector<long long> hashes;
 	int col = matrix[0].size();
 	for (int i = 0; i < col; i++) {
-		long rowHash = 0;
+		long long rowHash = 0;
 		for (int j = 0; j < patternRows; j++) {
 			rowHash = ((rowHash * radix) % mod + (matrix[j][i] % mod)) % mod;
 		}
@@ -40,26 +40,29 @@ vector<long long>RabinKarp::findHash(vector<string>& matrix) const {
 	return hashes;
 }
 
-void RabinKarp::rollingHash(vector<long long>&textHash, long long textMatrixHash, long row) {
-	textMatrixHash = (textMatrixHash % mod - ((textHash[row] % mod) * (maxColumnPower)) % mod + mod) % mod;
-	textMatrixHash = (textMatrixHash % mod * radix) % mod;
+void RabinKarp::rollingHash(vector<long long>& textHash, long long& textMatrixHash, long row) {
+	textMatrixHash = (textMatrixHash % mod - ((textHash[row] % mod) * (maxColumnPower % mod)) % mod + mod) % mod;
+	textMatrixHash = (textMatrixHash % mod * radix % mod) % mod;
+	if (row + patternColumns < textHash.size())
 	textMatrixHash = (textMatrixHash % mod + textHash[row + patternColumns] % mod) % mod;
 }
+
 void RabinKarp::collumnRollingHash(vector<string>& text, vector<long long>& textHash, int row) const {
 	for (int i = 0; i < textHash.size(); i++) {
-		textHash[i] = (textHash[i] % mod - ((text[row][i]) % mod * (maxRowPower % mod)) % mod) % mod;
+		textHash[i] = (textHash[i] % mod - ((text[row][i]) % mod * (maxRowPower) % mod) % mod) % mod;
 		textHash[i] = ((textHash[i] % mod) * (radix % mod)) % mod;
+		if (row + patternRows < text.size())
 		textHash[i] = (textHash[i] % mod + text[row + patternRows][i] % mod) % mod; 
 	}
 }
 
 bool RabinKarp::check(vector<string>& text, vector<string>& pattern, int row, int column) {
-	if (patternRows + row >= textRows || patternColumns + row >= textColumns) {
+	if (patternRows + row > textRows or patternColumns + column > textColumns){
 		return false;
 	}
 	for (int i = 0; i < patternRows; i++) {
 		for (int j = 0; j < patternColumns; j++) {
-			if (pattern[i][j] != text[i + row][j + row]) {
+			if (pattern[i][j] != text[i + row][j + column]) {
 				return false;
 			}
 		}
@@ -85,12 +88,15 @@ vector<pair<int, int>> RabinKarp:: rabinKarpSearch(vector<string>& text, vector<
 	for (int i = 0; i < patternColumns; i++) {
 		patternMatrixHash = (patternMatrixHash * radix + patternHash[i]) % mod;
 	}
-	for (int i = 0; i < (textRows - patternRows); i++) {
+	for (int i = 0; i <= (textRows - patternRows); i++) {
+
 		long long textMatrixHash = 0;
+
 		for (int j = 0; j < patternColumns; j++) {
-			textMatrixHash = (textMatrixHash * radix + textHash[j]) % mod;
+			textMatrixHash = ((textMatrixHash * radix) + textHash[j]) % mod;
 		}
-		for (int j = 0; j < (textColumns - patternColumns); j++) {
+
+		for (int j = 0; j <= (textColumns - patternColumns); j++) {
 			if (patternMatrixHash == textMatrixHash) {
 				if (check(text, pattern, i, j)) {
 					pair<int, int> upperLeftIndex;
@@ -101,10 +107,11 @@ vector<pair<int, int>> RabinKarp:: rabinKarpSearch(vector<string>& text, vector<
 			}
 			rollingHash(textHash, textMatrixHash, j);
 		}
-		if (i < (textRows - patternRows)) collumnRollingHash(text, textHash, i);
+		if (i < (textRows - patternRows)) {
+			collumnRollingHash(text, textHash, i);
+		}
 	}
 	return indexes;
 }
-
 
 

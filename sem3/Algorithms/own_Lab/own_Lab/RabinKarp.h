@@ -3,7 +3,7 @@
 
 
 #include<iostream>
-#include"C:\Users\ASUS TUF\GitRepos\University\doctest.h"
+//#include"C:\Users\ASUS TUF\GitRepos\University\doctest.h"
 #include<vector>
 #include<string>
 
@@ -29,10 +29,11 @@ private:
 	long powerUnderMod(int number) ;
 	vector <long long> findHash(vector<string>& matrix) const;
 	bool check(vector<string>& text, vector<string>& pattern, int row, int column);
-	void rollingHash(vector<long long>&textHash, long long textMatrixHash, long row);
+	void rollingHash(vector<long long>&textHash, long long &textMatrixHash, long row);
 	void collumnRollingHash(vector<string>& text, vector<long long>& textHash, int row) const;
 
 public:
+	RabinKarp() = default;
 	vector<pair<int, int>> rabinKarpSearch(vector<string>&text,vector<string>&pattern);
 };
 
