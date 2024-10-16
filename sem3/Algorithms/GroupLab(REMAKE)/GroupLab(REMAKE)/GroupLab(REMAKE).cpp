@@ -55,6 +55,16 @@ void forwardSubstitution(double** L, double*b,double*y,int n) {
 		y[i] = (b[i] - sum);
 	}
 }
+void backwardSubstitution(double**U,double*y,double*x,int n){
+	for (int i = n-1; i >=0; i--) {
+		double sum = 0;
+		for (int j = i + 1; j < n; j++) {
+			sum += U[i][j] * x[j];
+		}
+		x[i] = (y[i] - sum) / U[i][i];
+	}
+
+}
 
 
 
