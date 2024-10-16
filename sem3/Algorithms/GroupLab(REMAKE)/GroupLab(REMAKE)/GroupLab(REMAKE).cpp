@@ -24,7 +24,7 @@ void freeMatrix(double**& matrix, int n) {
 
 void luDecomposition(double** A, double** L, double** U,int n) {
 	for (int i = 0; i < n; i++) {
-		//U matr
+		//U matrix
 		for (int k = i; k < n; k++) {
 			double sum = 0;
 			for (int j = 0; j < i; j++) {
@@ -32,6 +32,7 @@ void luDecomposition(double** A, double** L, double** U,int n) {
 			}
 			U[i][k] = A[i][k] - sum;
 		}
+		//L matrix
 		for (int k = i; k < n; k++) {
 			if (i == k) L[i][i] = 1;
 			else {
@@ -42,6 +43,16 @@ void luDecomposition(double** A, double** L, double** U,int n) {
 				L[k][i] = (A[k][i] - sum) / U[i][i];
 			}
 		}
+	}
+}
+
+void forwardSubstitution(double** L, double*b,double*y,int n) {
+	for (int i = 0; i < n; i++) {
+		double sum = 0;
+		for (int j = 0; j < i; j++) {
+			sum += L[i][j] * y[j];
+		}
+		y[i] = (b[i] - sum);
 	}
 }
 
