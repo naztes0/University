@@ -21,6 +21,16 @@ void freeMatrix(double**& matrix, int n) {
 	matrix = nullptr;
 }
 
+void printMatrix(double** matrix, int n) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			std::cout << matrix[i][j] << " ";
+		}
+		std::cout << "\n";
+	}
+	std::cout << "\n";
+}
+
 
 void luDecomposition(double** A, double** L, double** U,int n) {
 	for (int i = 0; i < n; i++) {
@@ -68,6 +78,12 @@ void backwardSubstitution(double**U,double*y,double*x,int n){
 
 void invertMatrix(double** A, double** L, double** U,double**inverse, int n) {
 	luDecomposition(A, L, U, n);
+
+	std::cout << "Matrix U:\n";
+	printMatrix(U, n);
+	std::cout << "Matrix L:\n";
+	printMatrix(L, n);
+
 	for (int i = 0; i < n; i++) {
 		double* e = new double[n]();
 		double* y = new double[n]();
@@ -77,7 +93,7 @@ void invertMatrix(double** A, double** L, double** U,double**inverse, int n) {
 		forwardSubstitution(L, e, y, n);
 		backwardSubstitution(U, y, x, n);
 		for (int j = 0; j < n; j++) {
-			inverse[i][j] = x[j];
+			inverse[j][i] = x[j];
 		}
 		delete[] e;
 		delete[] y;
@@ -93,15 +109,6 @@ void invertMatrix(double** A, double** L, double** U,double**inverse, int n) {
 
 
 
-void printMatrix(double** matrix, int n) {
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			std::cout << matrix[i][j] << " ";
-		}
-		std::cout << "\n";
-	}
-	std::cout << "\n";
-}
 
 
 int main() {
@@ -127,11 +134,7 @@ int main() {
 	}
 	std::cout << "\nMatrix A:\n";
 	printMatrix(A, n);
-	std::cout << "Matrix U:\n";
-	printMatrix(U, n);
-	std::cout << "Matrix L:\n";
-	printMatrix(L, n);
-
+	
 	invertMatrix(A, L, U, inverse, n);
 	std::cout << "Inversed matrix:\n";
 	printMatrix(inverse, n);
