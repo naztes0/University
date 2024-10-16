@@ -1,7 +1,7 @@
 #include<iostream>
 
 
-const int N = 100;
+
 
 void allocateMatrix(double**& matrix, int n) {
 	matrix = new double* [n];  // Виділяємо пам'ять для масиву рядків
@@ -46,13 +46,13 @@ void luDecomposition(double** A, double** L, double** U,int n) {
 	}
 }
 
-void forwardSubstitution(double** L, double*b,double*y,int n) {
+void forwardSubstitution(double** L, double*I,double*y,int n) {
 	for (int i = 0; i < n; i++) {
 		double sum = 0;
 		for (int j = 0; j < i; j++) {
 			sum += L[i][j] * y[j];
 		}
-		y[i] = (b[i] - sum);
+		y[i] = (I[i] - sum);
 	}
 }
 void backwardSubstitution(double**U,double*y,double*x,int n){
@@ -64,6 +64,31 @@ void backwardSubstitution(double**U,double*y,double*x,int n){
 		x[i] = (y[i] - sum) / U[i][i];
 	}
 
+}
+
+void invertMatrix(double** A, double** L, double** U,double**inverse, int n) {
+	luDecomposition(A, L, U, n);
+	for (int i = 0; i < n; i++) {
+		double* e = new double[n]();
+		double* y = new double[n]();
+		double* x = new double[n]();
+		e[i] = 1;
+
+		forwardSubstitution(L, e, y, n);
+		backwardSubstitution(U, y, x, n);
+		for (int j = 0; j < n; j++) {
+			inverse[i][j] = x[j];
+		}
+		delete[] e;
+		delete[] y;
+		delete[] x;
+	}
+	for (int i = 0; i < n; i++) {
+		delete[] L[i];
+		delete[] U[i];
+	}
+	delete[] L;
+	delete[] U;
 }
 
 
@@ -84,6 +109,7 @@ int main() {
 	double** A;
 	double** L;
 	double** U;
+	double** inverse;
 
 	std::cout << "Enter the size n of matrix: ";
 	std::cin >> n;
@@ -91,6 +117,7 @@ int main() {
 	allocateMatrix(A, n);
 	allocateMatrix(L, n);
 	allocateMatrix(U, n);
+	allocateMatrix(inverse, n);
 
 	std::cout << "Enter matrix A:\n";
 	for (int i = 0; i < n; i++) {
@@ -105,13 +132,10 @@ int main() {
 	std::cout << "Matrix L:\n";
 	printMatrix(L, n);
 
-	luDecomposition(A, L, U, n);
+	invertMatrix(A, L, U, inverse, n);
+	std::cout << "Inversed matrix:\n";
+	printMatrix(inverse, n);
 
-	std::cout << "\nMatrix A:\n";
-	printMatrix(A, n);
-	std::cout << "Matrix U:\n";
-	printMatrix(U, n);
-	std::cout << "Matrix L:\n";
-	printMatrix(L, n);
+	return 0;
 }
 
