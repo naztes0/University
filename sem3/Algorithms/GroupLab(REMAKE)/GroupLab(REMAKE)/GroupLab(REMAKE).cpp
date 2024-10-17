@@ -1,10 +1,10 @@
 #include<iostream>
 
 
-
-
+//Допоміжні функції
+/////////////////////////////////////////////////////////////
 void allocateMatrix(double**& matrix, int n) {
-	matrix = new double* [n];  // Виділяємо пам'ять для масиву рядків
+	matrix = new double* [n];  
 	for (int i = 0; i < n; i++) {
 		matrix[i] = new double[n];
 		for (int j = 0; j < n; j++) {
@@ -15,9 +15,9 @@ void allocateMatrix(double**& matrix, int n) {
 
 void freeMatrix(double**& matrix, int n) {
 	for (int i = 0; i < n; i++) {
-		delete[] matrix[i];  // Видаляємо кожен рядок
+		delete[] matrix[i];  
 	}
-	delete[] matrix;  // Видаляємо масив рядків
+	delete[] matrix; 
 	matrix = nullptr;
 }
 
@@ -30,8 +30,9 @@ void printMatrix(double** matrix, int n) {
 	}
 	std::cout << "\n";
 }
+////////////////////////////////////////////////////////////////
 
-
+//Функції для виконання завдання 
 void luDecomposition(double** A, double** L, double** U,int n) {
 	for (int i = 0; i < n; i++) {
 		//U matrix
