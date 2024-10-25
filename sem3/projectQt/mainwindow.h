@@ -19,5 +19,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    SectionsColumn *sectionsСolumn;
+
 };
 #endif // MAINWINDOW_H

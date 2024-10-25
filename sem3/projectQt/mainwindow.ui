@@ -99,6 +99,11 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="styleSheet">
+    <string notr="true">background-color: red</string>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>

@@ -40,9 +40,13 @@
     </spacer>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="homeButton">
      <property name="text">
-      <string>PushButton</string>
+      <string> Home</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/img/img/home.svg</normaloff>:/img/img/home.svg</iconset>
      </property>
     </widget>
    </item>
@@ -85,6 +89,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

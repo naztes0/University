@@ -32,6 +32,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         resource.qrc
         sectionscolumn.h sectionscolumn.cpp sectionscolumn.ui
+        homewidget.h homewidget.cpp homewidget.ui
 
 
 
