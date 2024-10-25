@@ -71,11 +71,10 @@
         <property name="styleSheet">
          <string notr="true"/>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2"/>
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget" native="true">
+       <widget class="HomeWidget" name="contentWidget" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>3</horstretch>
@@ -99,17 +98,18 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar">
-   <property name="styleSheet">
-    <string notr="true">background-color: red</string>
-   </property>
-  </widget>
  </widget>
  <customwidgets>
   <customwidget>
    <class>SectionsColumn</class>
    <extends>QWidget</extends>
    <header location="global">sectionscolumn.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HomeWidget</class>
+   <extends>QWidget</extends>
+   <header>homewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
