@@ -103,7 +103,7 @@ vector<pair<int, int>> RabinKarp:: rabinKarpSearch(vector<string>& text, vector<
 					upperLeftIndex.first = i;
 					upperLeftIndex.second = j;
 					indexes.emplace_back(upperLeftIndex);
-				}
+				}	
 			}
 			rollingHash(textHash, textMatrixHash, j);
 		}

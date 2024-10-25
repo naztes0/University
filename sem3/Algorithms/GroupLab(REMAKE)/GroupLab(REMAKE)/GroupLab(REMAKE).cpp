@@ -108,6 +108,7 @@ void invertMatrix(double** A, double** L, double** U,double**inverse, int n) {
 	delete[] L;
 	delete[] U;
 }
+//////////////////////////////////////////////////
 
 //Gauss-Jordan method (Dana`s func) for checking 
 bool inverseMatrix(T** A, T** invMatrix, int n)
@@ -219,7 +220,7 @@ int main() {
 	printMatrix(A, n);
 	
 	invertMatrix(A, L, U, inverse, n);
-	std::cout << "Inversed matrix:\n";
+	std::cout << "Inversed matrix using LU method:\n";
 	printMatrix(inverse, n);
 
 	freeMatrix(inverse, n);

@@ -1,3 +1,11 @@
 ﻿  main.cpp
 C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\RabinKarp.h(19,17): warning C4244: 'initializing': conversion from 'double' to 'long', possible loss of data
+  own_Lab.cpp
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\RabinKarp.h(19,17): warning C4244: 'initializing': conversion from 'double' to 'long', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(32,10): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(76,22): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(77,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(78,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\own_Lab\own_Lab.cpp(79,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
   own_Lab.vcxproj -> C:\Users\ASUS TUF\GitRepos\University\sem3\Algorithms\own_Lab\x64\Debug\own_Lab.exe
