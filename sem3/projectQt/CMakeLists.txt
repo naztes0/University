@@ -33,6 +33,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resource.qrc
         sectionscolumn.h sectionscolumn.cpp sectionscolumn.ui
         homewidget.h homewidget.cpp homewidget.ui
+        addtransactiondialog.h addtransactiondialog.cpp addtransactiondialog.ui
+        date.h date.cpp
+        transaction.h transaction.cpp
 
 
 

@@ -1,4 +1,4 @@
 ﻿  back.cpp
-C:\Users\ASUS TUF\GitRepos\University\sem3\project\back\back\back.cpp(292,27): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\ASUS TUF\GitRepos\University\sem3\project\back\back\back.cpp(301,27): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\project\back\back\back.cpp(340,27): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem3\project\back\back\back.cpp(349,27): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   back.vcxproj -> C:\Users\ASUS TUF\GitRepos\University\sem3\project\back\x64\Debug\back.exe
