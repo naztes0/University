@@ -21,7 +21,7 @@ signals:
 
 private slots:
     //Ok,Cancel
-    void on_buttonBox_accepted();
+    void validateAndAccept();
     void on_buttonBox_rejected();
 
 private:

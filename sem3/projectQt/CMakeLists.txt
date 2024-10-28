@@ -36,6 +36,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         addtransactiondialog.h addtransactiondialog.cpp addtransactiondialog.ui
         date.h date.cpp
         transaction.h transaction.cpp
+        loginwindow.h loginwindow.cpp loginwindow.ui
 
 
 

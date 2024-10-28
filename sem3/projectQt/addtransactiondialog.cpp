@@ -1,12 +1,16 @@
 #include "addtransactiondialog.h"
 #include "ui_addtransactiondialog.h"
 #include <QMessageBox>
+#include <QPushButton>
 
 AddTransactionDialog::AddTransactionDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddTransactionDialog)
 {
     ui->setupUi(this);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->disconnect();
+    connect(ui->buttonBox->button(QDialogButtonBox::Ok),&QPushButton::clicked,
+            this,&AddTransactionDialog::validateAndAccept);
     setWindowTitle("Add Transaction");
     ui->transactionDetails->setTitle("Transaction Details");
     //current date
@@ -22,6 +26,7 @@ AddTransactionDialog::~AddTransactionDialog()
 }
 
 void AddTransactionDialog::initializeCategories(){
+    ui->categoriesComboBox->addItem("...");
     ui->categoriesComboBox->addItem("Food");
     ui->categoriesComboBox->addItem("Transport");
     ui->categoriesComboBox->addItem("Entertainment");
@@ -45,7 +50,7 @@ Transaction*AddTransactionDialog::createTransaction(){
     return transaction;
 }
 
-void AddTransactionDialog::on_buttonBox_accepted(){
+void AddTransactionDialog::validateAndAccept(){
     if(ui->sumLineEdit->text().isEmpty()){
         QMessageBox::warning(this, "Warning", "Please enter the amount");
         return;
@@ -53,6 +58,11 @@ void AddTransactionDialog::on_buttonBox_accepted(){
 
     bool ok;
     double amount=ui->sumLineEdit->text().toDouble(&ok);
+    QString category=ui->categoriesComboBox->currentText();
+    if(category=="..."){
+        QMessageBox::warning(this, "Warning", "Please choose category");
+        return;
+    }
     if(!ok||amount<=0){
         QMessageBox::warning(this, "Warning", "Please enter a valid positive amount");
         return;
