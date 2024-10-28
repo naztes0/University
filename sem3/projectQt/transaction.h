@@ -1,54 +1,49 @@
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
 
-#include"date.h"
+#include<QDate>
 #include<QString>
 class Transaction
 {
 protected:
+    int id;
     double amount;
-    Date date;
-    QString description;
     QString category;
-    bool isIncome;
+    QString description;
+    QDate date;
+
 public:
-    Transaction(double amount, const Date& dt, const QString& descrip,
-                const QString& categ, bool income = false);
-    virtual ~Transaction() = default;
+    Transaction();
+    Transaction(int id,double amount, const QString&category, const QString& description, const QDate&date);
+    virtual ~Transaction();
+    //define type of transaction
+    virtual QString getType()const=0;
 
-    double getAmount() const{return amount;}
-    Date getDate() const {return date;}
-    QString getDescription()const{return description;}
-    QString getCategory()const {return category;}
-    bool getIsIncome() const{return isIncome;}
+    //getters
+    int getId() const { return id; }
+    double getAmount() const { return amount; }
+    QString getDescription() const { return description; }
+    QDate getDate() const { return date; }
+    QString getCategory() const { return category; }
 
-    void setAmount(double amount);
-    void setDate(const Date& dt);
-    void setDescription(const QString& desc);
-    virtual void setCategory(const QString& categ);
-
-
-    bool isValid() const;
+    //setters
+    void setId(int newId) { id = newId; }
+    void setAmount(double newAmount) { amount = newAmount; }
+    void setDescription(const QString& newDescription) { description = newDescription; }
+    void setDate(const QDate& newDate) { date = newDate; }
+    void setCategory(const QString& newCategory) { category = newCategory; }
 };
 
 class IncomeTransaction:public Transaction{
-private:
-    QString source;
-
 public:
-    IncomeTransaction(double amount, const Date& dt, const QString& descrip,const QString& src);
-    QString getSource() const { return source; }
-    void setSource(const QString& newSource);
-    void setCategory(const QString&categ) override;
+    using Transaction::Transaction;
+    QString getType() const override{return "Income";}
 };
 
 class ExpenseTransaction:public Transaction{
-private:
-    QString category;
-
 public:
-    ExpenseTransaction(double amount, const Date& dt, const QString& descrip, const QString& category);
-
+    using Transaction::Transaction;
+    QString getType() const override{return "Expense";}
 };
 
 #endif // TRANSACTION_H

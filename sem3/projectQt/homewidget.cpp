@@ -7,32 +7,33 @@ HomeWidget::HomeWidget(QWidget *parent)
     , ui(new Ui::HomeWidget)
 {
     ui->setupUi(this);
-    transactionDialog = new AddTransactionDialog(this);
-    connect(ui->addTrPushButton, &QPushButton::clicked, this, &HomeWidget::onAddTransactionClicked);
-    connect(transactionDialog, &AddTransactionDialog::transactionCreated,
-            this, &HomeWidget::onTransactionCreated);
+    ui->addTrPushButton->setText("Add Transaction");
 }
 
 HomeWidget::~HomeWidget()
 {
+    qDeleteAll(transactions);
+    transactions.clear();
     delete ui;
 }
 
-void HomeWidget::onAddTransactionClicked()
-{
-    transactionDialog->exec();
-}
 
-void HomeWidget::onTransactionCreated(Transaction* transaction)
+
+void HomeWidget:: on_addTrPushButton_clicked(){
+    AddTransactionDialog dialog(this);
+    connect(&dialog,&AddTransactionDialog::transactionAdded,this,&HomeWidget::onTransactionAdded);
+    dialog.exec();
+}
+void HomeWidget::onTransactionAdded(Transaction* transaction)
 {
-    // Тут можна додати логіку обробки нової транзакції
-    // Наприклад, додати її до списку транзакцій, оновити відображення тощо
-    qDebug() << "New transaction created:";
+    // Додаємо транзакцію до вектору
+    transactions.append(transaction);
+
+    // Тут можна додати код для оновлення інтерфейсу
+    qDebug() << "Added new transaction:";
+    qDebug() << "Type:" << transaction->getType();
     qDebug() << "Amount:" << transaction->getAmount();
     qDebug() << "Category:" << transaction->getCategory();
     qDebug() << "Description:" << transaction->getDescription();
-    qDebug() << "Is Income:" << transaction->getIsIncome();
-
-    // Не забудьте видалити transaction, якщо він більше не потрібен
-    // delete transaction;
+    qDebug() << "Date:" << transaction->getDate();
 }

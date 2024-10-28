@@ -7,8 +7,13 @@ AddTransactionDialog::AddTransactionDialog(QWidget *parent)
     , ui(new Ui::AddTransactionDialog)
 {
     ui->setupUi(this);
-    setupInitialState();
-    setupConnections();
+    setWindowTitle("Add Transaction");
+    ui->transactionDetails->setTitle("Transaction Details");
+    //current date
+    ui->dateEdit->setDate(QDate::currentDate());
+    initializeCategories();
+    //as default:expense
+    ui->expenseRadio->setChecked(true);
 }
 
 AddTransactionDialog::~AddTransactionDialog()
@@ -16,67 +21,48 @@ AddTransactionDialog::~AddTransactionDialog()
     delete ui;
 }
 
-void AddTransactionDialog::setupInitialState()
-{
-    ui->expenseRadio->setChecked(true);
-    ui->dateEdit->setDate(QDate::currentDate());
-
-    // Додаємо базові категорії витрат
-    ui->categoriesComboBox->clear();
-    ui->categoriesComboBox->addItems({"Food", "Transport", "Entertainment", "Bills", "Other"});
+void AddTransactionDialog::initializeCategories(){
+    ui->categoriesComboBox->addItem("Food");
+    ui->categoriesComboBox->addItem("Transport");
+    ui->categoriesComboBox->addItem("Entertainment");
+    ui->categoriesComboBox->addItem("Salary");
+    ui->categoriesComboBox->addItem("Investment");
 }
 
-void AddTransactionDialog::setupConnections()
-{
-    connect(ui->expenseRadio, &QRadioButton::toggled, this, &AddTransactionDialog::onTransactionTypeChanged);
-    connect(ui->incomeRadio, &QRadioButton::toggled, this, &AddTransactionDialog::onTransactionTypeChanged);
-}
+Transaction*AddTransactionDialog::createTransaction(){
+    double amount=ui->sumLineEdit->text().toDouble();
+    QString category=ui->categoriesComboBox->currentText();
+    QString description=ui->commentLineEdit->text();
+    QDate date=ui->dateEdit->date();
 
-void AddTransactionDialog::onTransactionTypeChanged()
-{
-    ui->categoriesComboBox->clear();
-
-    if (ui->incomeRadio->isChecked()) {
-        ui->categoriesComboBox->addItems({"Salary", "Investment", "Gift", "Other"});
-    } else {
-        ui->categoriesComboBox->addItems({"Food", "Transport", "Entertainment", "Bills", "Other"});
+    Transaction*transaction;
+    if(ui->incomeRadio->isChecked()){
+        transaction=new IncomeTransaction(0,amount,category,description,date);
     }
+    else{
+        transaction=new ExpenseTransaction(0,amount,category,description,date);
+    }
+    return transaction;
 }
 
-void AddTransactionDialog::accept()
-{
-    // Валідація введених даних
+void AddTransactionDialog::on_buttonBox_accepted(){
+    if(ui->sumLineEdit->text().isEmpty()){
+        QMessageBox::warning(this, "Warning", "Please enter the amount");
+        return;
+    }
+
     bool ok;
-    double amount = ui->sumLineEdit->text().toDouble(&ok);
-
-    if (!ok || amount <= 0) {
-        QMessageBox::warning(this, "Invalid Input", "Please enter a valid positive number for the amount.");
+    double amount=ui->sumLineEdit->text().toDouble(&ok);
+    if(!ok||amount<=0){
+        QMessageBox::warning(this, "Warning", "Please enter a valid positive amount");
         return;
     }
+    Transaction*transaction=createTransaction();
+    emit transactionAdded(transaction);
+    accept();//Close dialog Window
 
-    if (ui->commentLineEdit->text().isEmpty()) {
-        QMessageBox::warning(this, "Invalid Input", "Please enter a description.");
-        return;
-    }
-
-    Transaction* transaction = createTransaction();
-    if (transaction) {
-        emit transactionCreated(transaction);
-        QDialog::accept();
-    }
 }
 
-Transaction* AddTransactionDialog::createTransaction()
-{
-    double amount = ui->sumLineEdit->text().toDouble();
-    QDate qDate = ui->dateEdit->date();
-    Date date(qDate.day(), qDate.month(), qDate.year());
-    QString description = ui->commentLineEdit->text();
-    QString category = ui->categoriesComboBox->currentText();
-
-    if (ui->incomeRadio->isChecked()) {
-        return new IncomeTransaction(amount, date, description, category);
-    } else {
-        return new ExpenseTransaction(amount, date, description, category);
-    }
+void AddTransactionDialog::on_buttonBox_rejected(){
+    reject();
 }

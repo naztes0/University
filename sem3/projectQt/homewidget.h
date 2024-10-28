@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "addtransactiondialog.h"
 #include "transaction.h"
+#include<QVector>
 
 namespace Ui {
 class HomeWidget;
@@ -18,12 +19,15 @@ public:
     ~HomeWidget();
 
 private slots:
-    void onAddTransactionClicked();
-    void onTransactionCreated(Transaction* transaction);
+    //adding tr
+    void on_addTrPushButton_clicked();
+    //getting new tr
+    void onTransactionAdded(Transaction* transaction);
 
 private:
     Ui::HomeWidget *ui;
-    AddTransactionDialog *transactionDialog;
+    QVector<Transaction*> transactions;
+
 };
 
 #endif

@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include"transaction.h"
-#include"date.h"
+
 namespace Ui {
 class AddTransactionDialog;
 }
@@ -16,16 +16,17 @@ public:
     explicit AddTransactionDialog(QWidget *parent = nullptr);
     ~AddTransactionDialog();
 signals:
-    void transactionCreated();
+    //send wh new transaction is crating
+    void transactionAdded(Transaction*transaction);
 
 private slots:
-    void accept()override;
-    void onTransactionChanged();
+    //Ok,Cancel
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
 
 private:
     Ui::AddTransactionDialog *ui;
-    void setupConnections();
-    void setupInitialState();
+    void initializeCategories();
     Transaction*createTransaction();
 };
 
