@@ -17,6 +17,9 @@ class LoginWindow : public QDialog
 public:
     explicit LoginWindow(DatabaseManager*dbManager,QWidget *parent = nullptr);
     ~LoginWindow();
+
+signals:
+    void loginSuccessful(int userId);
 private slots:
     void on_loginButton_clicked();
     void on_goToSignupButton_clicked();

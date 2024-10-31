@@ -4,8 +4,10 @@
 #include <QMainWindow>
 #include "sectionscolumn.h"
 #include<QDebug>
+#include<QMessageBox>
 #include"homewidget.h"
-
+#include"databasemanager.h"
+#include"loginwindow.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -18,7 +20,9 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    void setCurrentUserId(int userId){currentUserId=userId;}
     ~MainWindow();
+
 
 public slots:
     void showHomeWidget();
@@ -28,6 +32,8 @@ private:
     SectionsColumn *sectionsColumn;
     HomeWidget*homeWidget;
     QWidget*currentWidget;
+    DatabaseManager m_dbManager;
+    int currentUserId;
     void setupConnections();
 };
 #endif // MAINWINDOW_H

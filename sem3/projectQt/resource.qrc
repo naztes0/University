@@ -2,5 +2,6 @@
     <qresource prefix="/img">
         <file>img/home.svg</file>
         <file>img/multiple.svg</file>
+        <file>img/check-circle.svg</file>
     </qresource>
 </RCC>
