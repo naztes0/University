@@ -34,9 +34,9 @@ void printMatrix(double** matrix, int n) {
 ////////////////////////////////////////////////////////////////
 
 //Функції для виконання завдання 
-void luDecomposition(double** A, double** L, double** U,int n) {
+void luDecomposition(double** A, double** L, double** U, int n, bool& isSingular) {
 	for (int i = 0; i < n; i++) {
-		//U matrix
+		// U matrix
 		for (int k = i; k < n; k++) {
 			double sum = 0;
 			for (int j = 0; j < i; j++) {
@@ -44,7 +44,12 @@ void luDecomposition(double** A, double** L, double** U,int n) {
 			}
 			U[i][k] = A[i][k] - sum;
 		}
-		//L matrix
+		// Check for singularity (zero on the diagonal in U)
+		if (U[i][i] == 0) {
+			isSingular = true;
+			return;
+		}
+		// L matrix
 		for (int k = i; k < n; k++) {
 			if (i == k) L[i][i] = 1;
 			else {
@@ -79,7 +84,13 @@ void backwardSubstitution(double**U,double*y,double*x,int n){
 }
 
 void invertMatrix(double** A, double** L, double** U,double**inverse, int n) {
-	luDecomposition(A, L, U, n);
+	bool isSingular = false;
+	luDecomposition(A, L, U, n,isSingular);
+
+	if (isSingular) {
+		std::cout << "The matrix is singular and does not have an inverse.\n";
+		return;
+	}
 
 	std::cout << "Matrix U:\n";
 	printMatrix(U, n);
@@ -201,6 +212,7 @@ int main() {
 	double** L;
 	double** U;
 	double** inverse;
+	
 
 	std::cout << "Enter the size n of matrix: ";
 	std::cin >> n;
