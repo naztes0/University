@@ -4,9 +4,10 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow),
-    homeWidget(nullptr), currentWidget(nullptr)
-
+    , ui(new Ui::MainWindow)
+    ,homeWidget(nullptr)
+    , currentWidget(nullptr)
+    , currentUserId(-1)
 {
     if(!m_dbManager.initializeDatabase()){
         QMessageBox::critical(this, "Error","Failed to initialize database");
@@ -19,9 +20,18 @@ MainWindow::MainWindow(QWidget *parent)
     if (loginWindow->exec() != QDialog::Accepted) {
         // user close the window without authorization
         QApplication::quit();
+        return;
     }
-    homeWidget=ui->contentWidget;
-    currentWidget=homeWidget;
+    homeWidget=qobject_cast<HomeWidget*>(ui->contentWidget);
+    if(homeWidget){
+        homeWidget->setDatabaseManager(&m_dbManager);
+        homeWidget->setUserId(currentUserId);
+        currentWidget=homeWidget;
+    }
+    else{
+        QMessageBox::critical(this,"Error","Failed to initialize HomeWidget");
+    }
+
     setupConnections();
 }
 
@@ -50,5 +60,4 @@ void MainWindow::showHomeWidget(){
     homeWidget->show();
     currentWidget = homeWidget;
 }
-
 

@@ -8,6 +8,8 @@
 #include"homewidget.h"
 #include"databasemanager.h"
 #include"loginwindow.h"
+
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -20,11 +22,12 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    void setCurrentUserId(int userId){currentUserId=userId;}
+
     ~MainWindow();
 
 
 public slots:
+    void setCurrentUserId(int userId){currentUserId=userId;}
     void showHomeWidget();
 
 private:

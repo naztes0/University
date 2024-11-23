@@ -3,9 +3,12 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-AddTransactionDialog::AddTransactionDialog(QWidget *parent)
+AddTransactionDialog::AddTransactionDialog(DatabaseManager*dbManager,int userId,QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddTransactionDialog)
+    ,m_dbManager(dbManager)
+    ,userId(userId)
+
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->disconnect();
@@ -67,9 +70,21 @@ void AddTransactionDialog::validateAndAccept(){
         QMessageBox::warning(this, "Warning", "Please enter a valid positive amount");
         return;
     }
-    Transaction*transaction=createTransaction();
-    emit transactionAdded(transaction);
-    accept();//Close dialog Window
+    bool isExpense=ui->expenseRadio->isChecked();
+    QString comment= ui->commentLineEdit->text();
+    QDateTime dateTime(ui->dateEdit->date(),QTime::currentTime());
+
+    // Transaction*transaction=createTransaction();
+    // emit transactionAdded(transaction);
+    // accept();//Close dialog Window
+    if(m_dbManager->addTransaction(userId,isExpense,category,amount,dateTime,comment)){
+        accept();
+    }
+    else{
+        QMessageBox::warning(this,"Error","Failed to add transaction");
+
+    }
+
 
 }
 

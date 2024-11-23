@@ -5,6 +5,8 @@
 #include "addtransactiondialog.h"
 #include "transaction.h"
 #include<QVector>
+#include"databasemanager.h"
+
 
 namespace Ui {
 class HomeWidget;
@@ -17,6 +19,8 @@ class HomeWidget : public QWidget
 public:
     explicit HomeWidget(QWidget *parent = nullptr);
     ~HomeWidget();
+    void setDatabaseManager(DatabaseManager*dbmanager){m_dbManager=dbmanager;}
+    void setUserId(int userId){m_userId=userId;}
 
 private slots:
     //adding tr
@@ -27,7 +31,8 @@ private slots:
 private:
     Ui::HomeWidget *ui;
     QVector<Transaction*> transactions;
-
+    DatabaseManager*m_dbManager;
+    int m_userId;
 };
 
 #endif

@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include"transaction.h"
+#include"databasemanager.h"
+#include<QDateTime>
 
 namespace Ui {
 class AddTransactionDialog;
@@ -13,8 +15,8 @@ class AddTransactionDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddTransactionDialog(QWidget *parent = nullptr);
     ~AddTransactionDialog();
+    explicit AddTransactionDialog(DatabaseManager*dbManager,int userId ,QWidget *parent = nullptr);
 signals:
     //send wh new transaction is crating
     void transactionAdded(Transaction*transaction);
@@ -26,6 +28,8 @@ private slots:
 
 private:
     Ui::AddTransactionDialog *ui;
+    DatabaseManager* m_dbManager;
+    int userId;
     void initializeCategories();
     Transaction*createTransaction();
 };

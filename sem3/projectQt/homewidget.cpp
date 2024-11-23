@@ -17,10 +17,8 @@ HomeWidget::~HomeWidget()
     delete ui;
 }
 
-
-
 void HomeWidget:: on_addTrPushButton_clicked(){
-    AddTransactionDialog dialog(this);
+    AddTransactionDialog dialog(m_dbManager, m_userId, this);
     connect(&dialog,&AddTransactionDialog::transactionAdded,this,&HomeWidget::onTransactionAdded);
     dialog.exec();
 }
