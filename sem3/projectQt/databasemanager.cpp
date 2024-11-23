@@ -131,3 +131,38 @@ bool DatabaseManager::deleteTransaction(int transactionId){
     QJsonDocument response =synchronousRequest(path,"DELETE");
     return !response.isNull();
 }
+//Methods to get all or specific transactions
+QJsonArray DatabaseManager::getUserTransactions(int userId){
+    QJsonDocument response= synchronousRequest("transactions","GET");
+    if(response.isNull()){
+        qDebug<<"Error: reponse is null in getUserTransactions";
+        return QJsonArray();
+    }
+    QJsonArray userTransactions;
+    QJsonObject transactions =response.object();
+
+    for(auto it=transactions.begin();it!=transactions.end();++it){
+        QJsonObject transaction=it.value().toObject();
+        if (transaction["user_id"].toInt() == userId) {
+            transaction["id"] = it.key();
+            userTransactions.append(transaction);
+        }
+    }
+    return userTransactions;
+}
+
+QJsonObject DatabaseManager::getTransactionById(int transactionId){
+    QJsonDocument response=synchronousRequest("transactions","GET");
+    if(response.isNull()){
+        qDebug<<"Error: reponse is null in getTransactionById";
+        return QJsonObject();
+    }
+    QJsonObject transactionById;
+    QJsonObject transactions=response.object();
+    for (auto it=transactions.begin();it!=transactions.end();++it){
+        if(it["transaction_id"].toInt()==transactionId){
+            transactionById=it.value().toObject();
+            return transactionById;
+        }
+    }
+}

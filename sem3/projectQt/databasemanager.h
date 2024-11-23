@@ -27,7 +27,8 @@ public:
     // bool updateTransaction(int transactionId, bool isExpense, const QString& category,
     //                       double amount, const QDateTime& date, const QString& comment);
     bool deleteTransaction(int transactionId);
-
+    QJsonArray getUserTransactions(int userId);
+    QJsonObject getTransactionById(int transactionId);
 
 private:
     QNetworkAccessManager*manager;
