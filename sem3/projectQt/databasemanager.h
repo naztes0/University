@@ -20,6 +20,15 @@ public:
     bool userExists(const QString& login);
     bool emailExists(const QString& email);
     bool validateUser(const Qstring& email, const QString&password);
+
+    //Methods to work with transactions
+    bool addTransaction(int userId,bool isExpense,const QString& category,
+                        double amount, const QDateTime& date,const QString&comment);
+    // bool updateTransaction(int transactionId, bool isExpense, const QString& category,
+    //                       double amount, const QDateTime& date, const QString& comment);
+    bool deleteTransaction(int transactionId);
+
+
 private:
     QNetworkAccessManager*manager;
     QString projectURL;

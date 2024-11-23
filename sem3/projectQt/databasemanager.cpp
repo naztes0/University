@@ -110,3 +110,24 @@ int DatabaseManager::validateUser(const Qstring &email, const QString &password)
     return -1;
 }
 
+//Methods to work with Transactions
+
+bool DatabaseManager::addTransaction(int userId, bool isExpense, const QString &category, double amount, const QDateTime &date, const QString &comment){
+    QJsonObject transactionData;
+    transactionData["user_id"]=userId;
+    transactionData["is_expense"] = isExpense;
+    transactionData["category"] = category;
+    transactionData["amount"] = amount;
+    transactionData["transaction_date"] = date.toString(Qt::ISODate);
+    transactionData["comment"] = comment;
+    transactionData["created_at"] = QDateTime::currentDateTime().toString(Qt::ISODate);
+
+    QJsonDocument doc(transactionData);
+    QJsonDocument response=synchronousRequest("transactions","POST",doc);
+    return !response.isNull();
+}
+bool DatabaseManager::deleteTransaction(int transactionId){
+    QString path=QString("transactions/%1").arg(transactionId); //ussage of placeholder
+    QJsonDocument response =synchronousRequest(path,"DELETE");
+    return !response.isNull();
+}
