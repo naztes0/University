@@ -40,8 +40,10 @@ QJsonDocument DatabaseManager::synchronousRequest(const QString &path, const QSt
         QByteArray responseData=reply->readAll();
         reply->deleteLater();
         return QJsonDocument::fromJson(responseData);
-
     }
+    qDebug() << "Network error:" << reply->errorString();
+    reply->deleteLater();
+    return QJsonDocument();
 }
 
 
@@ -89,3 +91,22 @@ bool DatabaseManager::emailExists(const QString &email){
     }
     return false;
 }
+
+int DatabaseManager::validateUser(const Qstring &email, const QString &password){
+    //QString hashedPassword =hashPassword(password);
+    QJsonDocument response= synchronousRequest("users","GET");
+    if(response.isNull()){
+        qDebug()<<"Error: no response in validateUser";
+        return -1;
+    }
+    QJsonObject users=response.object();
+    for(auto it=users.begin();it!=users.end();++it){
+        QJsonObject user =it.value().toObject();
+        if (user["email"].toString() == email &&
+            user["password"].toString() == password/*hashedPassword*/) {
+            return it.key().toInt();
+        }
+    }
+    return -1;
+}
+

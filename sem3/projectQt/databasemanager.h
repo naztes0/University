@@ -19,7 +19,7 @@ public:
     bool adduser(const QString& login, const QString& email, const QString& password);
     bool userExists(const QString& login);
     bool emailExists(const QString& email);
-
+    bool validateUser(const Qstring& email, const QString&password);
 private:
     QNetworkAccessManager*manager;
     QString projectURL;
