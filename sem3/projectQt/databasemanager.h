@@ -16,8 +16,9 @@ class DatabaseManager
 public:
     explicit DatabaseManager(QObject*parent=nullptr);
 
-    bool intializeDatabase();
-
+    bool adduser(const QString& login, const QString& email, const QString& password);
+    bool userExists(const QString& login);
+    bool emailExists(const QString& email);
 
 private:
     QNetworkAccessManager*manager;

@@ -43,3 +43,49 @@ QJsonDocument DatabaseManager::synchronousRequest(const QString &path, const QSt
 
     }
 }
+
+
+bool DatabaseManager::adduser(const QString &login, const QString &email, const QString &password){
+    if(userExists(login)||emailExists(email)){
+        return false;
+    }
+    QJsonObject userData;
+    userData["login"] = login;
+    userData["email"] = email;
+    userData["password"] = password; //hashPassword(password);
+    userData["created_at"] = QDateTime::currentDateTime().toString(Qt::ISODate);
+
+    QJsonDocument doc(userData);
+    QJsonDocument response=synchronousRequest("users","POST",doc);
+    return !response.isNull();
+}
+
+bool DatabaseManager::userExists(const QString &login){
+    QJsonDocument response=synchronousRequest("users","GET");
+    if(response.isNull()){
+        qDebug()<<"No response in userExist";
+        return false;
+    }
+    QJsonObject users=response.object();
+    for(auto it=users.begin();it!=users.end();++it){
+        if(it.value().toObject()["login"].toString()==login){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool DatabaseManager::emailExists(const QString &email){
+    QJsonDocument response=synchronousRequest("users","GET");
+    if(response.isNull()){
+        qDebug()<<"No response in emailEXists";
+        return false;
+    }
+    QJsonObject users=response.object();
+    for(auto it=users.begin();it!=users.end();++it){
+        if(it.value().toObject()["email"].toString()==email){
+            return true;
+        }
+    }
+    return false;
+}
