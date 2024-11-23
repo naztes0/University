@@ -30,12 +30,18 @@ public:
     QJsonArray getUserTransactions(int userId);
     QJsonObject getTransactionById(int transactionId);
 
+
+signals:
+    void operationCompleted(bool succes);
+    void dataReceived(const QJsonDocument&data);
+
 private:
     QNetworkAccessManager*manager;
     QString projectURL;
     QString constructUrl(const QString&path);
     QJsonDocument synchronousRequest(const QString&path, const QString&method,
                                      const QJsonDocument&data=QJsonDocument());
+    QString hashPassword(const QString& password);
 };
 
 #endif // DATABASEMANAGER_H

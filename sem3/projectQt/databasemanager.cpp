@@ -31,7 +31,10 @@ QJsonDocument DatabaseManager::synchronousRequest(const QString &path, const QSt
     else if(method=="PATCH"){
         reply=manager->sendCustomRequest(request,"PATCH",data.toJson());
     }
-
+    if(!reply){
+        qDebug()<<"Error: Failed to create network reply for"<<method<<"request to"<<request.url();
+        return QJsonDocument();
+    }
     QEventLoop loop;
     connect(reply,&QNetworkReply::finished,&loop,&QEventLoop::quit);
     loop.exec();
@@ -92,7 +95,7 @@ bool DatabaseManager::emailExists(const QString &email){
     return false;
 }
 
-int DatabaseManager::validateUser(const Qstring &email, const QString &password){
+int DatabaseManager::validateUser(const QString &email, const QString &password){
     //QString hashedPassword =hashPassword(password);
     QJsonDocument response= synchronousRequest("users","GET");
     if(response.isNull()){
@@ -160,9 +163,16 @@ QJsonObject DatabaseManager::getTransactionById(int transactionId){
     QJsonObject transactionById;
     QJsonObject transactions=response.object();
     for (auto it=transactions.begin();it!=transactions.end();++it){
-        if(it["transaction_id"].toInt()==transactionId){
-            transactionById=it.value().toObject();
+        if(it.key().toInt() == transactionId){
+            transactionById = it.value().toObject();
             return transactionById;
         }
     }
+    return QJsonObject();
+}
+
+QString DatabaseManager::hashPassword(const QString &password){
+    QByteArray passwordBytes = password.toUtf8();
+    QByteArray hashedPassword = QCryptographicHash::hash(passwordBytes, QCryptographicHash::Sha256);
+    return QString(hashedPassword.toHex());
 }
