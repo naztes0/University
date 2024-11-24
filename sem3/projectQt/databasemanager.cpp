@@ -50,7 +50,7 @@ QJsonDocument DatabaseManager::synchronousRequest(const QString &path, const QSt
 }
 
 
-bool DatabaseManager::adduser(const QString &login, const QString &email, const QString &password){
+bool DatabaseManager::addUser(const QString &login, const QString &email, const QString &password){
     if(userExists(login)||emailExists(email)){
         return false;
     }
@@ -95,22 +95,22 @@ bool DatabaseManager::emailExists(const QString &email){
     return false;
 }
 
-int DatabaseManager::validateUser(const QString &email, const QString &password){
+QString DatabaseManager::validateUser(const QString &email, const QString &password){
     //QString hashedPassword =hashPassword(password);
     QJsonDocument response= synchronousRequest("users","GET");
     if(response.isNull()){
         qDebug()<<"Error: no response in validateUser";
-        return -1;
+        return QString();
     }
     QJsonObject users=response.object();
     for(auto it=users.begin();it!=users.end();++it){
         QJsonObject user =it.value().toObject();
         if (user["email"].toString() == email &&
             user["password"].toString() == password/*hashedPassword*/) {
-            return it.key().toInt();
+            return it.key();
         }
     }
-    return -1;
+    return QString();
 }
 
 //Methods to work with Transactions
@@ -138,7 +138,7 @@ bool DatabaseManager::deleteTransaction(int transactionId){
 QJsonArray DatabaseManager::getUserTransactions(int userId){
     QJsonDocument response= synchronousRequest("transactions","GET");
     if(response.isNull()){
-        qDebug<<"Error: reponse is null in getUserTransactions";
+        qDebug()<<"Error: reponse is null in getUserTransactions";
         return QJsonArray();
     }
     QJsonArray userTransactions;
@@ -157,7 +157,7 @@ QJsonArray DatabaseManager::getUserTransactions(int userId){
 QJsonObject DatabaseManager::getTransactionById(int transactionId){
     QJsonDocument response=synchronousRequest("transactions","GET");
     if(response.isNull()){
-        qDebug<<"Error: reponse is null in getTransactionById";
+        qDebug()<<"Error: reponse is null in getTransactionById";
         return QJsonObject();
     }
     QJsonObject transactionById;
