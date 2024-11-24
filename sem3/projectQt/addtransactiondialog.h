@@ -28,7 +28,7 @@ private slots:
 
 private:
     Ui::AddTransactionDialog *ui;
-    DatabaseManager* m_dbManager;
+    DatabaseManager* manager;
     int userId;
     void initializeCategories();
     Transaction*createTransaction();

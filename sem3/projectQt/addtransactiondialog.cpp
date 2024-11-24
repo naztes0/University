@@ -6,7 +6,7 @@
 AddTransactionDialog::AddTransactionDialog(DatabaseManager*dbManager,int userId,QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddTransactionDialog)
-    ,m_dbManager(dbManager)
+    ,manager(dbManager)
     ,userId(userId)
 
 {
@@ -77,7 +77,7 @@ void AddTransactionDialog::validateAndAccept(){
     // Transaction*transaction=createTransaction();
     // emit transactionAdded(transaction);
     // accept();//Close dialog Window
-    if(m_dbManager->addTransaction(userId,isExpense,category,amount,dateTime,comment)){
+    if(manager->addTransaction(userId,isExpense,category,amount,dateTime,comment)){
         accept();
     }
     else{
