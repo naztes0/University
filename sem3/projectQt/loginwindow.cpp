@@ -6,7 +6,7 @@
 LoginWindow::LoginWindow(DatabaseManager*dbManager, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::LoginWindow)
-    ,m_dbManager(dbManager)
+    ,manager(dbManager)
 {
     ui->setupUi(this);
     ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
@@ -22,52 +22,76 @@ LoginWindow::~LoginWindow()
 
 void LoginWindow::on_loginButton_clicked()
 {
-    QString email=ui->emailLineEdit->text();
+    QString email=ui->emailLineEdit->text().trimmed();
     QString password=ui->passwordLineEdit->text();
     if(email.isEmpty()||password.isEmpty()){
         QMessageBox::warning(this,"Error","Please fill in all fields");
         return;
     }
-    int userId=m_dbManager->validateUser(email,password);
-    if(userId>0){
-        emit loginSuccessful(userId);
-        accept();//close login wind
+    QRegularExpression emailRegex ("^[A_Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    if(emailRegex.match(email).hasMatch()){
+        QMessageBox::warning(this,"Error","Please enter a valid email adress");
+        return;
+    }
+
+    QString userId= manager->validateUser(email,password);
+    if(!userId.isEmpty()){
+        emit loginSuccessful(userId.toInt());
+        accept();//closing window
     }
     else{
-        QMessageBox::warning(this, "Error", "The user with this email and password wasn`t."
-                                            "Plesae check the entered data or Sign Up ");
+        QMessageBox::warning(this, "Login Failed", "Invalid email or password. Please check your credentials or sign up for a new account.");
+         ui->passwordLineEdit->clear();
     }
-}
-
-void LoginWindow::on_signupButton_clicked()
-{
-    showSignupForm();
 }
 
 void LoginWindow::on_createAccount_clicked(){
-    QString login=ui->regLoginLineEdit->text();
-    QString email=ui->regEmailLineEdit->text();
+    QString login=ui->regLoginLineEdit->text().trimmed();
+    QString email=ui->regEmailLineEdit->text().trimmed();
     QString password=ui->regPasswordLineEdit->text();
+
     if(login.isEmpty()||email.isEmpty()||password.isEmpty()){
         QMessageBox::warning(this,"Error","Please fill in all fields");
         return;
     }
-    if(m_dbManager->addUser(login,email,password)){
+    //email validation
+    QRegularExpression emailRegex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    if (!emailRegex.match(email).hasMatch()) {
+        QMessageBox::warning(this, "Error", "Please enter a valid email address");
+        return;
+    }
+    //password length checker
+    if(password.length()<6){
+        QMessageBox::warning(this,"Error","Password must be at least 6 characters long");
+        return;
+    }
+    //login validation
+    QRegularExpression loginRegex("^[A-Za-z0-9_]{3,20}$");
+    if (!loginRegex.match(login).hasMatch()) {
+        QMessageBox::warning(this, "Error",
+                             "Username must be 3-20 characters long and can only contain letters, numbers, and underscores");
+        return;
+    }
+
+    if(manager->addUser(login,email,password)){
         //custom message box with tick
         QMessageBox msgBox;
         msgBox.setWindowTitle("Success");
         msgBox.setText("Successfuly signed up");
         msgBox.setIconPixmap(QPixmap(":/img/img/check-circle.svg"));
         msgBox.exec();
-        int userId=m_dbManager->validateUser(email,password);
-        if(userId>0){
+
+        //Automatic login after sign up
+        QString userId=manager->validateUser(email,password);
+        if(userId.isEmpty()){
             emit loginSuccessful(userId);
             accept();
         }
     }
     else{
-        bool loginExists = m_dbManager->userExists(login);
-        bool emailExists = m_dbManager->emailExists(email);
+        bool loginExists = manager->userExists(login);
+        bool emailExists = manager->emailExists(email);
+
         QString errorMsg;
         if (loginExists && emailExists) {
             errorMsg = "User with this login and email already exists.";
@@ -104,4 +128,7 @@ void LoginWindow::on_goToSignupButton_clicked(){
     showSignupForm();
 }
 
+void LoginWindow::on_signupButton_clicked(){
+    showSignupForm();
+}
 

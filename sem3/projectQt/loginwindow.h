@@ -28,7 +28,7 @@ private slots:
 
 private:
     Ui::LoginWindow *ui;
-    DatabaseManager* m_dbManager;
+    DatabaseManager* manager;
     void showLoginForm();
     void showSignupForm();
     void clearForms();
