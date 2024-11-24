@@ -24,7 +24,7 @@ void LoginWindow::on_loginButton_clicked()
 {
     QString email=ui->emailLineEdit->text().trimmed();
     QString password=ui->passwordLineEdit->text();
-    if(email.isEmpty()||password.isEmpty()){
+    if(email.isEmptgtiy()||password.isEmpty()){
         QMessageBox::warning(this,"Error","Please fill in all fields");
         return;
     }
@@ -68,8 +68,7 @@ void LoginWindow::on_createAccount_clicked(){
     //login validation
     QRegularExpression loginRegex("^[A-Za-z0-9_]{3,20}$");
     if (!loginRegex.match(login).hasMatch()) {
-        QMessageBox::warning(this, "Error",
-                             "Username must be 3-20 characters long and can only contain letters, numbers, and underscores");
+        QMessageBox::warning(this, "Error", "Username must be 3-20 characters long and can only contain letters, numbers, and underscores");
         return;
     }
 

@@ -35,7 +35,7 @@ private:
     SectionsColumn *sectionsColumn;
     HomeWidget*homeWidget;
     QWidget*currentWidget;
-    DatabaseManager m_dbManager;
+    DatabaseManager manager;
     int currentUserId;
     void setupConnections();
 };
