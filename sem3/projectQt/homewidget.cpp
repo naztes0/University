@@ -12,14 +12,16 @@ HomeWidget::HomeWidget(QWidget *parent)
 
 HomeWidget::~HomeWidget()
 {
-    qDeleteAll(transactions);
-    transactions.clear();
     delete ui;
 }
 
 void HomeWidget:: on_addTrPushButton_clicked(){
-    AddTransactionDialog dialog(manager, userId, this);
+    AddTransactionDialog dialog(m_dbManager, m_userId, this);
     connect(&dialog,&AddTransactionDialog::transactionAdded,this,&HomeWidget::onTransactionAdded);
     dialog.exec();
 }
+void HomeWidget::onTransactionAdded()
+{
+    QJsonArray transactions = m_dbManager->getUserTransactions(m_userId);
 
+}

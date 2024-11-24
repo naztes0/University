@@ -4,7 +4,7 @@
 DatabaseManager::DatabaseManager(QObject*parent):QObject(parent)
 {
     manager= new QNetworkAccessManager(this);
-    projectURL="";
+    projectURL="https://transactionsmanager2850456-default-rtdb.firebaseio.com/";
 }
 
 QString DatabaseManager::constructUrl(const QString &path){

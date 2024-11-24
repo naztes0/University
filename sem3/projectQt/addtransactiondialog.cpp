@@ -72,12 +72,13 @@ void AddTransactionDialog::validateAndAccept(){
     }
     bool isExpense=ui->expenseRadio->isChecked();
     QString comment= ui->commentLineEdit->text();
-    QDateTime dateTime(ui->dateEdit->date(),QTime::currentTime().toString(Qt::ISODate));
+    QDateTime dateTime(ui->dateEdit->date(),QTime::currentTime());
 
     // Transaction*transaction=createTransaction();
     // emit transactionAdded(transaction);
     // accept();//Close dialog Window
     if(manager->addTransaction(userId,isExpense,category,amount,dateTime,comment)){
+        emit transactionAdded();
         accept();
     }
     else{

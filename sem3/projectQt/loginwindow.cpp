@@ -24,12 +24,12 @@ void LoginWindow::on_loginButton_clicked()
 {
     QString email=ui->emailLineEdit->text().trimmed();
     QString password=ui->passwordLineEdit->text();
-    if(email.isEmptgtiy()||password.isEmpty()){
+    if(email.isEmpty()||password.isEmpty()){
         QMessageBox::warning(this,"Error","Please fill in all fields");
         return;
     }
     QRegularExpression emailRegex ("^[A_Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-    if(emailRegex.match(email).hasMatch()){
+    if(!emailRegex.match(email).hasMatch()){
         QMessageBox::warning(this,"Error","Please enter a valid email adress");
         return;
     }
@@ -45,7 +45,7 @@ void LoginWindow::on_loginButton_clicked()
     }
 }
 
-void LoginWindow::on_createAccount_clicked(){
+void LoginWindow::on_createAccountButton_clicked(){
     QString login=ui->regLoginLineEdit->text().trimmed();
     QString email=ui->regEmailLineEdit->text().trimmed();
     QString password=ui->regPasswordLineEdit->text();
@@ -82,12 +82,14 @@ void LoginWindow::on_createAccount_clicked(){
 
         //Automatic login after sign up
         QString userId=manager->validateUser(email,password);
-        if(userId.isEmpty()){
-            emit loginSuccessful(userId);
+        if(!userId.isEmpty()){
+
+            emit loginSuccessful(userId.toInt());
             accept();
+
         }
     }
-    else{
+        else{
         bool loginExists = manager->userExists(login);
         bool emailExists = manager->emailExists(email);
 

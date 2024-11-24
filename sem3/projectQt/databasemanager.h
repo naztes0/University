@@ -7,7 +7,7 @@
 #include<QJsonDocument> //reading and modification of JSON docs
 #include<QJsonObject> //JSON obj (key-value)
 #include<QJsonArray>//JSON arrays
-#include<QDateTime>// time
+#include<QDateTime>// date&time
 #include<QCryptographicHash> //password hashing
 #include<QEventLoop>//synchronization of asynchronous requests
 #include<QDebug>

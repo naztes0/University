@@ -24,7 +24,7 @@ private slots:
     void on_loginButton_clicked();
     void on_goToSignupButton_clicked();
     void on_signupButton_clicked();
-    void on_createAccount_clicked();
+    void on_createAccountButton_clicked();
 
 private:
     Ui::LoginWindow *ui;

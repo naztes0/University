@@ -19,7 +19,7 @@ public:
     explicit AddTransactionDialog(DatabaseManager*dbManager,int userId ,QWidget *parent = nullptr);
 signals:
     //send wh new transaction is crating
-    void transactionAdded(Transaction*transaction);
+    void transactionAdded();
 
 private slots:
     //Ok,Cancel
