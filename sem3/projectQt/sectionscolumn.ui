@@ -51,9 +51,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="transactionsListButton">
      <property name="text">
-      <string>PushButton</string>
+      <string>Transactions</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resource.qrc">
+       <normaloff>:/img/img/receipt.svg</normaloff>:/img/img/receipt.svg</iconset>
      </property>
     </widget>
    </item>
