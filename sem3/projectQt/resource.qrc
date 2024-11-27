@@ -3,5 +3,6 @@
         <file>img/home.svg</file>
         <file>img/multiple.svg</file>
         <file>img/check-circle.svg</file>
+        <file>img/receipt.svg</file>
     </qresource>
 </RCC>
