@@ -19,6 +19,7 @@ class DatabaseManager:public QObject
 public:
     explicit DatabaseManager(QObject*parent=nullptr);
 
+    int getNextUserId();
     bool addUser(const QString& login, const QString& email, const QString& password);
     bool userExists(const QString& login);
     bool emailExists(const QString& email);

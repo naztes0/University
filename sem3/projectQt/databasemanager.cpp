@@ -50,11 +50,28 @@ QJsonDocument DatabaseManager::synchronousRequest(const QString &path, const QSt
 }
 
 
+int DatabaseManager::getNextUserId(){
+    QJsonDocument response =synchronousRequest("users","GET");
+    if(response.isNull()){
+        return 1;
+    }
+    QJsonObject users=response.object();
+    int maxId=0;
+    for(auto it=users.begin();it!=users.end();++it){
+        int currentId=it.value().toObject()["user_id"].toInt();
+        maxId=qMax(maxId,currentId);
+    }
+    return maxId+1;
+}
+
 bool DatabaseManager::addUser(const QString &login, const QString &email, const QString &password){
     if(userExists(login)||emailExists(email)){
         return false;
     }
+
+    int newUserId=getNextUserId();
     QJsonObject userData;
+    userData["user_id"]=newUserId;
     userData["login"] = login;
     userData["email"] = email;
     userData["password"] = password; //hashPassword(password);
@@ -107,7 +124,7 @@ QString DatabaseManager::validateUser(const QString &email, const QString &passw
         QJsonObject user =it.value().toObject();
         if (user["email"].toString() == email &&
             user["password"].toString() == password/*hashedPassword*/) {
-            return it.key();
+             return QString::number(user["user_id"].toInt());
         }
     }
     return QString();
