@@ -14,20 +14,20 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="3" column="0">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>500</width>
+       <width>40</width>
        <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
-   <item row="0" column="1">
+   <item row="3" column="1" colspan="2">
     <widget class="QPushButton" name="addTrPushButton">
      <property name="enabled">
       <bool>true</bool>
@@ -39,20 +39,23 @@
       <iconset resource="resource.qrc">
        <normaloff>:/img/img/multiple.svg</normaloff>:/img/img/multiple.svg</iconset>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="4" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Orientation::Vertical</enum>
      </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Policy::Preferred</enum>
-     </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>300</height>
+       <height>40</height>
       </size>
      </property>
     </spacer>
