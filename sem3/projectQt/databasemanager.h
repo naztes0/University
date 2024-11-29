@@ -30,9 +30,9 @@ public:
                         double amount, const QDateTime& date,const QString&comment);
     // bool updateTransaction(int transactionId, bool isExpense, const QString& category,
     //                       double amount, const QDateTime& date, const QString& comment);
-    bool deleteTransaction(int transactionId);
+    bool deleteTransaction(const QString& transactionId);
     QJsonArray getUserTransactions(int userId);
-    QJsonObject getTransactionById(int transactionId);
+    QJsonObject getTransactionById(const QString& transactionId);
 
 
 signals:

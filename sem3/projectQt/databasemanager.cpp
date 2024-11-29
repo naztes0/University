@@ -146,7 +146,7 @@ bool DatabaseManager::addTransaction(int userId, bool isExpense, const QString &
     QJsonDocument response=synchronousRequest("transactions","POST",doc);
     return !response.isNull();
 }
-bool DatabaseManager::deleteTransaction(int transactionId){
+bool DatabaseManager::deleteTransaction(const QString& transactionId){
     QString path=QString("transactions/%1").arg(transactionId); //ussage of placeholder
     QJsonDocument response =synchronousRequest(path,"DELETE");
     return !response.isNull();
@@ -171,17 +171,17 @@ QJsonArray DatabaseManager::getUserTransactions(int userId){
     return userTransactions;
 }
 
-QJsonObject DatabaseManager::getTransactionById(int transactionId){
-    QJsonDocument response=synchronousRequest("transactions","GET");
+QJsonObject DatabaseManager::getTransactionById(const QString& transactionId){
+    QJsonDocument response = synchronousRequest("transactions", "GET");
     if(response.isNull()){
-        qDebug()<<"Error: reponse is null in getTransactionById";
+        qDebug() << "Error: response is null in getTransactionById";
         return QJsonObject();
     }
-    QJsonObject transactionById;
-    QJsonObject transactions=response.object();
-    for (auto it=transactions.begin();it!=transactions.end();++it){
-        if(it.key().toInt() == transactionId){
-            transactionById = it.value().toObject();
+    QJsonObject transactions = response.object();
+    for (auto it = transactions.begin(); it != transactions.end(); ++it){
+        if(it.key() == transactionId){
+            QJsonObject transactionById = it.value().toObject();
+            transactionById["id"] = transactionId;
             return transactionById;
         }
     }
