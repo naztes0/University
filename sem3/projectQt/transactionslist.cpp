@@ -12,6 +12,7 @@ TransactionsList::TransactionsList(DatabaseManager*dbManager, int userId, QWidge
     , ui(new Ui::TransactionsList)
 {
     setupUI();
+    loadtransactions();
 }
 
 TransactionsList::~TransactionsList()
@@ -51,14 +52,18 @@ void TransactionsList::loadtransactions(){
         QJsonObject transaction= transactionValue.toObject();
         QDateTime transactionDate= QDateTime::fromString(transaction["transaction_date"].toString(),Qt::ISODate);
         QString dateKey=transactionDate.toString("dd MMMM");
-        transactionsByDate[dateKey].append(transaction);
+        transactionsByDate[dateKey].prepend(transaction);
     }
-    //Displaying transactions
-    for (auto it=transactionsByDate.begin();it!=transactionsByDate.end();++it){
-        QLabel*dateLabel=new QLabel(it.key());
-        dateLabel->setStyleSheet("font-weight: bold; font-size: 16px;");
+
+    QStringList sortedDates = transactionsByDate.keys();
+    std::reverse(sortedDates.begin(), sortedDates.end());
+     //Displaying transactions
+    for (const QString& dateKey : sortedDates) {
+        QLabel* dateLabel = new QLabel(dateKey);
+        dateLabel->setStyleSheet("font-weight: bold; font-size: 18px;");
         m_mainLayout->addWidget(dateLabel);
-        for(const QJsonValue transactionValue:it.value()){
+
+        for (const QJsonValue& transactionValue : transactionsByDate[dateKey]) {
             createTransactionItem(transactionValue.toObject());
         }
     }
@@ -73,7 +78,7 @@ void TransactionsList::createTransactionItem(const QJsonObject &transaction){
     bool isExp=transaction["is_expense"].toBool();
     QString amountText=!isExp?QString("+%1").arg(amount,0,'f',2):QString("-%1").arg(amount,0,'f',2);
     QLabel*amountLabel=new QLabel(amountText);
-    amountLabel->setStyleSheet(isExp?"color: red":"color: green");
+    amountLabel->setStyleSheet(isExp?"color: red; font-size: 14px;":"color: green; font-size: 14px;");
 
     QString comment=transaction["comment"].toString();
     if(comment.length()>60){
@@ -95,14 +100,14 @@ void TransactionsList::createTransactionItem(const QJsonObject &transaction){
     layout->setColumnStretch(2, 4);
     layout->setColumnStretch(5, 1);
 
-    int transactionId=transaction["id"].toInt();
+    QString transactionId=transaction["id"].toString();
     setupContextMenu(transactionWidget,transactionId);
 
     m_mainLayout->addWidget(transactionWidget);
 
 }
 
-void TransactionsList::setupContextMenu(QWidget *transactionWidget, int transactionId){
+void TransactionsList::setupContextMenu(QWidget *transactionWidget, const QString& transactionId){
     transactionWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(transactionWidget,&QWidget::customContextMenuRequested,[this,transactionWidget,transactionId](const QPoint& pos)
         {
@@ -117,7 +122,7 @@ void TransactionsList::setupContextMenu(QWidget *transactionWidget, int transact
 
         if(selectedAction==deleteAction){
             if(manager->deleteTransaction(transactionId)){
-                refreshTransactionsList();
+                loadtransactions();
             }
         }
     });

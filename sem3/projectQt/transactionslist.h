@@ -30,7 +30,7 @@ private:
     void setupUI();
     void loadtransactions();
     void createTransactionItem(const QJsonObject& transaction);
-    void setupContextMenu(QWidget*transactionWidget, int transactionId);
+    void setupContextMenu(QWidget*transactionWidget, const QString& transactionId);
 };
 
 #endif // TRANSACTIONSLIST_H
