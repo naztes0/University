@@ -19,9 +19,11 @@ public:
 
 signals:
     void homeButtonClicked();
+    void transactionsListButtonClicked();
 
 private slots:
     void on_homeButton_clicked();
+    void on_transactionsLButton_clicked();
 
 private:
     Ui::SectionsColumn *ui;

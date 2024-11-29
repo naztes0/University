@@ -15,6 +15,7 @@ SectionsColumn::SectionsColumn(QWidget *parent)
     } else {
         qDebug() << "Home button not found";
     }
+    connect(ui->transactionsListButton,&QPushButton::clicked,this,&SectionsColumn::on_transactionsLButton_clicked);
 }
 
 SectionsColumn::~SectionsColumn()
@@ -25,4 +26,8 @@ SectionsColumn::~SectionsColumn()
 void SectionsColumn::on_homeButton_clicked(){
     qDebug()<<"Clicke Home Button";
     emit homeButtonClicked();
+}
+void SectionsColumn::on_transactionsLButton_clicked(){
+    qDebug()<<"Clicked Transactions list button";
+    emit transactionsListButtonClicked();
 }

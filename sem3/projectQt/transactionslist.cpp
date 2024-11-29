@@ -12,7 +12,6 @@ TransactionsList::TransactionsList(DatabaseManager*dbManager, int userId, QWidge
     , ui(new Ui::TransactionsList)
 {
     setupUI();
-
 }
 
 TransactionsList::~TransactionsList()
@@ -67,24 +66,34 @@ void TransactionsList::loadtransactions(){
 
 void TransactionsList::createTransactionItem(const QJsonObject &transaction){
     QWidget* transactionWidget= new QWidget();
-    QHBoxLayout*layout= new QHBoxLayout(transactionWidget);
-
+    QGridLayout*layout= new QGridLayout(transactionWidget);
+    layout->setContentsMargins(5,5,5,5);
+    layout->setHorizontalSpacing(10);
     double amount=transaction["amount"].toDouble();
     bool isExp=transaction["is_expense"].toBool();
-    QString amountText=!isExp?QString("+%1").arg(amount):QString::number(amount);
+    QString amountText=!isExp?QString("+%1").arg(amount,0,'f',2):QString("-%1").arg(amount,0,'f',2);
     QLabel*amountLabel=new QLabel(amountText);
     amountLabel->setStyleSheet(isExp?"color: red":"color: green");
 
+    QString comment=transaction["comment"].toString();
+    if(comment.length()>60){
+        comment=comment.left(57)+"...";
+    }
 
     QLabel*categoryLabel=new QLabel(transaction["category"].toString());
-    QLabel* commentLabel=new QLabel(transaction["comment"].toString());
+    QLabel* commentLabel=new QLabel(comment);
     QDateTime transactioDate= QDateTime::fromString(transaction["transaction_date"].toString(),Qt::ISODate);
 
     QLabel*timeLabel=new QLabel(transactioDate.toString("hh:mm"));
-    layout->addWidget(amountLabel);
-    layout->addWidget(categoryLabel);
-    layout->addWidget(commentLabel);
-    layout->addWidget(timeLabel);
+    layout->addWidget(amountLabel,0,0,1,1);
+    layout->addWidget(categoryLabel,0,1,1,1);
+    layout->addWidget(commentLabel,0,2,1,3);
+    layout->addWidget(timeLabel,0,5,1,1);
+
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 1);
+    layout->setColumnStretch(2, 4);
+    layout->setColumnStretch(5, 1);
 
     int transactionId=transaction["id"].toInt();
     setupContextMenu(transactionWidget,transactionId);

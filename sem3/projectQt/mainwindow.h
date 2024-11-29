@@ -8,6 +8,7 @@
 #include"homewidget.h"
 #include"databasemanager.h"
 #include"loginwindow.h"
+#include"transactionslist.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -29,13 +30,15 @@ public:
 public slots:
     void setCurrentUserId(int userId){currentUserId=userId;}
     void showHomeWidget();
-
+    void showTransactionsList();
 private:
     Ui::MainWindow *ui;
     SectionsColumn *sectionsColumn;
     HomeWidget*homeWidget;
     QWidget*currentWidget;
     DatabaseManager manager;
+    TransactionsList*transactionsListWidget;
+
     int currentUserId;
     void setupConnections();
 };
