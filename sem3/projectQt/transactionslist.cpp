@@ -5,6 +5,7 @@
 #include<QGroupBox>
 #include<QHBoxLayout>
 #include<QPushButton>
+#include<QTimer>
 
 
 TransactionsList::TransactionsList(DatabaseManager*dbManager, int userId, QWidget *parent)
@@ -121,9 +122,10 @@ void TransactionsList::setupContextMenu(QWidget *transactionWidget, const QStrin
         }
 
         if(selectedAction==deleteAction){
-            if(manager->deleteTransaction(transactionId)){
+            QTimer::singleShot(100,this,[this](){
                 loadtransactions();
-            }
+            });
+            manager->deleteTransaction(transactionId);
         }
     });
 }
