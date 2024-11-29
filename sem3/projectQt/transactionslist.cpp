@@ -6,6 +6,7 @@
 #include<QHBoxLayout>
 #include<QPushButton>
 #include<QTimer>
+#include"addtransactiondialog.h"
 
 
 TransactionsList::TransactionsList(DatabaseManager*dbManager, int userId, QWidget *parent)
@@ -113,12 +114,18 @@ void TransactionsList::setupContextMenu(QWidget *transactionWidget, const QStrin
     connect(transactionWidget,&QWidget::customContextMenuRequested,[this,transactionWidget,transactionId](const QPoint& pos)
         {
         QMenu contextMenu(tr("Transaction Actions"));
-        QAction*editAction=contextMenu.addAction("Edit");
-        QAction*deleteAction=contextMenu.addAction("Delete");
+        QAction*editAction=contextMenu.addAction(QIcon(":/img/img/pencil.svg"), "Edit");
+        QAction*deleteAction=contextMenu.addAction(QIcon(":/img/img/trash.svg"),"Delete");
         QAction*selectedAction=contextMenu.exec(transactionWidget->mapToGlobal(pos));
 
         if(selectedAction==editAction){
+            QJsonObject transaction = manager->getTransactionById(transactionId);
 
+            AddTransactionDialog* editDialog = new AddTransactionDialog(manager, m_userId, this);
+            editDialog->setTransactionData(transaction);
+
+            connect(editDialog, &AddTransactionDialog::transactionAdded, this, &TransactionsList::refreshTransactionsList);
+            editDialog->exec();
         }
 
         if(selectedAction==deleteAction){
