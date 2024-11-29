@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+    setWindowTitle("Transaction Manager");
+    setWindowIcon(QIcon(":/img/img/bill.png"));
     //login
     LoginWindow *loginWindow = new LoginWindow(&manager, this);
     connect(loginWindow, &LoginWindow::loginSuccessful, this, &MainWindow::setCurrentUserId);

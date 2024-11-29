@@ -4,5 +4,9 @@
         <file>img/multiple.svg</file>
         <file>img/check-circle.svg</file>
         <file>img/receipt.svg</file>
+        <file>img/bill.png</file>
+        <file>img/pencil.svg</file>
+        <file>img/rotate-square.svg</file>
+        <file>img/trash.svg</file>
     </qresource>
 </RCC>
