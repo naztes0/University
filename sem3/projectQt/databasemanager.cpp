@@ -146,6 +146,22 @@ bool DatabaseManager::addTransaction(int userId, bool isExpense, const QString &
     QJsonDocument response=synchronousRequest("transactions","POST",doc);
     return !response.isNull();
 }
+bool DatabaseManager::updateTransaction(const QString& transactionId, bool isExpense, const QString& category,
+                                        double amount, const QDateTime& date, const QString& comment)
+{
+    QJsonObject transactionData;
+    transactionData["is_expense"] = isExpense;
+    transactionData["category"] = category;
+    transactionData["amount"] = amount;
+    transactionData["transaction_date"] = date.toString(Qt::ISODate);
+    transactionData["comment"] = comment;
+
+    QString path = QString("transactions/%1").arg(transactionId);
+    QJsonDocument doc(transactionData);
+    QJsonDocument response = synchronousRequest(path, "PATCH", doc);
+
+    return !response.isNull();
+}
 bool DatabaseManager::deleteTransaction(const QString& transactionId){
     QString path=QString("transactions/%1").arg(transactionId); //ussage of placeholder
     QJsonDocument response =synchronousRequest(path,"DELETE");

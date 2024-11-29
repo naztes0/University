@@ -8,6 +8,7 @@ AddTransactionDialog::AddTransactionDialog(DatabaseManager*dbManager,int userId,
     , ui(new Ui::AddTransactionDialog)
     ,manager(dbManager)
     ,userId(userId)
+    ,m_transactionId("")
 
 {
     ui->setupUi(this);
@@ -37,6 +38,27 @@ void AddTransactionDialog::initializeCategories(){
     ui->categoriesComboBox->addItem("Investment");
 }
 
+// Новий метод для налаштування діалогу при редагуванні
+void AddTransactionDialog::setTransactionData(const QJsonObject& transaction)
+{
+    m_transactionId = transaction["id"].toString();
+    m_originalDateTime=QDateTime::fromString(transaction["transaction_date"].toString(),Qt::ISODate);
+
+    ui->sumLineEdit->setText(QString::number(transaction["amount"].toDouble()));
+    ui->categoriesComboBox->setCurrentText(transaction["category"].toString());
+    ui->commentLineEdit->setText(transaction["comment"].toString());
+
+
+    QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+    ui->dateEdit->setDate(m_originalDateTime.date());
+
+
+    bool isExpense = transaction["is_expense"].toBool();
+    ui->expenseRadio->setChecked(isExpense);
+    ui->incomeRadio->setChecked(!isExpense);
+    setWindowTitle("Edit Transaction");
+    setWindowIcon(QIcon(":/img/img/rotate-square.svg"));
+}
 Transaction*AddTransactionDialog::createTransaction(){
     double amount=ui->sumLineEdit->text().toDouble();
     QString category=ui->categoriesComboBox->currentText();
@@ -53,40 +75,52 @@ Transaction*AddTransactionDialog::createTransaction(){
     return transaction;
 }
 
-void AddTransactionDialog::validateAndAccept(){
+void AddTransactionDialog::validateAndAccept()
+{
+    // Попередня валідація (як було раніше)
     if(ui->sumLineEdit->text().isEmpty()){
         QMessageBox::warning(this, "Warning", "Please enter the amount");
         return;
     }
 
     bool ok;
-    double amount=ui->sumLineEdit->text().toDouble(&ok);
-    QString category=ui->categoriesComboBox->currentText();
-    if(category=="..."){
+    double amount = ui->sumLineEdit->text().toDouble(&ok);
+    QString category = ui->categoriesComboBox->currentText();
+    if(category == "..."){
         QMessageBox::warning(this, "Warning", "Please choose category");
         return;
     }
-    if(!ok||amount<=0){
+    if(!ok || amount <= 0){
         QMessageBox::warning(this, "Warning", "Please enter a valid positive amount");
         return;
     }
-    bool isExpense=ui->expenseRadio->isChecked();
-    QString comment= ui->commentLineEdit->text();
-    QDateTime dateTime(ui->dateEdit->date(),QTime::currentTime());
 
-    // Transaction*transaction=createTransaction();
-    // emit transactionAdded(transaction);
-    // accept();//Close dialog Window
-    if(manager->addTransaction(userId,isExpense,category,amount,dateTime,comment)){
-        emit transactionAdded();
-        accept();
+    bool isExpense = ui->expenseRadio->isChecked();
+    QString comment = ui->commentLineEdit->text();
+    QDateTime dateTimeAdd(ui->dateEdit->date(),QTime::currentTime());
+    QDateTime dateTimeUpd(ui->dateEdit->date(), m_originalDateTime.time());
+
+    // Перевірка, чи це редагування існуючої транзакції
+    if(!m_transactionId.isEmpty()){
+        // Оновлення існуючої транзакції
+        if(manager->updateTransaction(m_transactionId, isExpense, category, amount, dateTimeUpd, comment)){
+            emit transactionAdded();
+            accept();
+        }
+        else{
+            QMessageBox::warning(this, "Error", "Failed to update transaction");
+        }
     }
     else{
-        QMessageBox::warning(this,"Error","Failed to add transaction");
-
+        // Додавання нової транзакції (як було раніше)
+        if(manager->addTransaction(userId, isExpense, category, amount, dateTimeAdd, comment)){
+            emit transactionAdded();
+            accept();
+        }
+        else{
+            QMessageBox::warning(this, "Error", "Failed to add transaction");
+        }
     }
-
-
 }
 
 void AddTransactionDialog::on_buttonBox_rejected(){

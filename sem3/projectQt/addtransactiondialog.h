@@ -17,6 +17,7 @@ class AddTransactionDialog : public QDialog
 public:
     ~AddTransactionDialog();
     explicit AddTransactionDialog(DatabaseManager*dbManager,int userId ,QWidget *parent = nullptr);
+    void setTransactionData(const QJsonObject& transaction);
 signals:
     //send wh new transaction is crating
     void transactionAdded();
@@ -32,6 +33,8 @@ private:
     int userId;
     void initializeCategories();
     Transaction*createTransaction();
+    QString m_transactionId;
+    QDateTime m_originalDateTime;
 };
 
 #endif // ADDTRANSACTIONDIALOG_H

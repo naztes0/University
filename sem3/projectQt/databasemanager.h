@@ -28,8 +28,8 @@ public:
     //Methods to work with transactions
     bool addTransaction(int userId,bool isExpense,const QString& category,
                         double amount, const QDateTime& date,const QString&comment);
-    // bool updateTransaction(int transactionId, bool isExpense, const QString& category,
-    //                       double amount, const QDateTime& date, const QString& comment);
+    bool updateTransaction(const QString& transactionId, bool isExpense, const QString& category,
+                          double amount, const QDateTime& date, const QString& comment);
     bool deleteTransaction(const QString& transactionId);
     QJsonArray getUserTransactions(int userId);
     QJsonObject getTransactionById(const QString& transactionId);
