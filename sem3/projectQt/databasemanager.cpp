@@ -209,3 +209,76 @@ QString DatabaseManager::hashPassword(const QString &password){
     QByteArray hashedPassword = QCryptographicHash::hash(passwordBytes, QCryptographicHash::Sha256);
     return QString(hashedPassword.toHex());
 }
+
+//Methods to work with categories
+
+bool DatabaseManager::addUserCategory(int userId, const QString &categoryName){
+    if(categoryExists(userId,categoryName)){
+        qDebug()<<"Category already exists";
+        return false;
+    }
+
+    QJsonObject categoryData;
+    categoryData["user_id"]=userId;
+    categoryData["name"]=categoryName;
+    categoryData["created_at"]=QDateTime::currentDateTime().toString(Qt::ISODate);
+
+    QJsonDocument doc(categoryData);
+    QJsonDocument response=synchronousRequest("user_categories","POST",doc);
+    return !response.isNull();
+}
+
+bool DatabaseManager::deleteUserCategory(int userId, const QString &categoryName){
+    QJsonDocument response = synchronousRequest("user_categories","GET");
+    if(response.isNull()){
+        qDebug() << "Error: no response in deleteUserCategory";
+        return false;
+    }
+
+    QJsonObject categories=response.object();
+    for(auto it=categories.begin();it!=categories.end();++it){
+        QJsonObject category=it.value().toObject();
+        if(category["user_id"].toInt()==userId&&category["name"].toString()==categoryName){
+            QString path=QString("user_categories/%1").arg(it.key());
+            QJsonDocument delResponse=synchronousRequest(path,"DELETE");
+            return !delResponse.isNull();
+        }
+    }
+    return false;
+}
+
+QJsonArray DatabaseManager::getUserCategories(int userId){
+    QJsonDocument response=synchronousRequest("user_categories","GET");
+    if(response.isNull()){
+        qDebug()<<"Error: no response in getuserCategories";
+        return QJsonArray();
+    }
+
+    QJsonArray userCategories;
+    QJsonObject categories=response.object();
+    for(auto it=categories.begin();it!=categories.end();++it){
+        QJsonObject category=it.value().toObject();
+        if(category["user_id"].toInt()==userId){
+            category["id"]=it.key();
+            userCategories.append(category);
+        }
+    }
+    return userCategories;
+}
+
+bool DatabaseManager::categoryExists(int userId, const QString &categoryName){
+    QJsonDocument response=synchronousRequest("user_categories","GET");
+    if(response.isNull()){
+        qDebug()<<"Error: no response in categoryExists";
+        return false;
+    }
+    QJsonObject categories=response.object();
+    for(auto it=categories.begin();it!=categories.end();++it){
+        QJsonObject category=it.value().toObject();
+        if(category["user_id"].toInt()==userId&&category["name"]==categoryName){
+            return true;
+
+        }
+    }
+    return false;
+}

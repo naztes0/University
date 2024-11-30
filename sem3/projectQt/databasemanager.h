@@ -34,6 +34,13 @@ public:
     QJsonArray getUserTransactions(int userId);
     QJsonObject getTransactionById(const QString& transactionId);
 
+    //Methods for custom users categories
+    bool addUserCategory(int userId,const QString& categoryName);
+    bool deleteUserCategory(int userId, const QString& categoryName);
+    QJsonArray getUserCategories(int userId);
+    bool categoryExists(int userId, const QString&categoryName);
+
+
 
 signals:
     void operationCompleted(bool succes);
