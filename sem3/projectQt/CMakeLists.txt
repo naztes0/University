@@ -41,6 +41,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         loginwindow.h loginwindow.cpp loginwindow.ui
         databasemanager.h databasemanager.cpp
         transactionslist.h transactionslist.cpp transactionslist.ui
+        customcategorycombobox.h customcategorycombobox.cpp customcategorycombobox.ui
 
 
 

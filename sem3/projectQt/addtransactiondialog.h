@@ -26,6 +26,8 @@ private slots:
     //Ok,Cancel
     void validateAndAccept();
     void on_buttonBox_rejected();
+    void onAddCategoryClicked();
+    void onDeleteCategoryClicked();
 
 private:
     Ui::AddTransactionDialog *ui;

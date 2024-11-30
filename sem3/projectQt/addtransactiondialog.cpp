@@ -22,6 +22,11 @@ AddTransactionDialog::AddTransactionDialog(DatabaseManager*dbManager,int userId,
     initializeCategories();
     //as default:expense
     ui->expenseRadio->setChecked(true);
+
+    QPushButton*addCategoryButton=new QPushButton("Add category", this);
+    QPushButton* deleteCategoryButton=new QPushButton("Delete category", this);
+    connect(addCategoryButton,&QPushButton::clicked,this,&AddTransactionDialog::onAddCategoryClicked);
+    connect(deleteCategoryButton,&QPushButton::clicked,this,&AddTransactionDialog::onDeleteCategoryClicked);
 }
 
 AddTransactionDialog::~AddTransactionDialog()
@@ -132,4 +137,39 @@ void AddTransactionDialog::validateAndAccept()
 
 void AddTransactionDialog::on_buttonBox_rejected(){
     reject();
+}
+
+//Methods to work with categories
+void AddTransactionDialog::onAddCategoryClicked(){
+    QString categoryName=QInputDialog::getText(this,"Add category","Enter new category name:");
+    if(!categoryName.isEmpty()){
+        if(manager->addUserCategory(userId,categoryName));
+        initializeCategories();
+    }
+    else{
+        QMessageBox::warning(this,"Error","Failed to add category or category already exists");
+    }
+}
+
+void AddTransactionDialog::onDeleteCategoryClicked(){
+    QJsonArray userCategories=manager->getUserCategories(userId);
+    QStringList categoryNames;
+    for (const QJsonValue& categoryValue: userCategories){
+        QJsonObject category=categoryValue.toObject();
+        categoryNames<<category["name"].toString();
+    }
+    bool ok;
+    QString categoryToDelete = QInputDialog::getItem(
+        this, "Delete Category", "Select category to delete:",
+        categoryNames, 0, false, &ok
+        );
+
+    if (ok && !categoryToDelete.isEmpty()) {
+        if (manager->deleteUserCategory(userId, categoryToDelete)) {
+            // Оновити список категорій
+            initializeCategories();
+        } else {
+            QMessageBox::warning(this, "Error", "Failed to delete category");
+        }
+    }
 }
