@@ -30,12 +30,19 @@ AddTransactionDialog::~AddTransactionDialog()
 }
 
 void AddTransactionDialog::initializeCategories(){
+    ui->categoriesComboBox->clear();
     ui->categoriesComboBox->addItem("...");
     ui->categoriesComboBox->addItem("Food");
     ui->categoriesComboBox->addItem("Transport");
     ui->categoriesComboBox->addItem("Entertainment");
     ui->categoriesComboBox->addItem("Salary");
     ui->categoriesComboBox->addItem("Investment");
+
+    QJsonArray userCategories=manager->getUserCategories(userId);
+    for (const QJsonValue&categoryValue:userCategories){
+        QJsonObject category=categoryValue.toObject();
+        ui->categoriesComboBox->addItem(category["name"].toString());
+    }
 }
 
 // Новий метод для налаштування діалогу при редагуванні
