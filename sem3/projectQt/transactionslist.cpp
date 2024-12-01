@@ -37,36 +37,63 @@ void TransactionsList::setupUI(){
     setLayout(mainLayout);
 }
 
-void TransactionsList::loadtransactions(){
-    //clear previous transactaions
-    QLayoutItem*item;
-    while((item=m_mainLayout->takeAt(0))!=nullptr){
+
+
+void TransactionsList::loadtransactions() {
+    // Очистка попередніх транзакцій
+    QLayoutItem* item;
+    while ((item = m_mainLayout->takeAt(0)) != nullptr) {
         delete item->widget();
         delete item;
     }
 
-    //Get transactions from DB
-    QJsonArray transactions= manager->getUserTransactions(m_userId);
-    //Group transactions by the date
-    QMap <QString,QJsonArray> transactionsByDate;
+    // Отримання транзакцій з бази даних
+    QJsonArray transactions = manager->getUserTransactions(m_userId);
 
-    for(const QJsonValue& transactionValue:transactions){
-        QJsonObject transaction= transactionValue.toObject();
-        QDateTime transactionDate= QDateTime::fromString(transaction["transaction_date"].toString(),Qt::ISODate);
-        QString dateKey=transactionDate.toString("dd MMMM");
-        transactionsByDate[dateKey].prepend(transaction);
+    // Групування транзакцій за роком та місяцем
+    QMap<int, QMap<QString, QJsonArray>> transactionsByYearAndMonth;
+
+    for (const QJsonValue& transactionValue : transactions) {
+        QJsonObject transaction = transactionValue.toObject();
+        QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+
+        int year = transactionDate.date().year();
+        QString monthKey = transactionDate.toString("dd MMMM");
+
+        transactionsByYearAndMonth[year][monthKey].prepend(transaction);
     }
 
-    QStringList sortedDates = transactionsByDate.keys();
-    std::reverse(sortedDates.begin(), sortedDates.end());
-     //Displaying transactions
-    for (const QString& dateKey : sortedDates) {
-        QLabel* dateLabel = new QLabel(dateKey);
-        dateLabel->setStyleSheet("font-weight: bold; font-size: 18px;");
-        m_mainLayout->addWidget(dateLabel);
+    // Сортування років (від найновіших до найстаріших)
+    QVector<int> sortedYears = transactionsByYearAndMonth.keys().toVector();
+    std::sort(sortedYears.begin(), sortedYears.end(), std::greater<int>());
 
-        for (const QJsonValue& transactionValue : transactionsByDate[dateKey]) {
-            createTransactionItem(transactionValue.toObject());
+    // Відображення транзакцій
+    for (int year : sortedYears) {
+        // Додавання року як заголовка
+        QLabel* yearLabel = new QLabel(QString::number(year));
+        yearLabel->setStyleSheet("font-weight: bold; font-size: 16px; color: #757575 ; margin-top: 15px;");
+        m_mainLayout->addWidget(yearLabel);
+
+        // Отримання місяців для поточного року
+        QVector<QString> sortedMonths = transactionsByYearAndMonth[year].keys().toVector();
+        std::sort(sortedMonths.begin(), sortedMonths.end(), [this](const QString& date1, const QString& date2) {
+            // Функція порівняння місяців з урахуванням поточного року
+            QDateTime dt1 = QDateTime::fromString(date1 + " " + QString::number(QDate::currentDate().year()), "dd MMMM yyyy");
+            QDateTime dt2 = QDateTime::fromString(date2 + " " + QString::number(QDate::currentDate().year()), "dd MMMM yyyy");
+
+            // Сортування від найновіших до найстаріших
+            return dt1 > dt2;
+        });
+
+        // Відображення місяців та транзакцій
+        for (const QString& monthKey : sortedMonths) {
+            QLabel* monthLabel = new QLabel(monthKey);
+            monthLabel->setStyleSheet("font-weight: bold; font-size: 18px; margin-top: 10px;");
+            m_mainLayout->addWidget(monthLabel);
+
+            for (const QJsonValue& transactionValue : transactionsByYearAndMonth[year][monthKey]) {
+                createTransactionItem(transactionValue.toObject());
+            }
         }
     }
 }
