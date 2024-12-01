@@ -149,12 +149,21 @@ bool DatabaseManager::addTransaction(int userId, bool isExpense, const QString &
 bool DatabaseManager::updateTransaction(const QString& transactionId, bool isExpense, const QString& category,
                                         double amount, const QDateTime& date, const QString& comment)
 {
+    QString delCategory= "*Deleted category* ";
+    QString chCategory=comment;
     QJsonObject transactionData;
     transactionData["is_expense"] = isExpense;
     transactionData["category"] = category;
     transactionData["amount"] = amount;
     transactionData["transaction_date"] = date.toString(Qt::ISODate);
-    transactionData["comment"] = comment;
+    if(category=="Other"){
+        chCategory=delCategory+comment;
+    }
+    if(category!="Other"&&chCategory.contains("*Deleted category* ")){
+        chCategory.remove("*Deleted category* ");
+    }
+    transactionData["comment"] =chCategory;
+
 
     QString path = QString("transactions/%1").arg(transactionId);
     QJsonDocument doc(transactionData);
@@ -234,6 +243,22 @@ bool DatabaseManager::deleteUserCategory(int userId, const QString &categoryName
         qDebug() << "Error: no response in deleteUserCategory";
         return false;
     }
+    QJsonArray transactions = getUserTransactions(userId);
+
+    for (const QJsonValue& transactionValue : transactions) {
+        QJsonObject transaction = transactionValue.toObject();
+        if (transaction["category"].toString() == categoryName) {
+            // Змінюємо категорію на "Other"
+            updateTransaction(
+                transaction["id"].toString(),
+                transaction["is_expense"].toBool(),
+                "Other",
+                transaction["amount"].toDouble(),
+                QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate),
+                transaction["comment"].toString()
+                );
+        }
+    }
 
     QJsonObject categories=response.object();
     for(auto it=categories.begin();it!=categories.end();++it){
@@ -241,7 +266,10 @@ bool DatabaseManager::deleteUserCategory(int userId, const QString &categoryName
         if(category["user_id"].toInt()==userId&&category["name"].toString()==categoryName){
             QString path=QString("u_categories/%1").arg(it.key());
             QJsonDocument delResponse=synchronousRequest(path,"DELETE");
-            return !delResponse.isNull();
+            qDebug()<<"Del respones:"<<!delResponse.isNull();
+
+            return delResponse.isNull();
+
         }
     }
     return false;

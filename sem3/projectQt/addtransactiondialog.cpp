@@ -157,6 +157,7 @@ void AddTransactionDialog::validateAndAccept()
         QMessageBox::warning(this, "Warning", "Please choose category");
         return;
     }
+
     if(!ok || amount <= 0){
         QMessageBox::warning(this, "Warning", "Please enter a valid positive amount");
         return;
