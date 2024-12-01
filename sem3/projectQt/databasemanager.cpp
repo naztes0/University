@@ -224,12 +224,12 @@ bool DatabaseManager::addUserCategory(int userId, const QString &categoryName){
     categoryData["created_at"]=QDateTime::currentDateTime().toString(Qt::ISODate);
 
     QJsonDocument doc(categoryData);
-    QJsonDocument response=synchronousRequest("user_categories","POST",doc);
+    QJsonDocument response=synchronousRequest("u_categories","POST",doc);
     return !response.isNull();
 }
 
 bool DatabaseManager::deleteUserCategory(int userId, const QString &categoryName){
-    QJsonDocument response = synchronousRequest("user_categories","GET");
+    QJsonDocument response = synchronousRequest("u_categories","GET");
     if(response.isNull()){
         qDebug() << "Error: no response in deleteUserCategory";
         return false;
@@ -239,7 +239,7 @@ bool DatabaseManager::deleteUserCategory(int userId, const QString &categoryName
     for(auto it=categories.begin();it!=categories.end();++it){
         QJsonObject category=it.value().toObject();
         if(category["user_id"].toInt()==userId&&category["name"].toString()==categoryName){
-            QString path=QString("user_categories/%1").arg(it.key());
+            QString path=QString("u_categories/%1").arg(it.key());
             QJsonDocument delResponse=synchronousRequest(path,"DELETE");
             return !delResponse.isNull();
         }
@@ -248,7 +248,7 @@ bool DatabaseManager::deleteUserCategory(int userId, const QString &categoryName
 }
 
 QJsonArray DatabaseManager::getUserCategories(int userId){
-    QJsonDocument response=synchronousRequest("user_categories","GET");
+    QJsonDocument response=synchronousRequest("u_categories","GET");
     if(response.isNull()){
         qDebug()<<"Error: no response in getuserCategories";
         return QJsonArray();
@@ -267,7 +267,7 @@ QJsonArray DatabaseManager::getUserCategories(int userId){
 }
 
 bool DatabaseManager::categoryExists(int userId, const QString &categoryName){
-    QJsonDocument response=synchronousRequest("user_categories","GET");
+    QJsonDocument response=synchronousRequest("u_categories","GET");
     if(response.isNull()){
         qDebug()<<"Error: no response in categoryExists";
         return false;
