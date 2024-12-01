@@ -12,6 +12,10 @@ AddTransactionDialog::AddTransactionDialog(DatabaseManager*dbManager,int userId,
 
 {
     ui->setupUi(this);
+
+    delete ui->categoriesComboBox;
+    setupCustomCategoryComboBox();
+
     ui->buttonBox->button(QDialogButtonBox::Ok)->disconnect();
     connect(ui->buttonBox->button(QDialogButtonBox::Ok),&QPushButton::clicked,
             this,&AddTransactionDialog::validateAndAccept);
@@ -23,10 +27,6 @@ AddTransactionDialog::AddTransactionDialog(DatabaseManager*dbManager,int userId,
     //as default:expense
     ui->expenseRadio->setChecked(true);
 
-    QPushButton*addCategoryButton=new QPushButton("Add category", this);
-    QPushButton* deleteCategoryButton=new QPushButton("Delete category", this);
-    connect(addCategoryButton,&QPushButton::clicked,this,&AddTransactionDialog::onAddCategoryClicked);
-    connect(deleteCategoryButton,&QPushButton::clicked,this,&AddTransactionDialog::onDeleteCategoryClicked);
 }
 
 AddTransactionDialog::~AddTransactionDialog()
@@ -34,30 +34,85 @@ AddTransactionDialog::~AddTransactionDialog()
     delete ui;
 }
 
-void AddTransactionDialog::initializeCategories(){
-    ui->categoriesComboBox->clear();
-    ui->categoriesComboBox->addItem("...");
-    ui->categoriesComboBox->addItem("Food");
-    ui->categoriesComboBox->addItem("Transport");
-    ui->categoriesComboBox->addItem("Entertainment");
-    ui->categoriesComboBox->addItem("Salary");
-    ui->categoriesComboBox->addItem("Investment");
+void AddTransactionDialog::setupCustomCategoryComboBox(){
+    m_categoriesComboBox= new CustomCategoryComboBox(ui->transactionDetails);
+    m_categoriesComboBox->setDBManager(manager,userId);
+    //Replace old combo box
+    ui->gridLayout->removeWidget(ui->categoriesComboBox);
+    m_categoriesComboBox->setGeometry(23, 40, 321, 26);
+    // Додаємо новий m_categoriesComboBox у той самий layout
+    ui->gridLayout->addWidget(m_categoriesComboBox, 0, 3, 1, 1);
 
+    //connect signals
+    connect(m_categoriesComboBox, &CustomCategoryComboBox::addCategoryRequested,
+            this, &AddTransactionDialog::onAddCategory);
+    connect(m_categoriesComboBox, &CustomCategoryComboBox::deleteCategoryRequested,
+            this, &AddTransactionDialog::onDeleteCategory);
+
+    //initialize of categories
+    initializeCategories();
+}
+
+void AddTransactionDialog::initializeCategories(){
+    //clear existing items
+    m_categoriesComboBox->clear();
+    //add default placeholder
+    m_categoriesComboBox->addItem("...");
+    //Add predefined categories
+    QStringList defaultCategories={"Food", "Transport", "Entertainment", "Salary", "Investment"};
+    m_categoriesComboBox->addItems(defaultCategories);
+
+    //Add user custom categories
     QJsonArray userCategories=manager->getUserCategories(userId);
-    for (const QJsonValue&categoryValue:userCategories){
+    for(const QJsonValue& categoryValue:userCategories){
         QJsonObject category=categoryValue.toObject();
-        ui->categoriesComboBox->addItem(category["name"].toString());
+        m_categoriesComboBox->addItem(category["name"].toString());
+    }
+
+}
+//Methods to work with categories
+void AddTransactionDialog::onAddCategory() {
+    QString categoryName = QInputDialog::getText(this, "Add Category", "Enter new category name:");
+    if (!categoryName.isEmpty()) {
+        if (manager->addUserCategory(userId, categoryName)) {
+            initializeCategories();
+            // Select the newly added category
+            m_categoriesComboBox->setCurrentText(categoryName);
+        } else {
+            QMessageBox::warning(this, "Error", "Failed to add category or category already exists");
+        }
     }
 }
 
-// Новий метод для налаштування діалогу при редагуванні
+void AddTransactionDialog::onDeleteCategory(const QString &category) {
+    // Prevent deleting default categories
+    QStringList protectedCategories = {"Food", "Transport", "Entertainment", "Salary", "Investment"};
+    if (protectedCategories.contains(category)) {
+        QMessageBox::warning(this, "Error", "Cannot delete default category");
+        return;
+    }
+    // Confirm deletion
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Delete Category",
+                                                              QString("Are you sure you want to delete the category '%1'? Transactions refered to this category will be moved to category \"Other\".").arg(category),
+                                                              QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        if (manager->deleteUserCategory(userId, category)) {
+            initializeCategories();
+        } else {
+            QMessageBox::warning(this, "Error", "Failed to delete category");
+        }
+    }
+}
+
+// New methods to setup dialog window for transac editing
 void AddTransactionDialog::setTransactionData(const QJsonObject& transaction)
 {
     m_transactionId = transaction["id"].toString();
     m_originalDateTime=QDateTime::fromString(transaction["transaction_date"].toString(),Qt::ISODate);
 
     ui->sumLineEdit->setText(QString::number(transaction["amount"].toDouble()));
-    ui->categoriesComboBox->setCurrentText(transaction["category"].toString());
+    m_categoriesComboBox->setCurrentText(transaction["category"].toString());
     ui->commentLineEdit->setText(transaction["comment"].toString());
 
 
@@ -73,7 +128,7 @@ void AddTransactionDialog::setTransactionData(const QJsonObject& transaction)
 }
 Transaction*AddTransactionDialog::createTransaction(){
     double amount=ui->sumLineEdit->text().toDouble();
-    QString category=ui->categoriesComboBox->currentText();
+    QString category=m_categoriesComboBox->currentText();
     QString description=ui->commentLineEdit->text();
     QDate date=ui->dateEdit->date();
 
@@ -97,7 +152,7 @@ void AddTransactionDialog::validateAndAccept()
 
     bool ok;
     double amount = ui->sumLineEdit->text().toDouble(&ok);
-    QString category = ui->categoriesComboBox->currentText();
+    QString category = m_categoriesComboBox->currentText();
     if(category == "..."){
         QMessageBox::warning(this, "Warning", "Please choose category");
         return;
@@ -139,37 +194,4 @@ void AddTransactionDialog::on_buttonBox_rejected(){
     reject();
 }
 
-//Methods to work with categories
-void AddTransactionDialog::onAddCategoryClicked(){
-    QString categoryName=QInputDialog::getText(this,"Add category","Enter new category name:");
-    if(!categoryName.isEmpty()){
-        if(manager->addUserCategory(userId,categoryName));
-        initializeCategories();
-    }
-    else{
-        QMessageBox::warning(this,"Error","Failed to add category or category already exists");
-    }
-}
 
-void AddTransactionDialog::onDeleteCategoryClicked(){
-    QJsonArray userCategories=manager->getUserCategories(userId);
-    QStringList categoryNames;
-    for (const QJsonValue& categoryValue: userCategories){
-        QJsonObject category=categoryValue.toObject();
-        categoryNames<<category["name"].toString();
-    }
-    bool ok;
-    QString categoryToDelete = QInputDialog::getItem(
-        this, "Delete Category", "Select category to delete:",
-        categoryNames, 0, false, &ok
-        );
-
-    if (ok && !categoryToDelete.isEmpty()) {
-        if (manager->deleteUserCategory(userId, categoryToDelete)) {
-            // Оновити список категорій
-            initializeCategories();
-        } else {
-            QMessageBox::warning(this, "Error", "Failed to delete category");
-        }
-    }
-}

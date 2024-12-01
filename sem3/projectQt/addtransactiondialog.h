@@ -5,6 +5,8 @@
 #include"transaction.h"
 #include"databasemanager.h"
 #include<QDateTime>
+#include"customcategorycombobox.h"
+
 
 namespace Ui {
 class AddTransactionDialog;
@@ -26,17 +28,22 @@ private slots:
     //Ok,Cancel
     void validateAndAccept();
     void on_buttonBox_rejected();
-    void onAddCategoryClicked();
-    void onDeleteCategoryClicked();
+    void onAddCategory();
+    void onDeleteCategory(const QString& category);
 
 private:
     Ui::AddTransactionDialog *ui;
     DatabaseManager* manager;
     int userId;
+    CustomCategoryComboBox*m_categoriesComboBox;
+
     void initializeCategories();
     Transaction*createTransaction();
     QString m_transactionId;
     QDateTime m_originalDateTime;
+
+    void setupCustomCategoryComboBox();
+
 };
 
 #endif // ADDTRANSACTIONDIALOG_H

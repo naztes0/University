@@ -75,9 +75,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
-        <widget class="QComboBox" name="categoriesComboBox"/>
-       </item>
        <item row="1" column="3">
         <widget class="QLineEdit" name="sumLineEdit"/>
        </item>
@@ -100,6 +97,9 @@
           <string>Sum</string>
          </property>
         </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QComboBox" name="categoriesComboBox"/>
        </item>
       </layout>
      </widget>
