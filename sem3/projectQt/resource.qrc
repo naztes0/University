@@ -8,5 +8,10 @@
         <file>img/pencil.svg</file>
         <file>img/rotate-square.svg</file>
         <file>img/trash.svg</file>
+        <file>img/entertainment.svg</file>
+        <file>img/food.svg</file>
+        <file>img/transport.svg</file>
+        <file>img/investment.png</file>
+        <file>img/salary.png</file>
     </qresource>
 </RCC>
