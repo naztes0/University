@@ -68,6 +68,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="maximumSize">
+         <size>
+          <width>186</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="styleSheet">
          <string notr="true"/>
         </property>
@@ -95,17 +101,6 @@
      </layout>
     </item>
    </layout>
-  </widget>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
  </widget>
  <customwidgets>
