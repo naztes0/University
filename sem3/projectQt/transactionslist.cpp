@@ -167,3 +167,58 @@ void TransactionsList::setupContextMenu(QWidget *transactionWidget, const QStrin
 void TransactionsList::refreshTransactionsList(){
     loadtransactions();
 }
+
+//Methods to work with cateogries lists of transactions
+void TransactionsList::loadTransactionsByCategory(const QString& category, int year, const QString& month) {
+    // Очистка попередніх транзакцій
+    QLayoutItem* item;
+    while ((item = m_mainLayout->takeAt(0)) != nullptr) {
+        delete item->widget();
+        delete item;
+    }
+
+    // Отримання транзакцій з бази даних
+    QJsonArray transactions = manager->getUserTransactions(m_userId);
+
+    // Заголовок з назвою категорії та місяця
+    QLabel* titleLabel = new QLabel(QString("%1 - %2 %3").arg(category, month, QString::number(year)));
+    titleLabel->setStyleSheet("font-weight: bold; font-size: 18px; margin-bottom: 15px;");
+    m_mainLayout->addWidget(titleLabel);
+
+    // Фільтрація та відображення транзакцій
+    for (const QJsonValue& transactionValue : transactions) {
+        QJsonObject transaction = transactionValue.toObject();
+        QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+
+        // Перевірка відповідності категорії, року та місяця
+        if (transaction["category"].toString() == category &&
+            transactionDate.date().year() == year &&
+            transactionDate.toString("dd MMMM") == month) {
+            createTransactionItem(transaction);
+        }
+    }
+}
+
+double TransactionsList::calculateCategoryExpenses(const QString& category, int year, const QString& month) {
+    double totalExpenses = 0.0;
+    QJsonArray transactions = manager->getUserTransactions(m_userId);
+    for (const QJsonValue& transactionValue : transactions) {
+        QJsonObject transaction = transactionValue.toObject();
+        QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+
+        // Check if the transaction matches the specified category, year, and month
+        if (transaction["category"].toString() == category &&
+            transactionDate.date().year() == year &&
+            transactionDate.toString("dd MMMM") == month) {
+
+            double amount = transaction["amount"].toDouble();
+            if (transaction["is_expense"].toBool()) {
+                totalExpenses -= amount;
+            } else {
+                totalExpenses += amount;
+            }
+        }
+    }
+    qDebug() << category << ": " << totalExpenses;
+    return totalExpenses;
+}

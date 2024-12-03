@@ -19,7 +19,8 @@ public:
     explicit TransactionsList(DatabaseManager*dbManager,int userId,QWidget *parent = nullptr);
     ~TransactionsList();
     void refreshTransactionsList();
-
+    void loadTransactionsByCategory(const QString& category, int year,const QString& month);
+    double calculateCategoryExpenses(const QString& category, int year, const QString& month);
 
 private:
     Ui::TransactionsList *ui;
