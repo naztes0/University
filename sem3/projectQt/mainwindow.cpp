@@ -27,9 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     //init homeWidget
     homeWidget=ui->contentWidget;
     if(homeWidget){
-        homeWidget->setDatabaseManager(&manager);
-        homeWidget->setUserId(currentUserId);
-        currentWidget=homeWidget;
+        homeWidget->initialize(&manager, currentUserId);
+        currentWidget = homeWidget;
     }
     else{
         QMessageBox::critical(this,"Error","Failed to initialize HomeWidget");
@@ -72,6 +71,7 @@ void MainWindow::showHomeWidget() {
 
     homeWidget->show();
     homeWidget->setGeometry(ui->contentWidget->geometry());
+    homeWidget->refreshHomeCategories();
 
     ui->sectionsColumn->setGeometry(ui->sectionsColumn->geometry());
     currentWidget = homeWidget;
