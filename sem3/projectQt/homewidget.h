@@ -15,6 +15,7 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QTableWidgetItem>
+#include"expensepiechart.h"
 
 namespace Ui {
 class HomeWidget;
@@ -28,6 +29,7 @@ public:
     explicit HomeWidget(QWidget* parent = nullptr);
     void initialize(DatabaseManager* dbManager, int userId);
     void refreshHomeCategories();
+    void pieChartscreation();
    ~HomeWidget();
 private slots:
     //adding tr
@@ -47,6 +49,9 @@ private:
     double calculateCategoryExpenses(const QString& category, int year, const QString& month);
     QLabel* createCategoryIcon(const QString& category);
     QString getIconPathForCategory(const QString& category);
+    void updateMonthlyTotals();
+    void createPieCharts();
+
 
 };
 

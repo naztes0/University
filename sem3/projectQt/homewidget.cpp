@@ -17,6 +17,8 @@ HomeWidget::HomeWidget(QWidget* parent)
 
     categoriesScrollArea->setWidget(scrollContent);
     categoriesScrollArea->setWidgetResizable(true);
+    ui->totalExpense->setStyleSheet("font-weight: bold; font-size: 15px;");
+    ui->totalIncome->setStyleSheet("font-weight: bold; font-size: 15px;");
 
 }
 
@@ -29,6 +31,8 @@ void HomeWidget::initialize(DatabaseManager *dbManager, int userId){
     m_dbManager=dbManager;
     m_userId=userId;
     loadUserCategories();
+    updateMonthlyTotals();
+    createPieCharts();
 }
 
 void HomeWidget:: on_addTrPushButton_clicked(){
@@ -41,6 +45,8 @@ void HomeWidget::onTransactionAdded()
     QJsonArray transactions = m_dbManager->getUserTransactions(m_userId);
     qDebug() << "Loaded transactions:" << transactions;
     loadUserCategories();
+    updateMonthlyTotals();
+    createPieCharts();
 
 }
 
@@ -102,7 +108,7 @@ void HomeWidget::loadUserCategories()
     if (categories.isEmpty()) return;
 
     int currentYear = QDate::currentDate().year();
-    QString currentMonth = QDate::currentDate().toString("dd MMMM");
+    QString currentMonth = QDate::currentDate().toString("MMMM");
     // Pre-processing expenses to avoid recalculations
     QMap<QString, double> categoryExpenses;
     for (const QJsonValue& categoryValue : categories) {
@@ -182,7 +188,7 @@ QWidget* HomeWidget::createCategoryButton(const QString& category, double expens
         expensesStyle = "color: gray; font-size: 10px;";
     }
 
-    QLabel* expensesLabel = new QLabel(expensesText);
+    QLabel* expensesLabel = new QLabel(expensesText+" UAH");
     expensesLabel->setStyleSheet(expensesStyle);
     layout->addWidget(expensesLabel, 0, Qt::AlignCenter);
 
@@ -220,7 +226,8 @@ QString HomeWidget::getIconPathForCategory(const QString& category)
         {"Entertainment", ":/img/img/entertainment.svg"},
         {"Investment", ":/img/img/investment.png"},
         {"Salary", ":/img/img/salary.png"},
-        {"Default", ":/img/img/receipt.svg"}
+        {"Default", ":/img/img/receipt.svg"},
+        {"Other", ":/img/img/rectangle-list.png"}
     };
 
     return categoryIcons.value(category, categoryIcons["Default"]);
@@ -235,7 +242,7 @@ void HomeWidget::onCategoryButtonClicked()
     if (category.isEmpty()) return;
 
     int currentYear = QDate::currentDate().year();
-    QString currentMonth = QDate::currentDate().toString("dd MMMM");
+    QString currentMonth = QDate::currentDate().toString("MMMM");
 
 
     QDialog* categoryDetailsDialog = new QDialog(this);
@@ -263,7 +270,7 @@ void HomeWidget::onCategoryButtonClicked()
 
         if (transaction["category"].toString() == category &&
             transactionDate.date().year() == currentYear &&
-            transactionDate.toString("dd MMMM") == currentMonth) {
+            transactionDate.toString("MMMM") == currentMonth) {
             filteredTransactions.append(transaction);
         }
     }
@@ -282,8 +289,8 @@ void HomeWidget::onCategoryButtonClicked()
         transactionsTable->setItem(row, 0, dateItem);
 
         // summary
-        QTableWidgetItem* amountItem = new QTableWidgetItem(QString("%1%2").arg(isExpense ? "-" : "+", QString::number(amount, 'f', 2)));
-        amountItem->setForeground(isExpense ? Qt::red : Qt::green);
+        QTableWidgetItem* amountItem = new QTableWidgetItem(QString("%1%2").arg(isExpense ? "-" : "+", QString::number(amount, 'f', 2)+ "UAH"));
+        amountItem->setForeground(isExpense ? Qt::red : Qt::darkGreen);
         transactionsTable->setItem(row, 1, amountItem);
 
         // comment
@@ -305,4 +312,72 @@ void HomeWidget::onCategoryButtonClicked()
 
 void HomeWidget::refreshHomeCategories(){
     loadUserCategories();
+}
+
+void HomeWidget::updateMonthlyTotals() {
+    QDate currentDate = QDate::currentDate();
+    int currentYear = currentDate.year();
+    QString currentMonth = currentDate.toString("MMMM");
+
+    TransactionsList tempList(m_dbManager,m_userId);
+    double totalExpenses = tempList.calculateTotalMonthlyExpenses(currentYear, currentMonth);
+    ui->expAmount->setText(QString::number(totalExpenses,'f',2)+" UAH");
+    ui->expAmount->setStyleSheet("font-weight: bold; font-size: 15px; color: red;");
+
+
+    double totalIncomings = tempList.calculateTotalMonthlyIncomings(currentYear, currentMonth);
+    ui->incAmount->setText(QString::number(totalIncomings,'f',2)+" UAH");
+    ui->incAmount->setStyleSheet("font-weight: bold; font-size: 15px; color: green;");
+    qDebug()<<"Total +";
+}
+
+void HomeWidget::createPieCharts() {
+    qDebug() << "createPieCharts called";
+
+    // Детальна перевірка UI компонентів
+    if (!ui) {
+        qCritical() << "UI is not initialized!";
+        return;
+    }
+
+    QWidget* chartContainer = ui->widget_2;
+    if (!chartContainer) {
+        qCritical() << "Chart container widget_2 is NULL!";
+        return;
+    }
+
+    // Перевірка менеджера бази даних
+    if (!m_dbManager) {
+        qCritical() << "DatabaseManager is NULL!";
+        return;
+    }
+
+    // Перевірка user ID
+
+
+    // Безпечне створення layout
+    QLayout* existingLayout = chartContainer->layout();
+    if (!existingLayout) {
+        existingLayout = new QVBoxLayout(chartContainer);
+        qDebug() << "Created new layout for chart container";
+    }
+
+    // Очищення попереднього вмісту
+    QLayoutItem* item;
+    while ((item = existingLayout->takeAt(0)) != nullptr) {
+        if (QWidget* widget = item->widget()) {
+            existingLayout->removeWidget(widget);
+            delete widget;
+        }
+        delete item;
+    }
+
+    // Створення графіка
+    ExpensePieChart* pieChart = new ExpensePieChart(m_dbManager, m_userId);
+    existingLayout->addWidget(pieChart);
+    qDebug() << "Pie chart created successfully.";
+}
+
+void HomeWidget::pieChartscreation(){
+    createPieCharts();
 }
