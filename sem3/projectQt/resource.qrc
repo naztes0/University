@@ -13,5 +13,6 @@
         <file>img/transport.svg</file>
         <file>img/investment.png</file>
         <file>img/salary.png</file>
+        <file>img/rectangle-list.png</file>
     </qresource>
 </RCC>
