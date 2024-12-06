@@ -65,16 +65,18 @@ void MainWindow::showHomeWidget() {
 
     if (currentWidget && currentWidget != homeWidget) {
         currentWidget->hide();
-    }
+
 
     ui->contentWidget->setVisible(true);
 
     homeWidget->show();
     homeWidget->setGeometry(ui->contentWidget->geometry());
     homeWidget->refreshHomeCategories();
+    homeWidget->pieChartscreation();
 
     ui->sectionsColumn->setGeometry(ui->sectionsColumn->geometry());
     currentWidget = homeWidget;
+    }
 }
 
 void MainWindow::showTransactionsList() {
