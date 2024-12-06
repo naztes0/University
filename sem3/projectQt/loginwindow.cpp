@@ -73,12 +73,6 @@ void LoginWindow::on_createAccountButton_clicked(){
     }
 
     if(manager->addUser(login,email,password)){
-        //custom message box with tick
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Success");
-        msgBox.setText("Successfuly signed up");
-        msgBox.setIconPixmap(QPixmap(":/img/img/check-circle.svg"));
-        msgBox.exec();
 
         //Automatic login after sign up
         QString userId=manager->validateUser(email,password);
