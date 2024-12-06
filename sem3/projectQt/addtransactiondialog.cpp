@@ -26,6 +26,7 @@ AddTransactionDialog::AddTransactionDialog(DatabaseManager*dbManager,int userId,
     initializeCategories();
     //as default:expense
     ui->expenseRadio->setChecked(true);
+    ui->sumLineEdit->setPlaceholderText("Enter an amount in UAH");
 
 }
 
@@ -173,6 +174,7 @@ void AddTransactionDialog::validateAndAccept()
         // Оновлення існуючої транзакції
         if(manager->updateTransaction(m_transactionId, isExpense, category, amount, dateTimeUpd, comment)){
             emit transactionAdded();
+
             accept();
         }
         else{
