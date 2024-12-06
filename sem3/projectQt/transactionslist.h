@@ -21,6 +21,8 @@ public:
     void refreshTransactionsList();
     void loadTransactionsByCategory(const QString& category, int year,const QString& month);
     double calculateCategoryExpenses(const QString& category, int year, const QString& month);
+    double calculateTotalMonthlyExpenses(int year, const QString&month);
+    double calculateTotalMonthlyIncomings(int year, const QString&month);
 
 private:
     Ui::TransactionsList *ui;
@@ -32,6 +34,8 @@ private:
     void loadtransactions();
     void createTransactionItem(const QJsonObject& transaction);
     void setupContextMenu(QWidget*transactionWidget, const QString& transactionId);
+
+
 };
 
 #endif // TRANSACTIONSLIST_H

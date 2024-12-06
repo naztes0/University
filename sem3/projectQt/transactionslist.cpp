@@ -106,7 +106,7 @@ void TransactionsList::createTransactionItem(const QJsonObject &transaction){
     double amount=transaction["amount"].toDouble();
     bool isExp=transaction["is_expense"].toBool();
     QString amountText=!isExp?QString("+%1").arg(amount,0,'f',2):QString("-%1").arg(amount,0,'f',2);
-    QLabel*amountLabel=new QLabel(amountText);
+    QLabel*amountLabel=new QLabel(amountText+" UAH");
     amountLabel->setStyleSheet(isExp?"color: red; font-size: 14px;":"color: green; font-size: 14px;");
 
     QString comment=transaction["comment"].toString();
@@ -209,7 +209,7 @@ double TransactionsList::calculateCategoryExpenses(const QString& category, int 
         // Check if the transaction matches the specified category, year, and month
         if (transaction["category"].toString() == category &&
             transactionDate.date().year() == year &&
-            transactionDate.toString("dd MMMM") == month) {
+            transactionDate.toString("MMMM") == month) {
 
             double amount = transaction["amount"].toDouble();
             if (transaction["is_expense"].toBool()) {
@@ -221,4 +221,45 @@ double TransactionsList::calculateCategoryExpenses(const QString& category, int 
     }
     qDebug() << category << ": " << totalExpenses;
     return totalExpenses;
+}
+
+double TransactionsList::calculateTotalMonthlyExpenses(int year, const QString& month) {
+    double totalExpenses = 0.0;
+    QJsonArray transactions = manager->getUserTransactions(m_userId);
+
+    for (const QJsonValue& transactionValue : transactions) {
+        QJsonObject transaction = transactionValue.toObject();
+        QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+
+        // Check if the transaction is an expense and matches the specified year and month
+        if (transactionDate.date().year() == year &&
+            transactionDate.toString("MMMM") == month &&
+            transaction["is_expense"].toBool()) {
+
+            double amount = transaction["amount"].toDouble();
+            totalExpenses -= amount;
+        }
+    }
+
+    return totalExpenses;
+}
+double TransactionsList::calculateTotalMonthlyIncomings(int year, const QString& month) {
+    double totalIncomings = 0.0;
+    QJsonArray transactions = manager->getUserTransactions(m_userId);
+
+    for (const QJsonValue& transactionValue : transactions) {
+        QJsonObject transaction = transactionValue.toObject();
+        QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+
+        // Check if the transaction is not an expense and matches the specified year and month
+        if (transactionDate.date().year() == year &&
+            transactionDate.toString("MMMM") == month &&
+            !transaction["is_expense"].toBool()) {
+
+            double amount = transaction["amount"].toDouble();
+            totalIncomings += amount;
+        }
+    }
+
+    return totalIncomings;
 }
