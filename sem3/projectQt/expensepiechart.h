@@ -14,7 +14,8 @@
 #include <QJsonValue>
 #include <QDate>
 #include <QDateTime>
-#include"databasemanager.h"
+#include <QSet>
+#include "databasemanager.h"
 
 class ExpensePieChart : public QWidget
 {
@@ -25,22 +26,30 @@ public:
     void updateChart();
 
 private:
+    struct CategoryData {
+        double incomeAmount = 0.0;
+        double expenseAmount = 0.0;
+    };
+
     DatabaseManager* m_dbManager;
     int m_userId;
 
-
-    QChartView* m_incomeChartView;
     QChartView* m_expenseChartView;
+    QChartView* m_incomeChartView;
 
     QWidget* m_legendWidget;
     QHBoxLayout* m_legendLayout;
 
-    QVector<QColor> m_colors;
+    QVector<QColor> m_baseColors;
+    QVector<QColor> m_availableColors;
+    QMap<QString, QColor> m_categoryColors;
+    QMap<QString, CategoryData> m_categoryDataMap;
 
-    QMap<QString, double> calculateCategoryData(bool isExpense);
-    QWidget* createLegendItem(const QString& category, const QColor& color, bool isExpense);
-    void createChart(QChartView* chartView, const QMap<QString, double>& data, bool isExpense);
-
+    void prepareCategoryData();
+    void createCharts();
+    QWidget* createLegendItem(const QString& category, const QColor& color);
+    QColor getColorForCategory(const QString& category);
+    void resetColorPalette();
 };
 
 #endif // EXPENSEPIECHART_H

@@ -1,9 +1,13 @@
 #include "expensepiechart.h"
+#include <QDebug>
+#include <QPainter>
+#include <QFontMetrics>
+#include <cmath>
 
-ExpensePieChart::ExpensePieChart(DatabaseManager*dbManager, int userId, QWidget* parent)
-    :QWidget(parent), m_dbManager(dbManager), m_userId(userId)
+ExpensePieChart::ExpensePieChart(DatabaseManager* dbManager, int userId, QWidget* parent)
+    : QWidget(parent), m_dbManager(dbManager), m_userId(userId)
 {
-    // Жорстка перевірка вхідних параметрів
+    // Input validation
     if (!dbManager) {
         qCritical() << "DatabaseManager is NULL in ExpensePieChart constructor";
         return;
@@ -14,6 +18,7 @@ ExpensePieChart::ExpensePieChart(DatabaseManager*dbManager, int userId, QWidget*
         return;
     }
 
+    // Main layout setup
     QVBoxLayout* mainLayout = parent ?
                                   qobject_cast<QVBoxLayout*>(parent->layout()) :
                                   new QVBoxLayout(this);
@@ -22,7 +27,7 @@ ExpensePieChart::ExpensePieChart(DatabaseManager*dbManager, int userId, QWidget*
         mainLayout = new QVBoxLayout(this);
     }
 
-    // Chart View
+    // Chart Views
     m_expenseChartView = new QChartView(this);
     m_expenseChartView->setRenderHint(QPainter::Antialiasing);
 
@@ -41,27 +46,42 @@ ExpensePieChart::ExpensePieChart(DatabaseManager*dbManager, int userId, QWidget*
     m_legendWidget->setLayout(m_legendLayout);
     mainLayout->addWidget(m_legendWidget);
 
-
-    // Color Palette (Expanded)
-    m_colors = {
-        QColor(0, 136, 254),
-        QColor(0, 196, 159),
-        QColor(255, 187, 40),
-        QColor(255, 128, 66),
-        QColor(136, 132, 216),
-        QColor(255, 72, 66),
-        QColor(46, 204, 113),
-        QColor(52, 152, 219),
-        QColor(241, 196, 15)
-    };
+    // Initialize color palette
+    resetColorPalette();
 
     // Update the chart
     updateChart();
-    qDebug() << "Creating ExpensePieChart - END";
+}
+
+void ExpensePieChart::resetColorPalette() {
+    // Base color palette with distinct colors
+    m_baseColors = {
+        QColor(31, 119, 180),   // Blue
+        QColor(255, 127, 14),   // Orange
+        QColor(44, 160, 44),    // Green
+        QColor(214, 39, 40),    // Red
+        QColor(148, 103, 189),  // Purple
+        QColor(140, 86, 75),    // Brown
+        QColor(227, 119, 194),  // Pink
+        QColor(127, 127, 127),  // Gray
+        QColor(188, 189, 34),   // Olive
+        QColor(23, 190, 207),   // Cyan
+        QColor(248, 156, 116),  // Salmon
+        QColor(100, 149, 237),  // Cornflower Blue
+        QColor(64, 224, 208),   // Turquoise
+        QColor(255, 69, 0),     // Red-Orange
+        QColor(32, 178, 170)    // Light Sea Green
+    };
+
+    // Reset available colors to the full base palette
+    m_availableColors = m_baseColors;
+
+    // Clear existing category colors
+    m_categoryColors.clear();
 }
 
 void ExpensePieChart::updateChart() {
-    qDebug() << "UpdateChart - START";
+    // Clear existing legend
     QLayoutItem* item;
     while ((item = m_legendLayout->takeAt(0)) != nullptr) {
         if (QWidget* widget = item->widget()) {
@@ -71,38 +91,95 @@ void ExpensePieChart::updateChart() {
         delete item;
     }
 
-    QMap<QString, double> expensesData = calculateCategoryData(true);
-    QMap<QString, double> incomeData = calculateCategoryData(false);
+    // Reset color palette
+    resetColorPalette();
 
-    qDebug() << "Expenses data size:" << expensesData.size();
-    qDebug() << "Income data size:" << incomeData.size();
+    // Prepare category data
+    prepareCategoryData();
 
-    createChart(m_expenseChartView, expensesData, true);
-    createChart(m_incomeChartView, incomeData, false);
+    // Create charts
+    createCharts();
+}
 
-    qDebug() << "UpdateChart - END";
+void ExpensePieChart::prepareCategoryData() {
+    // Reset category data map
+    m_categoryDataMap.clear();
+
+    QDate currentDate = QDate::currentDate();
+    int currentYear = currentDate.year();
+    QString currentMonth = currentDate.toString("MMMM");
+
+    QJsonArray transactions = m_dbManager->getUserTransactions(m_userId);
+
+    for (const QJsonValue& transactionValue : transactions) {
+        QJsonObject transaction = transactionValue.toObject();
+
+        // Skip empty transactions
+        if (transaction.isEmpty()) {
+            qWarning() << "Empty transaction object" << transaction;
+            continue;
+        }
+
+        QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+
+        // Check if transaction is in the current month and year
+        if (transactionDate.date().year() == currentYear &&
+            transactionDate.toString("MMMM") == currentMonth) {
+
+            QString category = transaction["category"].toString();
+            double amount = transaction["amount"].toDouble();
+            bool isExpense = transaction["is_expense"].toBool();
+
+            // Update category data
+            if (isExpense) {
+                m_categoryDataMap[category].expenseAmount += amount;
+            } else {
+                m_categoryDataMap[category].incomeAmount += amount;
+            }
+        }
+    }
 }
 
 QString formatCategoryName(const QString& categoryName) {
-    int maxLength=15;
-    if (categoryName.length() <=maxLength) {
+    int maxLength = 10;
+    if (categoryName.length() <= maxLength) {
         return categoryName;
     } else {
         return categoryName.left(maxLength - 3) + "...";
     }
 }
 
-QWidget* ExpensePieChart::createLegendItem(const QString& category, const QColor& color, bool isExpense) {
+QColor ExpensePieChart::getColorForCategory(const QString& category) {
+    // If category already has a color, return it
+    if (m_categoryColors.contains(category)) {
+        return m_categoryColors[category];
+    }
+
+    // If no colors available, reset the palette
+    if (m_availableColors.isEmpty()) {
+        resetColorPalette();
+    }
+
+    // Select and remove a color from available colors
+    QColor selectedColor = m_availableColors.takeFirst();
+    m_categoryColors[category] = selectedColor;
+
+    return selectedColor;
+}
+
+QWidget* ExpensePieChart::createLegendItem(const QString& category, const QColor& color) {
     QWidget* itemWidget = new QWidget(this);
     QHBoxLayout* itemLayout = new QHBoxLayout(itemWidget);
     itemLayout->setContentsMargins(5, 2, 5, 2);
 
     QString shortCategory = formatCategoryName(category);
 
+    // Color indicator
     QLabel* colorIndicator = new QLabel(this);
     colorIndicator->setFixedSize(10, 10);
     colorIndicator->setStyleSheet(QString("background-color: %1; border-radius: 7px;").arg(color.name()));
 
+    // Category label
     QLabel* categoryLabel = new QLabel(shortCategory, this);
     categoryLabel->setWordWrap(false);
     categoryLabel->setMaximumWidth(100);
@@ -113,116 +190,82 @@ QWidget* ExpensePieChart::createLegendItem(const QString& category, const QColor
 
     return itemWidget;
 }
-QMap<QString, double> ExpensePieChart::calculateCategoryData(bool isExpense)
-{
-    qDebug() << "CalculateCategoryData - START" << (isExpense ? "Expenses" : "Income");
 
-    QDate currentDate = QDate::currentDate();
-    int currentYear = currentDate.year();
-    QString currentMonth = currentDate.toString("MMMM");
+void ExpensePieChart::createCharts() {
+    // If no data, create empty charts
+    if (m_categoryDataMap.isEmpty()) {
+        QPieSeries* emptyExpenseSeries = new QPieSeries();
+        emptyExpenseSeries->append("No Data", 1);
 
-    QJsonArray transactions = m_dbManager->getUserTransactions(m_userId);
-    qDebug() << "Total transactions:" << transactions.size();
+        QChart* expenseChart = new QChart();
+        expenseChart->addSeries(emptyExpenseSeries);
+        expenseChart->setTitle("Expenses (No Data)");
+        expenseChart->legend()->setVisible(false);
 
-    QMap<QString, double> categoryData;
+        m_expenseChartView->setChart(expenseChart);
 
-    for (const QJsonValue& transactionValue : transactions) {
-        QJsonObject transaction = transactionValue.toObject();
+        QPieSeries* emptyIncomeSeries = new QPieSeries();
+        emptyIncomeSeries->append("No Data", 1);
 
-        // Додаткова перевірка транзакції
-        if (transaction.isEmpty()) {
-            qWarning() << "Empty transaction object"<<transaction;
-            continue;
-        }
+        QChart* incomeChart = new QChart();
+        incomeChart->addSeries(emptyIncomeSeries);
+        incomeChart->setTitle("Income (No Data)");
+        incomeChart->legend()->setVisible(false);
 
-        bool transactionIsExpense = transaction["is_expense"].toBool();
-        QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+        m_incomeChartView->setChart(incomeChart);
 
-        if (transactionIsExpense == isExpense &&
-            transactionDate.date().year() == currentYear &&
-            transactionDate.toString("MMMM") == currentMonth) {
-
-            QString category = transaction["category"].toString();
-            double amount = transaction["amount"].toDouble();
-
-            categoryData[category] += amount;
-        }
-    }
-
-    qDebug() << "Calculated categories:" << categoryData.keys();
-
-    return categoryData;
-}
-void ExpensePieChart::createChart(QChartView* chartView, const QMap<QString, double>& data, bool isExpense) {
-    qDebug() << "CreateChart - START" << (isExpense ? "Expenses" : "Income");
-
-    if (!chartView) {
-        qCritical() << "ChartView is NULL";
         return;
     }
 
-    if (data.isEmpty()) {
-        QPieSeries* emptySeries = new QPieSeries();
-        emptySeries->append("No Data", 1);
+    // Create pie series for expenses and income
+    QPieSeries* expenseSeries = new QPieSeries();
+    QPieSeries* incomeSeries = new QPieSeries();
 
-        QChart* chart = new QChart();
-        chart->addSeries(emptySeries);
-        chart->setTitle(isExpense ? "Expenses (No Data)" : "Income (No Data)");
-        chart->legend()->setVisible(false);
+    expenseSeries->setHoleSize(0.4);
+    incomeSeries->setHoleSize(0.4);
 
-        chartView->setChart(chart);
-        return;
-    }
+    // Create legend items
+    for (auto it = m_categoryDataMap.begin(); it != m_categoryDataMap.end(); ++it) {
+        const QString& category = it.key();
+        const CategoryData& data = it.value();
 
-    QPieSeries* series = new QPieSeries();
-    series->setHoleSize(0.4);
+        QColor categoryColor = getColorForCategory(category);
 
-    QVBoxLayout* legendLayout = new QVBoxLayout();
-    m_legendLayout->addLayout(legendLayout);
-
-    QHBoxLayout* currentRowLayout = new QHBoxLayout();
-    int currentRowWidth = 0;
-    const int MAX_ROW_WIDTH = 400;  // Максимальна ширина рядка
-    int colorIndex = 0;
-
-    QFontMetrics fontMetrics(this->font()); // Для обчислення ширини тексту
-
-    for (auto it = data.begin(); it != data.end(); ++it) {
-        if (it.value() > 0) {
-            QPieSlice* slice = series->append(it.key(), it.value());
-            if (!slice) {
-                qCritical() << "Failed to create slice for" << it.key();
-                continue;
-            }
-
-            QColor currentColor = m_colors[colorIndex % m_colors.size()];
-            slice->setColor(currentColor);
-            slice->setLabelVisible(false);
-
-            QWidget* legendItem = createLegendItem(it.key(), currentColor, isExpense);
-            int itemWidth = fontMetrics.horizontalAdvance(it.key()) + 50; // Ширина тексту + відступи/іконка
-
-            if (currentRowWidth + itemWidth > MAX_ROW_WIDTH) {
-                legendLayout->addLayout(currentRowLayout);
-                currentRowLayout = new QHBoxLayout();
-                currentRowWidth = 0;
-            }
-
-            currentRowLayout->addWidget(legendItem);
-            currentRowWidth += itemWidth;
-            colorIndex++;
+        // Add slices to respective series if amounts are positive
+        if (data.expenseAmount > 0) {
+            QPieSlice* expenseSlice = expenseSeries->append(category, data.expenseAmount);
+            expenseSlice->setColor(categoryColor);
+            expenseSlice->setLabelVisible(false);
         }
+
+        if (data.incomeAmount > 0) {
+            QPieSlice* incomeSlice = incomeSeries->append(category, data.incomeAmount);
+            incomeSlice->setColor(categoryColor);
+            incomeSlice->setLabelVisible(false);
+        }
+
+        // Create legend item
+        QWidget* legendItem = createLegendItem(category, categoryColor);
+        m_legendLayout->addWidget(legendItem);
     }
 
-    if (currentRowLayout->count() > 0) {
-        legendLayout->addLayout(currentRowLayout);
-    }
+    // Create charts
+    QFont titleFont;
+    titleFont.setBold(true);
+    titleFont.setPointSize(13);
 
-    QChart* chart = new QChart();
-    chart->addSeries(series);
-    chart->setTitle(isExpense ? "Expenses" : "Income");
-    chart->legend()->setVisible(false);
+    QChart* expenseChart = new QChart();
+    expenseChart->addSeries(expenseSeries);
+    expenseChart->setTitle("Expenses");
+    expenseChart->setTitleFont(titleFont);
+    expenseChart->legend()->setVisible(false);
 
-    chartView->setChart(chart);
-    qDebug() << "CreateChart - END";
+    QChart* incomeChart = new QChart();
+    incomeChart->addSeries(incomeSeries);
+    incomeChart->setTitle("Income");
+    incomeChart->setTitleFont(titleFont);
+    incomeChart->legend()->setVisible(false);
+
+    m_expenseChartView->setChart(expenseChart);
+    m_incomeChartView->setChart(incomeChart);
 }
