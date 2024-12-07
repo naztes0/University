@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
     setWindowTitle("Transaction Manager");
     setWindowIcon(QIcon(":/img/img/bill.png"));
     //login
@@ -24,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
         QTimer::singleShot(0, qApp, &QApplication::quit);// more safe, clean the trash
         return;
     }
+    // Підключення сигналу натискання кнопки
+    connect(ui->accountButton, &QPushButton::clicked, this, &MainWindow::showAccountMenu);
     //init homeWidget
     homeWidget=ui->contentWidget;
     if(homeWidget){
@@ -94,4 +97,31 @@ void MainWindow::showTransactionsList() {
     transactionsListWidget->show();
 
     currentWidget = transactionsListWidget;
+}
+
+void MainWindow::showAccountMenu(){
+    QMenu*accountMenu= new QMenu(this);
+    QAction* logoutAction=accountMenu->addAction("Logout");
+    connect (logoutAction,&QAction::triggered,this, &MainWindow::performLogout);
+    QPoint pos=ui->accountButton->mapToGlobal(QPoint(0,ui->accountButton->height()));
+    accountMenu->exec(pos);
+    accountMenu->deleteLater();
+}
+void MainWindow::performLogout(){
+    currentUserId=-1;
+    close();
+    LoginWindow* loginWindow=new LoginWindow(&manager);
+    connect(loginWindow,&LoginWindow::loginSuccessful,this,&MainWindow::setCurrentUserId);
+    if(loginWindow->exec()==QDialog::Accepted){
+        if(homeWidget){
+            homeWidget->initialize(&manager, currentUserId);
+        }
+        if(transactionsListWidget){
+            delete transactionsListWidget;
+            transactionsListWidget = new TransactionsList(&manager, currentUserId, ui->contentWidget);
+            transactionsListWidget->hide();
+        }
+        show();
+
+    }
 }

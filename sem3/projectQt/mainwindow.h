@@ -9,7 +9,7 @@
 #include"databasemanager.h"
 #include"loginwindow.h"
 #include"transactionslist.h"
-
+#include<QMenu>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -31,6 +31,8 @@ public slots:
     void setCurrentUserId(int userId){currentUserId=userId;}
     void showHomeWidget();
     void showTransactionsList();
+    void showAccountMenu();
+    void performLogout();
 private:
     Ui::MainWindow *ui;
     SectionsColumn *sectionsColumn;
