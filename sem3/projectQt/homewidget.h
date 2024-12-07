@@ -30,6 +30,8 @@ public:
     void initialize(DatabaseManager* dbManager, int userId);
     void refreshHomeCategories();
     void pieChartscreation();
+    void updateCategoryWidget(const QString& categoryName);
+
    ~HomeWidget();
 private slots:
     //adding tr
@@ -43,10 +45,11 @@ private:
     int m_userId;
     QGridLayout* m_categoriesLayout;
 
-    QWidget* createCategoryButton(const QString&category, double expenses);
+
+    QWidget* createCategoryButton(const QString&category, double expenses,double incomings);
     void setupCategoriesWidget();
     void loadUserCategories();
-    double calculateCategoryExpenses(const QString& category, int year, const QString& month);
+    QPair<double, double> calculateCategoryBalance(const QString& category, int year, const QString& month);
     QLabel* createCategoryIcon(const QString& category);
     QString getIconPathForCategory(const QString& category);
     void updateMonthlyTotals();

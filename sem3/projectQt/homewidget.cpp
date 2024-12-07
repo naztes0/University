@@ -64,21 +64,19 @@ void HomeWidget::setupCategoriesWidget(){
 
 void HomeWidget::loadUserCategories()
 {
-    // Static list of default categories
     static const QStringList defaultCategories = {"Food", "Transport", "Entertainment", "Salary", "Investment"};
 
-
-    // Use cashing of categories and their expenses to speed up the process of loading transactions
-    static QMap<QString, double> categoryExpensesCache;
+    // Кешування витрат та надходжень для категорій
+    static QMap<QString, QPair<double, double>> categoryBalanceCache;
     static int lastLoadedUserId = -1;
 
-    // Check fro cash data changing
+    // Перевірка кешу
     if (lastLoadedUserId != m_userId) {
-        categoryExpensesCache.clear();
+        categoryBalanceCache.clear();
         lastLoadedUserId = m_userId;
     }
 
-    // layout deleting
+    // Очищення layout
     QLayoutItem* item;
     while ((item = m_categoriesLayout->takeAt(0)) != nullptr) {
         QWidget* widget = item->widget();
@@ -88,15 +86,11 @@ void HomeWidget::loadUserCategories()
     }
 
     QJsonArray categories = m_dbManager->getUserCategories(m_userId);
-    if (categories.isEmpty()) return;
-
-
-    // Add default categories to the list if they don't already exist
     for (const QString& defaultCategory : defaultCategories) {
         bool categoryExists = std::any_of(categories.begin(), categories.end(),
-            [&defaultCategory](const QJsonValue& value) {
-            return value.toObject()["name"].toString() == defaultCategory;
-            });
+                                          [&defaultCategory](const QJsonValue& value) {
+                                              return value.toObject()["name"].toString() == defaultCategory;
+                                          });
 
         if (!categoryExists) {
             QJsonObject defaultCategoryObj;
@@ -104,28 +98,26 @@ void HomeWidget::loadUserCategories()
             categories.prepend(defaultCategoryObj);
         }
     }
-
-    if (categories.isEmpty()) return;
-
     int currentYear = QDate::currentDate().year();
     QString currentMonth = QDate::currentDate().toString("MMMM");
-    // Pre-processing expenses to avoid recalculations
-    QMap<QString, double> categoryExpenses;
+
+    // Обчислення балансів для категорій
+    QMap<QString, QPair<double, double>> categoryBalances;
     for (const QJsonValue& categoryValue : categories) {
         QJsonObject category = categoryValue.toObject();
         QString categoryName = category["name"].toString();
 
         // Перевірка кешу
-        if (categoryExpensesCache.contains(categoryName)) {
-            categoryExpenses[categoryName] = categoryExpensesCache[categoryName];
+        if (categoryBalanceCache.contains(categoryName)) {
+            categoryBalances[categoryName] = categoryBalanceCache[categoryName];
         } else {
-            double expenses = calculateCategoryExpenses(categoryName, currentYear, currentMonth);
-            categoryExpenses[categoryName] = expenses;
-            categoryExpensesCache[categoryName] = expenses;
+            QPair<double, double> balance = calculateCategoryBalance(categoryName, currentYear, currentMonth);
+            categoryBalances[categoryName] = balance;
+            categoryBalanceCache[categoryName] = balance;
         }
     }
 
-    // Creating of categpry widgets
+    // Створення віджетів категорій
     QVector<QWidget*> categoryWidgets;
     categoryWidgets.reserve(categories.size());
 
@@ -135,7 +127,8 @@ void HomeWidget::loadUserCategories()
 
         QWidget* categoryButton = createCategoryButton(
             categoryName,
-            categoryExpenses.value(categoryName, 0.0)
+            categoryBalances[categoryName].first,   // Витрати
+            categoryBalances[categoryName].second   // Надходження
             );
 
         if (categoryButton) {
@@ -143,7 +136,7 @@ void HomeWidget::loadUserCategories()
         }
     }
 
-    // Adding to grid
+    // Додавання до grid
     for (int row = 0, col = 0, i = 0; i < categoryWidgets.size(); ++i, ++col) {
         if (col > 3) {
             col = 0;
@@ -154,12 +147,35 @@ void HomeWidget::loadUserCategories()
 
     qDebug() << "Categories loaded successfully";
 }
-double HomeWidget::calculateCategoryExpenses(const QString& category, int year, const QString& month)
+QPair<double, double> HomeWidget::calculateCategoryBalance(const QString& category, int year, const QString& month)
 {
     TransactionsList tempList(m_dbManager, m_userId);
-    return tempList.calculateCategoryExpenses(category, year, month);
+    QJsonArray transactions = m_dbManager->getUserTransactions(m_userId);
+
+    double expenses = 0.0;
+    double incomings = 0.0;
+
+    for (const QJsonValue& transactionValue : transactions) {
+        QJsonObject transaction = transactionValue.toObject();
+        QDateTime transactionDate = QDateTime::fromString(transaction["transaction_date"].toString(), Qt::ISODate);
+
+        // Перевірка відповідності категорії, року та місяця
+        if (transaction["category"].toString() == category &&
+            transactionDate.date().year() == year &&
+            transactionDate.toString("MMMM") == month) {
+
+            double amount = transaction["amount"].toDouble();
+            if (transaction["is_expense"].toBool()) {
+                expenses -= amount;  // Від'ємне значення для витрат
+            } else {
+                incomings += amount;
+            }
+        }
+    }
+
+    return {expenses, incomings};
 }
-QWidget* HomeWidget::createCategoryButton(const QString& category, double expenses)
+QWidget* HomeWidget::createCategoryButton(const QString& category, double expenses, double incomings)
 {
     if (category.isEmpty()) return nullptr;
 
@@ -176,28 +192,20 @@ QWidget* HomeWidget::createCategoryButton(const QString& category, double expens
     nameLabel->setStyleSheet("font-weight: bold; font-size: 12px;");
     layout->addWidget(nameLabel, 0, Qt::AlignCenter);
 
-    QString expensesText=QString::number(expenses, 'f', 2);;
-    QString expensesStyle;
-
-    if (expenses > 0) {
-        expensesStyle = "color: green; font-size: 10px;";
-    } else if (expenses < 0) {
-        expensesStyle = "color: red; font-size: 10px;";
-    } else {
-        expensesText = "0.00";
-        expensesStyle = "color: gray; font-size: 10px;";
-    }
-
-    QLabel* expensesLabel = new QLabel(expensesText+" UAH");
-    expensesLabel->setStyleSheet(expensesStyle);
+    // Додавання міток для витрат та надходжень
+    QLabel* expensesLabel = new QLabel(QString::number(expenses, 'f', 2) + " UAH");
+    expensesLabel->setStyleSheet("color: red; font-size: 10px;");
     layout->addWidget(expensesLabel, 0, Qt::AlignCenter);
+
+    QLabel* incomingsLabel = new QLabel("+" + QString::number(incomings, 'f', 2) + " UAH");
+    incomingsLabel->setStyleSheet("color: green; font-size: 10px;");
+    layout->addWidget(incomingsLabel, 0, Qt::AlignCenter);
 
     QPushButton* button = new QPushButton("Details");
     button->setProperty("categoryName", category);
     connect(button, &QPushButton::clicked, this, &HomeWidget::onCategoryButtonClicked);
 
     layout->addWidget(button);
-
 
     return container;
 }
