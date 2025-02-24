@@ -15,17 +15,9 @@ public:
 	ComplexNumber(int r =0, int i=0):real(r), img(i){}
 	int getReal()const { return real; }
 	int getImg() const {return img;}
-
-	/*ComplexNumber operator+(const ComplexNumber& other) {
-		return ComplexNumber(real + other.real, img + other.img);
-	}
-	ComplexNumber operator-(const ComplexNumber& other) {
-		return ComplexNumber(real - other.real, img - other.img);
-	}*/
-
 	//== operator for complex numbers
-	ComplexNumber operator == (const ComplexNumber& other)const;
-
+	bool operator == (const ComplexNumber& other)const;
+	bool operator != (const ComplexNumber& other)const; 
 	//Rverting to int to be able hash the complexNumbers
 	int toInt() const;
 	//Print
@@ -37,18 +29,47 @@ public:
 class HashFunction {
 
 private:
-	int isPrime(int num);//check if is prime
-public:
 	int a, b, p, m;
-	HashFunction(int m);
 
-	int getRandomPrime(int min, int max);//get random prime in some range
-	int generateHashFunction();//in couple with constructor defines variables for hashing
-	int hash(ComplexNumber z);//the function itself
+	//check if is prime
+	int isPrime(int num);
+
+	//get random prime in some range
+	int getRandomPrime(int min, int max);
+public:
+	//Constructor
+	HashFunction() : a(0), b(0), p(0), m(0) {};
+	explicit HashFunction(int tableSize);
+
+	//in couple with constructor defines variables for hashing
+	int generateHashFunction();
+
+	//the function itself
+	int hash(ComplexNumber z);
+
+	//Set size of the table
+	void setTableSize(int tableSize);
 
 };
 class PerfectHashing{
+private:
+	int primarySize;// Size of the main hash table
+	HashFunction primaryHashFunc; //main hashfunc
+	vector<vector<ComplexNumber>>hashTable;//table
+	vector<HashFunction> secondaryHashFuncs; //secondary Table
+	vector<int> secondaryTableSizes; //size of secondaty table
+	vector<bool> secondaryTableInitialized;
+
+	static const ComplexNumber EMPTY_CELL;
+
+
 public:
-	vector<vector<ComplexNumber>>hashTable;
-	vector<HashFunction> secondaryTable;
+	//Contrusctor 
+	explicit PerfectHashing(int size);
+
+	void insert(const vector<ComplexNumber>& elements) ;
+	bool search(const ComplexNumber& element) ;
+	void print()const;
+
+	
 };

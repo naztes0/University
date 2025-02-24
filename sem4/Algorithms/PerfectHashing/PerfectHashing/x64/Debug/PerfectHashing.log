@@ -1,2 +1,4 @@
 ﻿  PerfectHashing.cpp
-  PerfectHashing.vcxproj -> C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\x64\Debug\PerfectHashing.exe
+C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\PerfectHashing\PerfectHashing.cpp(82,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\PerfectHashing\PerfectHashing.cpp(108,39): error C2451: a conditional expression of type 'ComplexNumber' is not valid
+C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\PerfectHashing\PerfectHashing.cpp(108,39): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
