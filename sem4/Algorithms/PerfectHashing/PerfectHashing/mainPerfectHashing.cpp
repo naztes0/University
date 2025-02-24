@@ -36,19 +36,19 @@ int main() {
 
     std::cout << "Searching for ";
     z1.printComplex();
-    std::cout << ": " << (hashTable.search(z1) ? "Found" : "Not found") << "\n";
+    std::cout << ": " << (hashTable.search(z1) ? "Found" : "Not found") << "\n\n";
 
     std::cout << "Searching for ";
     z2.printComplex();
-    std::cout << ": " << (hashTable.search(z2) ? "Found" : "Not found") << "\n";
+    std::cout << ": " << (hashTable.search(z2) ? "Found" : "Not found") << "\n\n";
 
     std::cout << "Searching for ";
     z3.printComplex();
-    std::cout << ": " << (hashTable.search(z3) ? "Found" : "Not found") << "\n";
+    std::cout << ": " << (hashTable.search(z3) ? "Found" : "Not found") << "\n\n";
 
     std::cout << "Searching for ";
     z4.printComplex();
-    std::cout << ": " << (hashTable.search(z4) ? "Found" : "Not found") << "\n";
+    std::cout << ": " << (hashTable.search(z4) ? "Found" : "Not found") << "\n\n";
 
     return 0;
 }

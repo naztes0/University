@@ -9,7 +9,7 @@ bool ComplexNumber:: operator != (const ComplexNumber& other) const {
 	return (real != other.real) || (img != other.img);
 }
 int ComplexNumber::toInt() const{
-	return (real * 31 + 17 * img);
+	return (real * 31 * 17 * img);
 }
 void ComplexNumber::printComplex() const {
 	std::cout << real << (img >= 0 ? "+" : "") << img << "i";
@@ -51,8 +51,20 @@ void HashFunction::generateHashFunction() {
 	}
 }
 int HashFunction::hash(ComplexNumber z) const {
-	if (m == 0) return 0;
-	return((a * z.toInt() + b) % p) % m;
+	if (m == 0||p==0) {
+		std::cerr << "Error: m or p is zero in hash function!" << std::endl;
+		return 0;
+	}
+	
+	int zInt = z.toInt();
+	std::cerr << "\nHashing: ";
+	z.printComplex();
+	std::cerr << " -> int value: " << zInt << std::endl;
+	std::cerr << "Hash params: a=" << a << ", b=" << b << ", p=" << p << ", m=" << m << std::endl;
+	int rawHash = ((a *zInt + b) % p) % m;
+	if (rawHash < 0) rawHash += m; 
+	std::cerr << "Hash result: " << rawHash << std::endl;
+	return rawHash;
 }
 void HashFunction::setTableSize(int tableSize) {
 	m = tableSize;
@@ -61,13 +73,17 @@ void HashFunction::setTableSize(int tableSize) {
 
 /////////////
 
-const ComplexNumber PerfectHashing::EMPTY_CELL(-1, -1);
+const ComplexNumber PerfectHashing::EMPTY_CELL(0, 0);
 
 PerfectHashing::PerfectHashing(int size) :primarySize(size), primaryHashFunc(size) {
 	hashTable.resize(size);
 	secondaryHashFuncs.resize(size);
-	secondaryTableSizes.resize(size, 0);
+	secondaryTableSizes.resize(size,0);
 	secondaryTableInitialized.resize(size, false);
+	//temo init
+	for (int i = 0; i < size; i++) {
+		secondaryHashFuncs[i] = HashFunction(1);
+	}
 }
 
 void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
@@ -75,11 +91,15 @@ void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
 	//First-level
 	for (const auto& element : elements) {
 		int primaryIndex = primaryHashFunc.hash(element);
+		if (primaryIndex < 0 || primaryIndex >= primarySize) {
+			std::cerr << "Error: primaryIndex out of bounds: " << primaryIndex << std::endl;
+		}
 		tempBuckets[primaryIndex].push_back(element);
 	}
 	//Second-level
 	for (int i = 0; i < primarySize; i++) {
 		int elementsInBucket = tempBuckets[i].size();
+
 
 		if (elementsInBucket == 0)continue;
 		else if (elementsInBucket == 1) {
@@ -88,10 +108,18 @@ void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
 			secondaryTableSizes[i] = 1;
 			secondaryTableInitialized[i] = true;
 		}
-		else {
+		std::cerr << "Bucket " << i << " elements: " << elementsInBucket << "\n\n";
+		if(elementsInBucket>1) {
 			int secondarySize = elementsInBucket * elementsInBucket;
+			std::cerr << "Bucket " << i << " -> secondarySize: " << secondarySize << "\n\n";
+			if (secondarySize == 0) {
+				std::cerr << "Error: secondarySize is 0 for bucket " << i << std::endl;
+				continue;
+			}
 			secondaryTableSizes[i] = secondarySize;
 			secondaryHashFuncs[i].setTableSize(secondarySize);
+
+			secondaryHashFuncs[i] = HashFunction(secondarySize);
 
 			bool noCollision = false;
 			int attempts = 0;
@@ -100,26 +128,34 @@ void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
 			while (!noCollision && attempts < MAX_ATTEMPTS) {
 				secondaryHashFuncs[i].generateHashFunction();
 				hashTable[i].clear();
-				hashTable[i].resize(secondarySize, 0);
+				hashTable[i].resize(secondarySize, EMPTY_CELL);
+				
 
 				noCollision = true;
 				for (const auto& element : tempBuckets[i]) {
 					int secondaryIndex = secondaryHashFuncs[i].hash(element);
+					if (secondaryIndex < 0 || secondaryIndex >= secondaryTableSizes[i]) {
+						std::cerr << "Error: secondaryIndex out of bounds: " << secondaryIndex
+							<< " (secondaryTableSizes[i] = " << secondaryTableSizes[i] << ")\n";
+					}
+					std::cerr << "Hashed ";
+					element.printComplex();
 					if (hashTable[i][secondaryIndex] != EMPTY_CELL) {
 						noCollision = false;
 						break;
 					}
 					hashTable[i][secondaryIndex] = element;
+					
 				}
 				attempts++;
 
 
 			}
-			if (!noCollision) {
+			/*if (!noCollision) {
 				std::cout << "Warning: Could not find perfect hash function for bucket "
 					<< i << " after " << MAX_ATTEMPTS << " attempts.\n";
 				return;
-			}
+			}*/
 			secondaryTableInitialized[i] = true;
 		}
 
@@ -131,6 +167,10 @@ void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
 bool PerfectHashing::search(const ComplexNumber& element) const {
 
 	int primaryIndex = primaryHashFunc.hash(element);
+	if (primaryIndex < 0 || primaryIndex >= primarySize) {
+		return false;
+	}
+
 	if (!secondaryTableInitialized[primaryIndex] || secondaryTableSizes[primaryIndex] == 0) {
 		return false;
 	}
