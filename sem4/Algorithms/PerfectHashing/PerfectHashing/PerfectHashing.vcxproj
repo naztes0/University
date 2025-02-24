@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="mainPerfectHashing.cpp" />
     <ClCompile Include="PerfectHashing.cpp" />
   </ItemGroup>
   <ItemGroup>

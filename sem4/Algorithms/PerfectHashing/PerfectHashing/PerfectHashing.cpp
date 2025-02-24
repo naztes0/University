@@ -6,17 +6,15 @@ bool ComplexNumber:: operator == (const ComplexNumber& other) const {
 }
 
 bool ComplexNumber:: operator != (const ComplexNumber& other) const {
-	return (real != other.real) && (img != other.img);
+	return (real != other.real) || (img != other.img);
 }
 int ComplexNumber::toInt() const{
 	return (real * 31 + 17 * img);
 }
-void ComplexNumber::printComplex()const {
-	if (img >= 0)
-		std::cout << real << "+" << img << "i";
-	else
-		std::cout << real << img << "i";
+void ComplexNumber::printComplex() const {
+	std::cout << real << (img >= 0 ? "+" : "") << img << "i";
 }
+
 
 //////////////////////////
 
@@ -47,8 +45,10 @@ int HashFunction::getRandomPrime(int min, int max){
 }
 
 void HashFunction::generateHashFunction() {
-	a = rand() % (p - 1) + 1;
-	b = rand() % p;
+	if(p!=0){
+		a = rand() % (p - 1) + 1;
+		b = rand() % p;
+	}
 }
 int HashFunction::hash(ComplexNumber z) const {
 	if (m == 0) return 0;
@@ -143,3 +143,32 @@ bool PerfectHashing::search(const ComplexNumber& element) const {
 	}
 	return false;
 }
+
+	void PerfectHashing::print()const {
+
+		std::cout << "=== Perfect Hash Table Structure ===\n";
+		std::cout << "Primary table size: " << primarySize << "\n\n";
+
+		for (int i = 0; i < primarySize; i++) {
+			if (secondaryTableInitialized[i]) {
+				std::cout << "Bucket " << i << " (size: " << secondaryTableSizes[i] << "):\n";
+
+				if (secondaryTableSizes[i] == 1 && hashTable[i].size() == 1) {
+					std::cout << "  Single element: ";
+					hashTable[i][0].printComplex();
+					std::cout << "\n";
+
+				}
+				else {
+					for (int j = 0; j < hashTable[i].size(); j++) {
+						std::cout << "  [" << j << "]: ";
+						hashTable[i][j].printComplex();
+						std::cout << "\n";
+
+					}
+				}
+				std::cout << "\n";
+			}
+		}
+		std::cout << "==================================\n";
+	}

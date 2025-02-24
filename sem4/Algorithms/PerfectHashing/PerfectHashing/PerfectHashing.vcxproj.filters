@@ -18,6 +18,9 @@
     <ClCompile Include="PerfectHashing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mainPerfectHashing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PerfectHashing.h">
