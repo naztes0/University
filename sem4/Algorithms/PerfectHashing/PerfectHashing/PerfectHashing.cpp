@@ -77,6 +77,20 @@ void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
 		int primaryIndex = primaryHashFunc.hash(element);
 		tempBuckets[primaryIndex].push_back(element);
 	}
+	//Second-level
+	for (int i = 0; i < primarySize; i++) {
+		int elementsInBucket = tempBuckets[i].size();
+
+		if (elementsInBucket == 0)continue;
+		else if (elementsInBucket == 1) {
+			hashTable[i].resize(1);
+			hashTable[i][0] = tempBuckets[i][0];
+			secondaryTableSizes[i] = 1;
+			secondaryTableInitialized[i] = true;
+		}
+		
+
+	}
 	
 
 }
