@@ -45,7 +45,7 @@ public:
 	void generateHashFunction();
 
 	//the function itself
-	int hash(ComplexNumber z);
+	int hash(ComplexNumber z) const;
 
 	//Set size of the table
 	void setTableSize(int tableSize);
@@ -68,7 +68,7 @@ public:
 	explicit PerfectHashing(int size);
 
 	void insert(const vector<ComplexNumber>& elements) ;
-	bool search(const ComplexNumber& element) ;
+	bool search(const ComplexNumber& element) const ;
 	void print()const;
 
 	

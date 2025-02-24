@@ -1,3 +1,3 @@
 ﻿  PerfectHashing.cpp
 C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\PerfectHashing\PerfectHashing.cpp(82,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\PerfectHashing\PerfectHashing.cpp(52): error C4716: 'HashFunction::generateHashFunction': must return a value
+C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\PerfectHashing\PerfectHashing.cpp(133): error C4716: 'PerfectHashing::search': must return a value

@@ -50,7 +50,7 @@ void HashFunction::generateHashFunction() {
 	a = rand() % (p - 1) + 1;
 	b = rand() % p;
 }
-int HashFunction::hash(ComplexNumber z) {
+int HashFunction::hash(ComplexNumber z) const {
 	if (m == 0) return 0;
 	return((a * z.toInt() + b) % p) % m;
 }
@@ -126,4 +126,20 @@ void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
 	}
 	
 
+}
+
+bool PerfectHashing::search(const ComplexNumber& element) const {
+
+	int primaryIndex = primaryHashFunc.hash(element);
+	if (!secondaryTableInitialized[primaryIndex] || secondaryTableSizes[primaryIndex] == 0) {
+		return false;
+	}
+	if (secondaryTableSizes[primaryIndex] == 1 && hashTable[primaryIndex].size() == 1) {
+		return hashTable[primaryIndex][0] == element;
+	}
+	int secondaryIndex = secondaryHashFuncs[primaryIndex].hash(element);
+	if (secondaryIndex < hashTable[primaryIndex].size()) {
+		return hashTable[primaryIndex][secondaryIndex] == element;
+	}
+	return false;
 }
