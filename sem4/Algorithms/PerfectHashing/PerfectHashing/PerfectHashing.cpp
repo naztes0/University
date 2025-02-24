@@ -46,7 +46,7 @@ int HashFunction::getRandomPrime(int min, int max){
 	return 13;//If for 1000 attempt primeNumb wont be found
 }
 
-int HashFunction::generateHashFunction() {
+void HashFunction::generateHashFunction() {
 	a = rand() % (p - 1) + 1;
 	b = rand() % p;
 }
@@ -88,7 +88,40 @@ void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
 			secondaryTableSizes[i] = 1;
 			secondaryTableInitialized[i] = true;
 		}
-		
+		else {
+			int secondarySize = elementsInBucket * elementsInBucket;
+			secondaryTableSizes[i] = secondarySize;
+			secondaryHashFuncs[i].setTableSize(secondarySize);
+
+			bool noCollision = false;
+			int attempts = 0;
+			const int MAX_ATTEMPTS = 100;
+
+			while (!noCollision && attempts < MAX_ATTEMPTS) {
+				secondaryHashFuncs[i].generateHashFunction();
+				hashTable[i].clear();
+				hashTable[i].resize(secondarySize, 0);
+
+				noCollision = true;
+				for (const auto& element : tempBuckets[i]) {
+					int secondaryIndex = secondaryHashFuncs[i].hash(element);
+					if (hashTable[i][secondaryIndex] != EMPTY_CELL) {
+						noCollision = false;
+						break;
+					}
+					hashTable[i][secondaryIndex] = element;
+				}
+				attempts++;
+
+
+			}
+			if (!noCollision) {
+				std::cout << "Warning: Could not find perfect hash function for bucket "
+					<< i << " after " << MAX_ATTEMPTS << " attempts.\n";
+				return;
+			}
+			secondaryTableInitialized[i] = true;
+		}
 
 	}
 	

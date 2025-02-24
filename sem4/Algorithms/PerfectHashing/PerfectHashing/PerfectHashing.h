@@ -42,7 +42,7 @@ public:
 	explicit HashFunction(int tableSize);
 
 	//in couple with constructor defines variables for hashing
-	int generateHashFunction();
+	void generateHashFunction();
 
 	//the function itself
 	int hash(ComplexNumber z);
