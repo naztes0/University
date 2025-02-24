@@ -15,6 +15,9 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -29,6 +32,9 @@
     </property>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -63,6 +69,9 @@
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,5">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
        <widget class="SectionsColumn" name="sectionsColumn" native="true">
         <property name="sizePolicy">
@@ -70,6 +79,12 @@
           <horstretch>1</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="maximumSize">
          <size>
@@ -93,10 +108,16 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>660</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>929</width>
-          <height>656</height>
+          <height>660</height>
          </size>
         </property>
        </widget>

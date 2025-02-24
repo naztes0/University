@@ -9,6 +9,17 @@ HomeWidget::HomeWidget(QWidget* parent)
     , m_userId(-1)
 {
     ui->setupUi(this);
+    ui->addTrPushButton->setStyleSheet(
+        "QPushButton {"
+        "    border: none;"
+        "    background-color: transparent;"
+        "    border-radius: 10px;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #D0D0D0;"
+        "}"
+        );
+
     ui->addTrPushButton->setText("Add Transaction");
     QScrollArea* categoriesScrollArea = ui->scrollArea;
     QWidget* scrollContent = new QWidget();

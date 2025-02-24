@@ -50,6 +50,13 @@
    </item>
    <item>
     <widget class="QPushButton" name="homeButton">
+     <property name="font">
+      <font>
+       <bold>true</bold>
+       <stylestrategy>PreferDefault</stylestrategy>
+       <hintingpreference>PreferFullHinting</hintingpreference>
+      </font>
+     </property>
      <property name="text">
       <string> Home</string>
      </property>
@@ -61,6 +68,11 @@
    </item>
    <item>
     <widget class="QPushButton" name="transactionsListButton">
+     <property name="font">
+      <font>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string>Transactions</string>
      </property>
@@ -81,7 +93,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>400</height>
+       <height>500</height>
       </size>
      </property>
     </spacer>

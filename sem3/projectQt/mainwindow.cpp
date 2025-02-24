@@ -13,6 +13,31 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+    QPalette palette = ui->sectionsColumn->palette();
+    palette.setColor(ui->sectionsColumn->backgroundRole(), QColor("#a6a6a6"));
+    ui->sectionsColumn->setAutoFillBackground(true);
+    ui->sectionsColumn->setPalette(palette);
+    // ui->sectionsColumn->setStyleSheet(
+    //     "SectionsColumn {"
+    //     "    border-top-right-radius: 20px;" // Закруглення кута
+    //     "}"
+    //     );
+    ui->accountButton->setStyleSheet(
+        "QPushButton {"
+        "    border: none;"
+        "    background-color: transparent;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #D0D0D0;"
+        "}"
+        );
+
+
+    QPalette palette1 = ui->contentWidget->palette();
+    palette.setColor(ui->sectionsColumn->backgroundRole(), QColor("#ffffff"));
+    ui->contentWidget->setAutoFillBackground(true);
+    ui->contentWidget->setPalette(palette);
+
     setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
     setWindowTitle("Transaction Manager");
     setWindowIcon(QIcon(":/img/img/bill.png"));

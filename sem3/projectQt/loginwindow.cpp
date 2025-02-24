@@ -2,6 +2,7 @@
 #include "ui_loginwindow.h"
 #include<QMessageBox>
 #include<QRegularExpression>
+#include <QGraphicsDropShadowEffect>
 
 LoginWindow::LoginWindow(DatabaseManager*dbManager, QWidget *parent)
     : QDialog(parent)
@@ -9,8 +10,58 @@ LoginWindow::LoginWindow(DatabaseManager*dbManager, QWidget *parent)
     ,manager(dbManager)
 {
     ui->setupUi(this);
-    ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
-    ui->regPasswordLineEdit->setEchoMode(QLineEdit::Password);
+    auto styleLineEdit = "QLineEdit {"
+                         "  background-color: #ffffff;"
+                         "  border: 1px solid #cccccc;"
+                         "  border-radius: 5px;"
+                         "  padding: 5px;"
+                         "}";
+    ui->emailLineEdit->setStyleSheet(styleLineEdit);
+    ui->passwordLineEdit->setStyleSheet(styleLineEdit);
+    ui->regEmailLineEdit->setStyleSheet(styleLineEdit);
+    ui->regPasswordLineEdit->setStyleSheet(styleLineEdit);
+    ui->regLoginLineEdit->setStyleSheet(styleLineEdit);
+
+    // === Додавання тіней до текстових полів ===
+    auto shadowEffect = [](QWidget* widget) {
+        QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect(widget);
+        effect->setBlurRadius(10);
+        effect->setOffset(2, 2);
+        effect->setColor(Qt::gray);
+        widget->setGraphicsEffect(effect);
+    };
+    shadowEffect(ui->emailLineEdit);
+    shadowEffect(ui->passwordLineEdit);
+    shadowEffect(ui->regEmailLineEdit);
+    shadowEffect(ui->regPasswordLineEdit);
+    shadowEffect(ui->regLoginLineEdit);
+
+    // === Оформлення кнопок ===
+    auto styleButton = "QPushButton {"
+                       "  border: 2px solid #5c5c5c;"
+                       "  border-radius: 10px;"
+                       "  background-color: #a6a6a6;"
+                       "  color: white;"
+                       "  padding: 5px 10px;"
+                       "}"
+                       "QPushButton:hover {"
+                       "  background-color: #45a049;"
+                       "}";
+    ui->loginButton->setStyleSheet(styleButton);
+    ui->createAccountButton->setStyleSheet(styleButton);
+    ui->signupButton->setStyleSheet(styleButton);
+
+
+    // === Оформлення підписів (QLabel) ===
+    auto styleLabel = "QLabel { font-size: 14px; color: #333333; }";
+    ui->emailLabel->setStyleSheet(styleLabel);
+    ui->passwordLabel->setStyleSheet(styleLabel);
+    ui->regEmailLabel->setStyleSheet(styleLabel);
+    ui->regPasswordLabel->setStyleSheet(styleLabel);
+    ui->regLoginLabel->setStyleSheet(styleLabel);
+
+    ui->passwordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+    ui->regPasswordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
 
     showLoginForm();
 }
