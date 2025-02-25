@@ -6,6 +6,15 @@
 
 using std::vector;
 
+class Hashable {
+public:
+	virtual int toInt() const = 0;
+	virtual bool operator==(const Hashable& other) const = 0;
+	virtual bool operator!=(const Hashable& other) const = 0;
+	virtual void print() const = 0;
+	virtual ~Hashable() {}
+};
+
 class ComplexNumber {
 private:
 	int real;
@@ -46,6 +55,7 @@ public:
 
 	//the function itself
 	int hash(ComplexNumber z) const;
+	
 
 	//Set size of the table
 	void setTableSize(int tableSize);
@@ -60,11 +70,12 @@ private:
 	vector<int> secondaryTableSizes; //size of secondaty table
 	vector<bool> secondaryTableInitialized;
 
-	static const ComplexNumber EMPTY_CELL;
+	
 
 
 public:
 	//Contrusctor 
+	static const ComplexNumber EMPTY_CELL;
 	explicit PerfectHashing(int size);
 
 	void insert(const vector<ComplexNumber>& elements) ;

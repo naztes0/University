@@ -57,7 +57,7 @@ int HashFunction::hash(ComplexNumber z) const {
 	}
 	
 	int zInt = z.toInt();
-	std::cerr << "\nHashing: ";
+	std::cerr << "\n\nHashing: ";
 	z.printComplex();
 	std::cerr << " -> int value: " << zInt << std::endl;
 	std::cerr << "Hash params: a=" << a << ", b=" << b << ", p=" << p << ", m=" << m << std::endl;
@@ -111,7 +111,7 @@ void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
 		std::cerr << "Bucket " << i << " elements: " << elementsInBucket << "\n\n";
 		if(elementsInBucket>1) {
 			int secondarySize = elementsInBucket * elementsInBucket;
-			std::cerr << "Bucket " << i << " -> secondarySize: " << secondarySize << "\n\n";
+			std::cerr << "	Bucket " << i << " -> secondarySize: " << secondarySize << "\n\n";
 			if (secondarySize == 0) {
 				std::cerr << "Error: secondarySize is 0 for bucket " << i << std::endl;
 				continue;
