@@ -124,19 +124,19 @@ void HashFunction::generateHashFunction() {
 		b = rand() % p;
 	}
 }
-int HashFunction::hash(ComplexNumber z) const {
-	if (m == 0||p==0) {
+int HashFunction::hash(const Hashable& element) const {
+	if (m == 0 || p == 0) {
 		std::cerr << "Error: m or p is zero in hash function!" << std::endl;
 		return 0;
 	}
-	
-	int zInt = z.toInt();
+
+	int elementInt = element.toInt();
 	std::cerr << "\n\nHashing: ";
-	z.printComplex();
-	std::cerr << " -> int value: " << zInt << std::endl;
+	element.print();
+	std::cerr << " -> int value: " << elementInt << std::endl;
 	std::cerr << "Hash params: a=" << a << ", b=" << b << ", p=" << p << ", m=" << m << std::endl;
-	int rawHash = ((a *zInt + b) % p) % m;
-	if (rawHash < 0) rawHash += m; 
+	int rawHash = ((a * elementInt + b) % p) % m;
+	if (rawHash < 0) rawHash += m;
 	std::cerr << "Hash result: " << rawHash << std::endl;
 	return rawHash;
 }

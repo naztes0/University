@@ -85,7 +85,7 @@ public:
 	void generateHashFunction();
 
 	//the function itself
-	int hash(ComplexNumber z) const;
+	int hash(const Hashable& element) const;
 	
 
 	//Set size of the table
@@ -96,7 +96,7 @@ class PerfectHashing{
 private:
 	int primarySize;// Size of the main hash table
 	HashFunction primaryHashFunc; //main hashfunc
-	vector<vector<ComplexNumber>>hashTable;//table
+	vector<vector<Hashable*>>hashTable;//table
 	vector<HashFunction> secondaryHashFuncs; //secondary Table
 	vector<int> secondaryTableSizes; //size of secondaty table
 	vector<bool> secondaryTableInitialized;
@@ -108,9 +108,10 @@ public:
 	//Contrusctor 
 	static const ComplexNumber EMPTY_CELL;
 	explicit PerfectHashing(int size);
+	~PerfectHashing();
 
-	void insert(const vector<ComplexNumber>& elements) ;
-	bool search(const ComplexNumber& element) const ;
+	void insert(const vector<Hashable*>& elements) ;
+	bool search(const Hashable& element) const ;
 	void print()const;
 
 	
