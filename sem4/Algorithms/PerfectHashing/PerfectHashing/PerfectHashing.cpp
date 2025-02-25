@@ -27,7 +27,7 @@ bool ComplexNumber:: operator!=(const Hashable& other) const  {
 }
 
 int ComplexNumber::toInt() const{
-	return (real * 31 * 17 * img);
+	return (real * 31 )+( 17 * img);
 }
 void ComplexNumber::printComplex() const {
 	std::cout << real << (img >= 0 ? "+" : "") << img << "i";
@@ -35,9 +35,9 @@ void ComplexNumber::printComplex() const {
 /////////////////////////////
 
 
-explicit ComplexVector::ComplexVector(const vector<ComplexNumber>& comps) : values(comps) {}
+ ComplexVector::ComplexVector(const vector<ComplexNumber>& comps) : values(comps) {}
 
-explicit ComplexVector::ComplexVector(const vector<int>& ints) {
+ ComplexVector::ComplexVector(const vector<int>& ints) {
 		for (const auto& val : ints) {
 			values.push_back(ComplexNumber(val, 0));
 		}
@@ -58,27 +58,46 @@ bool ComplexVector:: operator!=(const ComplexVector& other) const {
 }
 
 	// Реалізація базового класу
-bool ComplexVector::operator==(const Hashable& other) const  {
-		try {
-			const ComplexVector& otherVector = dynamic_cast<const ComplexVector&>(other);
-			return *this == otherVector;
-		}
-		catch (const std::bad_cast&) {
+bool ComplexVector::operator==(const Hashable& other) const {
+	try {
+		const ComplexVector& otherVector = dynamic_cast<const ComplexVector&>(other);
+		if (values.size() != otherVector.values.size())
 			return false;
+		for (size_t i = 0; i < values.size(); ++i) {
+			if (values[i] != otherVector.values[i])
+				return false;
 		}
+		return true;
+	}
+	catch (const std::bad_cast&) {
+		return false;
+	}
 }
 
 bool ComplexVector::operator!=(const Hashable& other) const  {
 		return !(*this == other);
 	}
 
-int ComplexVector:: toInt() const  {
-		int result = 0;
-		for (const auto& val : values) {
-			result = (result * 17 + val.toInt()) % 1000000007;
-		}
-		return result;
+//int ComplexVector:: toInt() const  {
+//		int result = 17; //for better hash distribution 
+//		for (const auto& val : values) {
+//			result = result * 31 + val.toInt();
+//			if (result > 1000000) {
+//				result = (result % 100000) * 31;
+//			}
+//		}
+//		return result;
+//	}
+
+int ComplexVector::toInt() const {
+	// Use a better hash combining function
+	int result = 17;
+	for (const auto& val : values) {
+		// Use a more consistent hash combining method
+		result = result * 31 + val.toInt();
 	}
+	return result;
+}
 
 void ComplexVector::print() const  {
 		std::cout << "(";
@@ -129,15 +148,13 @@ int HashFunction::hash(const Hashable& element) const {
 		std::cerr << "Error: m or p is zero in hash function!" << std::endl;
 		return 0;
 	}
-
+	
 	int elementInt = element.toInt();
-	std::cerr << "\n\nHashing: ";
-	element.print();
-	std::cerr << " -> int value: " << elementInt << std::endl;
-	std::cerr << "Hash params: a=" << a << ", b=" << b << ", p=" << p << ", m=" << m << std::endl;
+	/*std::cerr << "\n\nHashing element with int value: " << elementInt << std::endl;
+	std::cerr << "Hash params: a=" << a << ", b=" << b << ", p=" << p << ", m=" << m << std::endl;*/
 	int rawHash = ((a * elementInt + b) % p) % m;
 	if (rawHash < 0) rawHash += m;
-	std::cerr << "Hash result: " << rawHash << std::endl;
+	//std::cerr << "Hash result: " << rawHash << std::endl;
 	return rawHash;
 }
 void HashFunction::setTableSize(int tableSize) {
@@ -151,138 +168,187 @@ const ComplexNumber PerfectHashing::EMPTY_CELL(0, 0);
 
 PerfectHashing::PerfectHashing(int size) :primarySize(size), primaryHashFunc(size) {
 	hashTable.resize(size);
-	secondaryHashFuncs.resize(size);
+	secondaryHashFuncs.resize(size, HashFunction(1));
 	secondaryTableSizes.resize(size,0);
 	secondaryTableInitialized.resize(size, false);
-	//temo init
-	for (int i = 0; i < size; i++) {
-		secondaryHashFuncs[i] = HashFunction(1);
+	
+}
+PerfectHashing::~PerfectHashing() {
+	for (auto& bucket : hashTable) {
+		for (auto& element : bucket) {
+			delete element;
+		}
 	}
 }
 
-void PerfectHashing::insert(const vector<ComplexNumber>& elements) {
-	vector<vector<ComplexNumber>> tempBuckets(primarySize);
-	//First-level
-	for (const auto& element : elements) {
-		int primaryIndex = primaryHashFunc.hash(element);
-		if (primaryIndex < 0 || primaryIndex >= primarySize) {
-			std::cerr << "Error: primaryIndex out of bounds: " << primaryIndex << std::endl;
-		}
-		tempBuckets[primaryIndex].push_back(element);
-	}
-	//Second-level
-	for (int i = 0; i < primarySize; i++) {
-		int elementsInBucket = tempBuckets[i].size();
+void PerfectHashing::insert(const vector<Hashable*>& elements) {
+    vector<vector<Hashable*>> tempBuckets(primarySize);
+	
+	//First level
+    for (const auto& element : elements) {
+        // skip null
+        if (!element) continue;
+        
 
+        int primaryIndex = primaryHashFunc.hash(*element);
 
-		if (elementsInBucket == 0)continue;
-		else if (elementsInBucket == 1) {
-			hashTable[i].resize(1);
-			hashTable[i][0] = tempBuckets[i][0];
-			secondaryTableSizes[i] = 1;
-			secondaryTableInitialized[i] = true;
-		}
-		std::cerr << "Bucket " << i << " elements: " << elementsInBucket << "\n\n";
-		if(elementsInBucket>1) {
-			int secondarySize = elementsInBucket * elementsInBucket;
-			std::cerr << "	Bucket " << i << " -> secondarySize: " << secondarySize << "\n\n";
-			if (secondarySize == 0) {
-				std::cerr << "Error: secondarySize is 0 for bucket " << i << std::endl;
-				continue;
+        // Створюємо глибоку копію елемента для зберігання в таблиці
+        Hashable* elementCopy = nullptr;
+
+        // Копіюємо ComplexNumber
+        const ComplexNumber* complexElement = dynamic_cast<const ComplexNumber*>(element);
+        if (complexElement) {
+            elementCopy = new ComplexNumber(*complexElement);
+        }
+        else {
+            // Копіюємо ComplexVector
+            const ComplexVector* vectorElement = dynamic_cast<const ComplexVector*>(element);
+			if (vectorElement) {
+				elementCopy = new ComplexVector(*vectorElement);
 			}
-			secondaryTableSizes[i] = secondarySize;
+        }
+
+        if(elementCopy) tempBuckets[primaryIndex].push_back(elementCopy);
+    }
+
+    // Другий рівень хешування
+    for (int i = 0; i < primarySize; i++) {
+        // Очищаємо попередні елементи бакета (якщо вони є)
+        for (auto& element : hashTable[i]) {
+            delete element;
+        }
+        hashTable[i].clear();
+
+        int elementsInBucket = tempBuckets[i].size();
+        if (elementsInBucket == 0) continue;
+
+        // Випадок з одним елементом у бакеті
+        if (elementsInBucket == 1) {
+            hashTable[i].resize(1);
+            hashTable[i][0] = tempBuckets[i][0];
+            secondaryTableSizes[i] = 1;
+            secondaryTableInitialized[i] = true;
+            tempBuckets[i].clear();  // Очищаємо тимчасовий вектор (без видалення пам'яті)
+            continue;
+        }
+
+        std::cerr << "Bucket " << i << " elements: " << elementsInBucket << "\n\n";
+
+        // Випадок з кількома елементами в бакеті
+        if (elementsInBucket > 1) {
+            int secondarySize = elementsInBucket * elementsInBucket;
+            std::cerr << "    Bucket " << i << " -> secondarySize: " << secondarySize << "\n\n";
+
+            secondaryTableSizes[i] = secondarySize;
 			secondaryHashFuncs[i].setTableSize(secondarySize);
 
-			secondaryHashFuncs[i] = HashFunction(secondarySize);
+            bool noCollision = false;
+            int attempts = 0;
+            const int MAX_ATTEMPTS = 100;
 
-			bool noCollision = false;
-			int attempts = 0;
-			const int MAX_ATTEMPTS = 100;
+            while (!noCollision && attempts < MAX_ATTEMPTS) {
+				secondaryHashFuncs[i] = HashFunction(secondarySize);
 
-			while (!noCollision && attempts < MAX_ATTEMPTS) {
-				secondaryHashFuncs[i].generateHashFunction();
+                hashTable[i].clear();
+                hashTable[i].resize(secondarySize, nullptr);
+
+                noCollision = true;
+                for (const auto& element : tempBuckets[i]) {
+       
+
+                    int secondaryIndex = secondaryHashFuncs[i].hash(*element);
+                    std::cerr << "Hashed ";
+                    element->print();
+                    std::cerr << std::endl;
+
+                    if (hashTable[i][secondaryIndex] != nullptr) {
+                        noCollision = false;
+                        break;
+						std::cout << "\ncolision!\n";
+                    }
+
+                    hashTable[i][secondaryIndex] = element;
+                }
+                attempts++;
+            }
+
+			if (!noCollision) {
+				// Clean up the table for this bucket
 				hashTable[i].clear();
-				hashTable[i].resize(secondarySize, EMPTY_CELL);
-				
 
-				noCollision = true;
-				for (const auto& element : tempBuckets[i]) {
-					int secondaryIndex = secondaryHashFuncs[i].hash(element);
-					if (secondaryIndex < 0 || secondaryIndex >= secondaryTableSizes[i]) {
-						std::cerr << "Error: secondaryIndex out of bounds: " << secondaryIndex
-							<< " (secondaryTableSizes[i] = " << secondaryTableSizes[i] << ")\n";
-					}
-					std::cerr << "Hashed ";
-					element.printComplex();
-					if (hashTable[i][secondaryIndex] != EMPTY_CELL) {
-						noCollision = false;
-						break;
-					}
-					hashTable[i][secondaryIndex] = element;
-					
+				// Simple list to store elements (not perfect hash)
+				hashTable[i].resize(elementsInBucket);
+				for (size_t j = 0; j < tempBuckets[i].size(); ++j) {
+					hashTable[i][j] = tempBuckets[i][j];
 				}
-				attempts++;
-
-
 			}
-			/*if (!noCollision) {
-				std::cout << "Warning: Could not find perfect hash function for bucket "
-					<< i << " after " << MAX_ATTEMPTS << " attempts.\n";
-				return;
-			}*/
-			secondaryTableInitialized[i] = true;
-		}
 
-	}
-	
-
+            secondaryTableInitialized[i] = true;
+            tempBuckets[i].clear();  // Очищаємо тимчасовий вектор (без видалення пам'яті)
+        }
+    }
 }
 
-bool PerfectHashing::search(const ComplexNumber& element) const {
-
+bool PerfectHashing::search(const Hashable& element) const {
 	int primaryIndex = primaryHashFunc.hash(element);
-	if (primaryIndex < 0 || primaryIndex >= primarySize) {
+
+	if (primaryIndex >= primarySize || !secondaryTableInitialized[primaryIndex]) {
 		return false;
 	}
 
-	if (!secondaryTableInitialized[primaryIndex] || secondaryTableSizes[primaryIndex] == 0) {
+	// Case with a single element in bucket
+	if (secondaryTableSizes[primaryIndex] == 1 && hashTable[primaryIndex].size() == 1) {
+		return hashTable[primaryIndex][0] && *hashTable[primaryIndex][0] == element;
+	}
+
+	// Case with multiple elements in bucket
+	int secondarySize = secondaryTableSizes[primaryIndex];
+	int secondaryIndex = secondaryHashFuncs[primaryIndex].hash(element);
+
+	if (secondaryIndex >= hashTable[primaryIndex].size() ||
+		!hashTable[primaryIndex][secondaryIndex]) {
+		// Check if the element is stored in a simple list (fallback case)
+		for (const auto& item : hashTable[primaryIndex]) {
+			if (item && *item == element) {
+				return true;
+			}
+		}
 		return false;
 	}
-	if (secondaryTableSizes[primaryIndex] == 1 && hashTable[primaryIndex].size() == 1) {
-		return hashTable[primaryIndex][0] == element;
-	}
-	int secondaryIndex = secondaryHashFuncs[primaryIndex].hash(element);
-	if (secondaryIndex < hashTable[primaryIndex].size()) {
-		return hashTable[primaryIndex][secondaryIndex] == element;
-	}
-	return false;
+
+	return *hashTable[primaryIndex][secondaryIndex] == element;
 }
 
-	void PerfectHashing::print()const {
+void PerfectHashing::print() const {
+	std::cout << "=== Perfect Hash Table Structure ===\n";
+	std::cout << "Primary table size: " << primarySize << "\n\n";
 
-		std::cout << "=== Perfect Hash Table Structure ===\n";
-		std::cout << "Primary table size: " << primarySize << "\n\n";
+	for (int i = 0; i < primarySize; i++) {
+		if (secondaryTableInitialized[i]) {
+			std::cout << "Bucket " << i << " (size: " << secondaryTableSizes[i] << "):\n";
 
-		for (int i = 0; i < primarySize; i++) {
-			if (secondaryTableInitialized[i]) {
-				std::cout << "Bucket " << i << " (size: " << secondaryTableSizes[i] << "):\n";
-
-				if (secondaryTableSizes[i] == 1 && hashTable[i].size() == 1) {
-					std::cout << "  Single element: ";
-					hashTable[i][0].printComplex();
-					std::cout << "\n";
-
-				}
-				else {
-					for (int j = 0; j < hashTable[i].size(); j++) {
-						std::cout << "  [" << j << "]: ";
-						hashTable[i][j].printComplex();
-						std::cout << "\n";
-
-					}
-				}
+			if (secondaryTableSizes[i] == 1 && hashTable[i].size() == 1 && hashTable[i][0] != nullptr) {
+				std::cout << "  Single element: ";
+				hashTable[i][0]->print();
 				std::cout << "\n";
 			}
+			else {
+				for (int j = 0; j < hashTable[i].size(); j++) {
+					std::cout << "  [" << j << "]: ";
+					if (hashTable[i][j] != nullptr) {
+						hashTable[i][j]->print();
+					}
+					else {
+						std::cout << "Empty";
+					}
+					std::cout << "\n";
+				}
+			}
+			std::cout << "\n";
 		}
-		std::cout << "==================================\n";
+		else {
+			std::cout << "Bucket " << i << ": Empty\n\n";
+		}
 	}
+	std::cout << "==================================\n";
+}

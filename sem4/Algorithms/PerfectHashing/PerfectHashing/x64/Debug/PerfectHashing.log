@@ -1,5 +1,2 @@
 ﻿  mainPerfectHashing.cpp
-  PerfectHashing.cpp
-C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\PerfectHashing\PerfectHashing.cpp(119,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
   PerfectHashing.vcxproj -> C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\PerfectHashing\x64\Debug\PerfectHashing.exe

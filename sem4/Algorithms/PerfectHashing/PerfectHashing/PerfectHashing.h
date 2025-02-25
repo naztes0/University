@@ -48,7 +48,7 @@ private:
 
 public:
     ComplexVector() {}
-    explicit ComplexVector(const vector<ComplexNumber>& comps) : values(comps) {}
+	explicit ComplexVector(const vector<ComplexNumber>& comps);
 	explicit ComplexVector(const vector<int>& ints);
 	const vector<ComplexNumber>& getValues() const {
 		return values;
