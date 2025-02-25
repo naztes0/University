@@ -3,6 +3,7 @@
 #include<iostream>
 #include<vector>
 #include<cmath>	
+#include<cstdlib>
 
 using std::vector;
 
@@ -15,7 +16,7 @@ public:
 	virtual ~Hashable() {}
 };
 
-class ComplexNumber {
+class ComplexNumber :public Hashable {
 private:
 	int real;
 	int img;
@@ -24,14 +25,21 @@ public:
 	ComplexNumber(int r =0, int i=0):real(r), img(i){}
 	int getReal()const { return real; }
 	int getImg() const {return img;}
+
 	//== operator for complex numbers
-	bool operator == (const ComplexNumber& other)const;
-	bool operator != (const ComplexNumber& other)const; 
+	bool operator==(const ComplexNumber& other) const;
+	bool operator!=(const ComplexNumber& other) const;
+
+	bool operator==(const Hashable& other) const override;
+	bool operator!=(const Hashable& other) const override;
+
+
 	//Rverting to int to be able hash the complexNumbers
-	int toInt() const;
+	int toInt() const override;
 	//Print
 	void printComplex() const;
 
+	void print() const override { printComplex(); }
 };
 
 

@@ -1,13 +1,31 @@
 #include"PerfectHashing.h"
 
 
-bool ComplexNumber:: operator == (const ComplexNumber& other) const {
+
+
+bool ComplexNumber::operator==(const ComplexNumber& other) const {
 	return (real == other.real) && (img == other.img);
 }
 
-bool ComplexNumber:: operator != (const ComplexNumber& other) const {
+bool ComplexNumber::operator!=(const ComplexNumber& other) const {
 	return (real != other.real) || (img != other.img);
 }
+
+//inhereted
+bool ComplexNumber:: operator==(const Hashable& other) const  {
+	try {
+		const ComplexNumber& otherComplex = dynamic_cast<const ComplexNumber&>(other);
+		return *this == otherComplex;
+	}
+	catch (const std::bad_cast&) {
+		return false;
+	}
+}
+
+bool ComplexNumber:: operator!=(const Hashable& other) const  {
+	return !(*this == other);
+}
+
 int ComplexNumber::toInt() const{
 	return (real * 31 * 17 * img);
 }
