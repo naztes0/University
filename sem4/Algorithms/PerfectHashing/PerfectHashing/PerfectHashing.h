@@ -42,6 +42,29 @@ public:
 	void print() const override { printComplex(); }
 };
 
+class ComplexVector : public Hashable {
+private:
+    vector<ComplexNumber> values;
+
+public:
+    ComplexVector() {}
+    explicit ComplexVector(const vector<ComplexNumber>& comps) : values(comps) {}
+	explicit ComplexVector(const vector<int>& ints);
+	const vector<ComplexNumber>& getValues() const {
+		return values;
+	}
+
+	bool operator==(const ComplexVector& other) const;
+
+	bool operator!=(const ComplexVector& other) const;
+
+    // Реалізація базового класу
+	bool operator==(const Hashable& other) const override;
+	bool operator!=(const Hashable& other) const override;
+
+	int toInt() const override;
+	void print() const override;
+};
 
 class HashFunction {
 

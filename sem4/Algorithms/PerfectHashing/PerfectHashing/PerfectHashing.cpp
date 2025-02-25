@@ -32,6 +32,62 @@ int ComplexNumber::toInt() const{
 void ComplexNumber::printComplex() const {
 	std::cout << real << (img >= 0 ? "+" : "") << img << "i";
 }
+/////////////////////////////
+
+
+explicit ComplexVector::ComplexVector(const vector<ComplexNumber>& comps) : values(comps) {}
+
+explicit ComplexVector::ComplexVector(const vector<int>& ints) {
+		for (const auto& val : ints) {
+			values.push_back(ComplexNumber(val, 0));
+		}
+	}
+
+
+
+bool ComplexVector::operator==(const ComplexVector& other) const {
+		if (values.size() != other.values.size()) return false;
+		for (size_t i = 0; i < values.size(); ++i) {
+			if (values[i] != other.values[i]) return false;
+		}
+		return true;
+}
+
+bool ComplexVector:: operator!=(const ComplexVector& other) const {
+		return !(*this == other);
+}
+
+	// Реалізація базового класу
+bool ComplexVector::operator==(const Hashable& other) const  {
+		try {
+			const ComplexVector& otherVector = dynamic_cast<const ComplexVector&>(other);
+			return *this == otherVector;
+		}
+		catch (const std::bad_cast&) {
+			return false;
+		}
+}
+
+bool ComplexVector::operator!=(const Hashable& other) const  {
+		return !(*this == other);
+	}
+
+int ComplexVector:: toInt() const  {
+		int result = 0;
+		for (const auto& val : values) {
+			result = (result * 17 + val.toInt()) % 1000000007;
+		}
+		return result;
+	}
+
+void ComplexVector::print() const  {
+		std::cout << "(";
+		for (size_t i = 0; i < values.size(); ++i) {
+			if (i > 0) std::cout << ",";
+			values[i].printComplex();
+		}
+		std::cout << ")";
+	}
 
 
 //////////////////////////
