@@ -78,17 +78,6 @@ bool ComplexVector::operator!=(const Hashable& other) const  {
 		return !(*this == other);
 	}
 
-//int ComplexVector:: toInt() const  {
-//		int result = 17; //for better hash distribution 
-//		for (const auto& val : values) {
-//			result = result * 31 + val.toInt();
-//			if (result > 1000000) {
-//				result = (result % 100000) * 31;
-//			}
-//		}
-//		return result;
-//	}
-
 int ComplexVector::toInt() const {
 	// Use a better hash combining function
 	int result = 17;
@@ -284,7 +273,7 @@ void PerfectHashing::insert(const vector<Hashable*>& elements) {
 			}
 
             secondaryTableInitialized[i] = true;
-            tempBuckets[i].clear();  // Очищаємо тимчасовий вектор (без видалення пам'яті)
+            tempBuckets[i].clear(); 
         }
     }
 }

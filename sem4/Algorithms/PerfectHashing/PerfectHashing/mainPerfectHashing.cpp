@@ -1,17 +1,38 @@
 #include "PerfectHashing.h"
 
 int main() {
-    PerfectHashing hashTable(7);
+    PerfectHashing hashTable(6);
 
     // Створюємо вектор вказівників на Hashable об'єкти
     vector<Hashable*> elements;
 
-    // Додаємо комплексні числа
+////////// TEST 1 ///////////////////
+
+     //Додаємо комплексні числа
     elements.push_back(new ComplexNumber(3, 4));
     elements.push_back(new ComplexNumber(1, 2));
     elements.push_back(new ComplexNumber(5, -2));
     elements.push_back(new ComplexNumber(-2, 7));
     elements.push_back(new ComplexNumber(0, 0));
+
+ /*  FOR TEST 1
+     hashTable.insert(elements);
+    std::cout << "\n\n";
+    hashTable.print();
+
+    std::cout << "\nDemonstration of search:\n";
+
+    ComplexNumber z1(1, 2);
+    ComplexNumber z2(-2, -7);
+    std::cout << "Searching for ";
+    z1.printComplex();
+    std::cout << ": " << (hashTable.search(z1) ? "Found" : "Not found") << "\n\n";
+
+    std::cout << "Searching for ";
+    z2.printComplex();
+    std::cout << ": " << (hashTable.search(z2) ? "Found" : "Not found") << "\n\n";
+    */
+
 
     // Додаємо вектори комплексних чисел
     vector<ComplexNumber> vec1 = { ComplexNumber(1, 1), ComplexNumber(2, 2) };
@@ -24,7 +45,10 @@ int main() {
     elements.push_back(new ComplexVector(vec3));
     elements.push_back(new ComplexVector(vec4));
 
-    // Вставляємо елементи в хеш-таблицю
+
+///////////// TEST 2 ////////////////////
+/*
+        // Вставляємо елементи в хеш-таблицю
     hashTable.insert(elements);
 
     // Звільняємо початкові елементи (копії вже зберігаються в таблиці)
@@ -33,6 +57,49 @@ int main() {
     }
     elements.clear();
 
+    std::cout << "\n\n";
+    // Виводимо структуру хеш-таблиці
+   hashTable.print();
+
+   // Демонстрація пошуку
+   std::cout << "\nDemonstration of search:\n";
+
+    ComplexVector v1(vec1);
+    std::cout << "Searching for vector: ";
+    v1.print();
+    std::cout << ": " << (hashTable.search(v1) ? "Found" : "Not found") << "\n\n";
+
+   vector<ComplexNumber> vec5 = { ComplexNumber(4, -4), ComplexNumber(-5, 5) };
+   ComplexVector v2(vec5);
+   std::cout << "Searching for vector: ";
+   v2.print();
+   std::cout << ": " << (hashTable.search(v2) ? "Found" : "Not found") << "\n\n";
+
+   ComplexVector v3(vec2);
+   std::cout << "Searching for vector: ";
+   v3.print();
+   std::cout << ": " << (hashTable.search(v3) ? "Found" : "Not found") << "\n\n";
+
+   vector<ComplexNumber> vec6 = { ComplexNumber(4, 4), ComplexNumber(-5, 5) };
+   ComplexVector v4(vec6);
+   std::cout << "Searching for vector: ";
+   v4.print();
+   std::cout << ": " << (hashTable.search(v4) ? "Found" : "Not found") << "\n\n";
+*/
+
+
+////////TEST 3//////////
+
+   // Вставляємо елементи в хеш-таблицю
+   hashTable.insert(elements);
+
+   // Звільняємо початкові елементи (копії вже зберігаються в таблиці)
+   for (auto& element : elements) {
+       delete element;
+   }
+   elements.clear();
+
+   std::cout << "\n\n";
     // Виводимо структуру хеш-таблиці
     hashTable.print();
 
