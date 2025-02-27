@@ -60,3 +60,30 @@ void OST::rightRotate(Node* x) {
 }
 
 ///////PUBLIC//////
+
+void OST::insert(int key) {
+	Node* newNode = new Node(key);
+	newNode->left = NIL;
+	newNode->right = NIL;
+	newNode->color = false; // new node always red
+
+	Node* parent = NIL;
+	Node* current = root;
+	while (current != NIL) {
+		parent = current;
+		parent->size++;
+		if (key < current->key) {
+			current=current->left;
+		}
+		else {
+			current = current->right;
+		}
+	}
+
+	newNode->parent = parent;
+	if (parent == NIL) root = newNode;
+	else if (key < parent->key) parent->left = newNode;
+	else parent->right = newNode;
+
+	fixInsert(newNode);
+}

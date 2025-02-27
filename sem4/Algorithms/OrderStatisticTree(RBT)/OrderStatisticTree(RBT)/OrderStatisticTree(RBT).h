@@ -20,5 +20,14 @@ private:
 	void rightRotate(Node* node);
 
 public:
+	OST() {
+		NIL = new Node(0);
+		NIL->color = false;
+		NIL->size = 0;
+		root = NIL;
+	}
+
+	void insert(int key);
+	void fixInsert(Node*node);
 
 };
