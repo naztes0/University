@@ -12,6 +12,12 @@ private:
 
 		Node(int key):key(key),size(1),color(true), left(nullptr), right(nullptr), parent(nullptr){}
 	};
+	Node* root;
+	Node* NIL;
+
+	void updateSize(Node*node);
+	void leftRotate(Node* node);
+	void rightRotate(Node* node);
 
 public:
 
