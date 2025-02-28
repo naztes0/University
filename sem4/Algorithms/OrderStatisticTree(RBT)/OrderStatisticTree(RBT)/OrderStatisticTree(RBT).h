@@ -18,6 +18,8 @@ private:
 	void updateSize(Node*node);
 	void leftRotate(Node* node);
 	void rightRotate(Node* node);
+	void updateSizeAfterDelete(Node* node);
+	void fixInsert(Node* node);
 
 public:
 	OST() {
@@ -28,8 +30,9 @@ public:
 	}
 
 	void insert(int key);
-	void fixInsert(Node*node);
+	void remove(Node* node, int key);
 	Node* findByOrder(Node* node, int k);
+	int orderOfKey(Node* node, int x);
 
 };
 
