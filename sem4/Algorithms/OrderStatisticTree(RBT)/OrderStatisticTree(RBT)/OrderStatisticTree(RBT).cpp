@@ -87,3 +87,48 @@ void OST::insert(int key) {
 
 	fixInsert(newNode);
 }
+
+void OST::fixInsert(Node* node) {
+	while (node->parent->color == false) { //till the parent is red
+		if (node->parent == node->parent->parent->left) { // if parent is left son of grand
+			Node* uncle = node->parent->parent->right;
+
+			if (uncle->color == false) {
+				node->parent->color = true;
+				uncle->color = true;
+				node->parent->parent->color = false;
+				node = node->parent->parent;
+			}
+			else {
+				if (node==node->parent->right) {
+					node = node->parent;
+					leftRotate(node);
+				}
+				node->parent->color = true;
+				node->parent->parent->color = true;
+				rightRotate(node->parent->parent);
+			}
+		}
+		else {
+			Node* uncle = node->parent->parent->left;
+			if (uncle->color == false) {
+				node->parent->color = true;
+				uncle->color = true;
+				node->parent->parent->color = false;
+				node = node->parent->parent;
+			}
+			else{
+				if (node == node->parent->left) {
+					node = node->parent;
+					rightRotate(node);
+				}
+				node->parent->color = true;
+				node->parent->parent->color = false;
+				leftRotate(node->parent->parent);
+			}
+
+		}
+	}
+	root->color = true;
+}
+

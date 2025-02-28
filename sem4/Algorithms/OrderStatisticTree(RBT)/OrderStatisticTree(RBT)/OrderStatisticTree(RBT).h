@@ -29,5 +29,7 @@ public:
 
 	void insert(int key);
 	void fixInsert(Node*node);
+	
 
 };
+
