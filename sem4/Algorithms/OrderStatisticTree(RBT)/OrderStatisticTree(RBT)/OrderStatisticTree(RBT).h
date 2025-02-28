@@ -29,7 +29,7 @@ public:
 
 	void insert(int key);
 	void fixInsert(Node*node);
-	
+	Node* findByOrder(Node* node, int k);
 
 };
 

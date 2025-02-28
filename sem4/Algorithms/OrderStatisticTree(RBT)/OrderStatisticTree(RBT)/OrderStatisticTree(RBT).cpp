@@ -132,3 +132,19 @@ void OST::fixInsert(Node* node) {
 	root->color = true;
 }
 
+OST::Node* OST::findByOrder(Node* node, int k) {
+	if (node == NIL || k <= 0 || k > node->size) return NIL;
+
+	int leftsize = node->left->size;
+
+	if (leftsize + 1 == k) {
+		return node;
+	}
+	else if (k <= leftsize) {
+		return  findByOrder(node->left,k);
+	}
+	else {
+		return findByOrder(node->right, k - (leftsize + 1));
+	}
+}
+
