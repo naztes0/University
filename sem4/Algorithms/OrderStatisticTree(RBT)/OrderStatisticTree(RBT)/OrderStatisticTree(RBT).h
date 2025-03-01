@@ -20,6 +20,12 @@ private:
 	void rightRotate(Node* node);
 	void updateSizeAfterDelete(Node* node);
 	void fixInsert(Node* node);
+	void fixDelete(Node* node);
+	Node* findByOrderInternal(Node* node, int k);
+	int orderOfKeyInternal(Node* node, int x);
+	void callPrintTree(Node* node, int depth = 0);
+	void removeNode(Node* node, int key);
+
 
 public:
 	OST() {
@@ -30,9 +36,10 @@ public:
 	}
 
 	void insert(int key);
-	void remove(Node* node, int key);
-	Node* findByOrder(Node* node, int k);
-	int orderOfKey(Node* node, int x);
-
+	void remove(int key);
+	int findByOrder(int k);
+	int orderOfKey (int x);
+	void printTree();
+	
 };
 

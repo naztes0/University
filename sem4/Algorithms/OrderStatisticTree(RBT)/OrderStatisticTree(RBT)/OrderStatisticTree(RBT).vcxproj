@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="OrderStatisticTree(RBT).cpp" />
+    <ClCompile Include="OrderStatisticTree_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OrderStatisticTree(RBT).h" />

@@ -18,6 +18,9 @@
     <ClCompile Include="OrderStatisticTree(RBT).cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OrderStatisticTree_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OrderStatisticTree(RBT).h">
