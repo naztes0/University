@@ -2,12 +2,31 @@
 
 LinearProgram::LinearProgram():variablesNumb(0),constraintsNumb(0){}
 
-void LinearProgram::readInput() {
-	std::cout << "Enter number of variables: ";
-	std::cin >> variablesNumb;
 
-	std::cout << "Enter number of constraints: ";
-	std::cin >> constraintsNumb;
+
+void LinearProgram::isValidNumber(int& num, const std::string& message) {
+	while (true) {
+		std::cout << message;
+		std::cin >> num;
+
+		if (std::cin.fail() || num <= 0) {
+			std::cout << "Error! Enter positive number \n\n";
+			std::cin.clear(); 
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+		}
+		else {
+			break; 
+		}
+	}
+}
+
+
+
+void LinearProgram::readInput() {
+
+	isValidNumber(variablesNumb, "Enter number of variables: ");
+	isValidNumber(constraintsNumb, "Enter number of constraints: ");
+
 
 	objectiveFunc.resize(variablesNumb);
 	constraintsMatrix.resize(constraintsNumb, vector<int>(variablesNumb));
@@ -15,25 +34,39 @@ void LinearProgram::readInput() {
 
 	std::cout << "Enter coefficients of Objective Function:\n";
 	for (int i = 0; i < variablesNumb; i++) {
-		std::cin >> objectiveFunc[i];
+		while (!(std::cin >> objectiveFunc[i])) {
+			std::cout << "Error! Enter a number \n";
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
 	}
 	std::cout << "Enter coefficients of Contraints:\n";
 	for (int i = 0; i < constraintsNumb; i++) {
 		std::cout << "Constraint " << i+1<<": ";
 		for (int j = 0; j < constraintsNumb; j++) {
-			std::cin >> constraintsMatrix[i][j];
+			while (!(std::cin >> constraintsMatrix[i][j])) {
+				std::cout << "Error! Enter a number \n";
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
 		}
 	}
 	std::cout << "Enter constraints values: ";
 	for (int i = 0; i < constraintsNumb; i++) {
-		std::cin >> constraintsValues[i];
+		while (!(std::cin >> constraintsValues[i])) {
+			std::cout << "Error! Enter a number \n";
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
 	}
+
+	
 }
 
 void LinearProgram:: printData() const {
 	std::cout << "\n\n============== SIMPLEX METHOD ==============\n";
 	//Print Objective function
-	std::cout << "Objective Function: Z=";
+	std::cout << "Objective Function: Z = ";
 	for (int i = 0; i < variablesNumb; i++) {
 		std::cout << objectiveFunc[i] << "x" << i+1;
 		if (i != variablesNumb - 1) std::cout << " + ";
