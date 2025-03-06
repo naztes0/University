@@ -6,13 +6,13 @@ int main() {
     SegmentTree tree;
 
     // Adding intervals (correct sum values)
-    tree.insert(1,10,55);
-    tree.insert(1,5,15);
-    tree.insert(1,3,6);
-    tree.insert(4,5,9);
-    tree.insert(6,10,40);
-    tree.insert(6,8,21);
-    tree.insert(9,10,19);
+    tree.insert(1, 10, 0);
+    tree.insert(1, 5, 15);
+    tree.insert(1, 3, 6);
+    tree.insert(4, 5, 9);
+    tree.insert(6, 10, 40);
+    tree.insert(6, 8, 21);
+    tree.insert(9, 10, 19);
 
 
     std::cout << "Begin tree:\n";
@@ -27,7 +27,7 @@ int main() {
    
     // Removing an interval
     std::cout << "\nDeleting [1, 10]\n";
-    tree.remove(1, 5);
+    tree.remove(6,8);
     tree.printTree();
 
     // Query sum after deletion

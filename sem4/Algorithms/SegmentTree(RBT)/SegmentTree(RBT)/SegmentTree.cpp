@@ -50,6 +50,19 @@ void SegmentTree::leftRotate(Node* x) {
 
 }
 
+void SegmentTree::updateSum(Node* node) {
+	while (node != NIL && node != nullptr) {
+		int leftSum = (node->leftChild != NIL) ? node->leftChild->sum : 0;
+		int rightSum = (node->rightChild != NIL) ? node->rightChild->sum : 0;
+
+		if (node->leftChild == NIL && node->rightChild == NIL) {
+		}
+		else {
+			node->sum = leftSum + rightSum;
+		}
+		node = node->parent;
+	}
+}
 void SegmentTree::fixInsert(Node* node) {
 	while (node->parent != NIL && node->parent->color == false) {
 
@@ -145,7 +158,7 @@ int SegmentTree::queryPrivate(Node* node, int l, int r) {
 
 	return totalSum;
 }
-//Methods for removing nodes
+////Methods for removing nodes
 void SegmentTree::transplant(Node* u, Node* v) {
 	if (u->parent == NIL) {
 		root = v;
@@ -165,79 +178,121 @@ SegmentTree::Node* SegmentTree::minimum(Node* node) {
 	}
 	return node;
 }
-void SegmentTree::fixDelete(Node* node) {
-	while (node != root && node->color == true) {
-		if (node == node->parent->leftChild) {
-			Node* sibling = node->parent->rightChild;
 
-			if (sibling->color == false) {
-				sibling->color = true;
-				node->parent->color = false;
+void SegmentTree::fixDelete(Node* node) {
+	Node* sibling;
+	while (node != root && node->color == true) {  // true = BLACK
+		if (node == node->parent->leftChild) {
+			sibling = node->parent->rightChild;
+
+			// Випадок 1: червоний брат
+			if (sibling->color == false) {  // false = RED
+				sibling->color = true;      // BLACK
+				node->parent->color = false; // RED
 				leftRotate(node->parent);
 				sibling = node->parent->rightChild;
 			}
 
+			// Випадок 2: обидва дочірні вузли брата чорні
 			if (sibling->leftChild->color == true && sibling->rightChild->color == true) {
-				sibling->color = false;
+				sibling->color = false;  // RED
 				node = node->parent;
 			}
 			else {
+				// Випадок 3: правий дочірній вузол брата чорний
 				if (sibling->rightChild->color == true) {
-					sibling->leftChild->color = true;
-					sibling->color = false;
+					sibling->leftChild->color = true;  // BLACK
+					sibling->color = false;  // RED
 					rightRotate(sibling);
 					sibling = node->parent->rightChild;
 				}
 
+				// Випадок 4: лівий дочірній вузол брата чорний
 				sibling->color = node->parent->color;
-				node->parent->color = true;
-				sibling->rightChild->color = true;
+				node->parent->color = true;  // BLACK
+				sibling->rightChild->color = true;  // BLACK
 				leftRotate(node->parent);
 				node = root;
 			}
 		}
-		else {
-			Node* sibling = node->parent->leftChild;
+		else {  // Дзеркальний випадок
+			sibling = node->parent->leftChild;
 
-			if (sibling->color == false) {
-				sibling->color = true;
-				node->parent->color = false;
+			// Випадок 1: червоний брат
+			if (sibling->color == false) {  // false = RED
+				sibling->color = true;      // BLACK
+				node->parent->color = false; // RED
 				rightRotate(node->parent);
 				sibling = node->parent->leftChild;
 			}
 
+			// Випадок 2: обидва дочірні вузли брата чорні
 			if (sibling->leftChild->color == true && sibling->rightChild->color == true) {
-				sibling->color = false;
+				sibling->color = false;  // RED
 				node = node->parent;
 			}
 			else {
+				// Випадок 3: лівий дочірній вузол брата чорний
 				if (sibling->leftChild->color == true) {
-					sibling->rightChild->color = true;
-					sibling->color = false;
+					sibling->rightChild->color = true;  // BLACK
+					sibling->color = false;  // RED
 					leftRotate(sibling);
 					sibling = node->parent->leftChild;
 				}
 
+				// Випадок 4: правий дочірній вузол брата чорний
 				sibling->color = node->parent->color;
-				node->parent->color = true;
-				sibling->leftChild->color = true;
+				node->parent->color = true;  // BLACK
+				sibling->leftChild->color = true;  // BLACK
 				rightRotate(node->parent);
 				node = root;
 			}
 		}
 	}
-	node->color = true;
+	node->color = true;  // BLACK
 }
+
+//// Оновлення суми в дереві відрізків
+//void SegmentTree::updateSum(Node* node) {
+//	if (node == NIL) return;
+//
+//	// Оновлення суми для поточного вузла на основі його дочірніх вузлів
+//	if (node->leftChild != NIL && node->rightChild != NIL) {
+//		node->sum = node->leftChild->sum + node->rightChild->sum;
+//	}
+//	else if (node->leftChild != NIL) {
+//		node->sum = node->leftChild->sum;
+//	}
+//	else if (node->rightChild != NIL) {
+//		node->sum = node->rightChild->sum;
+//	}
+//	else {
+//		node->sum = node->value;  // Листовий вузол
+//	}
+//
+//	// Рекурсивно оновлюємо суми вгору по дереву
+//	if (node->parent != NIL) {
+//		updateSum(node->parent);
+//	}
+//}
+
 void SegmentTree::removeNode(Node* node, int l, int r) {
 	if (node == NIL) return;
 
-	if (l < node->left) {
-		removeNode(node->leftChild, l, r);
+	// Перевірка перетину діапазонів
+	if (r < node->left || l > node->right) {
+		// Діапазони не перетинаються, шукаємо далі
+		if (l < node->left) {
+			removeNode(node->leftChild, l, r);
+		}
+		else {
+			removeNode(node->rightChild, l, r);
+		}
+		return;
 	}
-	else if (l > node->right) {
-		removeNode(node->rightChild, l, r);
-	}
-	else {
+
+	// Якщо діапазон вузла повністю входить в діапазон видалення
+	if (l <= node->left && r >= node->right) {
 		Node* y = node;
 		Node* x;
 		bool yOriginalColor = y->color;
@@ -251,7 +306,7 @@ void SegmentTree::removeNode(Node* node, int l, int r) {
 			transplant(node, node->leftChild);
 		}
 		else {
-			y = minimum(node->rightChild);
+			y = minimum(node->rightChild);  // Знаходимо наступника
 			yOriginalColor = y->color;
 			x = y->rightChild;
 
@@ -268,16 +323,38 @@ void SegmentTree::removeNode(Node* node, int l, int r) {
 			y->leftChild = node->leftChild;
 			y->leftChild->parent = y;
 			y->color = node->color;
+
+			// Оновлюємо діапазон та інші дані вузла
+			y->left = node->left;
+			y->right = node->right;
+		}
+
+		// Оновлюємо суми у дереві
+		Node* updateNode = (y != NIL) ? y : x->parent;
+		if (updateNode != NIL) {
+			updateSum(updateNode);
+		}
+
+		if (yOriginalColor == true) {  // Якщо видалявся чорний вузол (true = BLACK)
+			fixDelete(x);
 		}
 
 		delete node;
-
-		if (yOriginalColor == true) { // Якщо видалявся чорний вузол
-			fixDelete(x);
+	}
+	else {
+		// Діапазон вузла частково перетинається з діапазоном видалення
+		// Рекурсивно видаляємо з обох піддерев, якщо потрібно
+		if (l < node->left || (node->left <= l && l <= node->right)) {
+			removeNode(node->leftChild, l, r);
 		}
+		if (r > node->right || (node->left <= r && r <= node->right)) {
+			removeNode(node->rightChild, l, r);
+		}
+
+		// Оновлюємо суму поточного вузла після видалення з піддерев
+		updateSum(node);
 	}
 }
-
 
 void SegmentTree::printTreePriv(Node* node, int depth) {
 	// Перевірка на порожнє або некоректне дерево
@@ -397,6 +474,7 @@ void SegmentTree::insert(int l, int r, int sum) {
 	std::cout << "Node range: [" << l << ";" << r << "]" << "with parent" << "[" <<newNode->parent->left<<";"<<newNode->parent->right<<"]"<<"\n";
 	// Виправляємо порушення властивостей червоно-чорного дерева
 	fixInsert(newNode);
+	updateSum(newNode);
 }
 
 int SegmentTree::query(int l, int r) {

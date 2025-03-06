@@ -26,6 +26,7 @@ private:
 	
 	void rightRotate(Node* x); 
 	void leftRotate(Node* x);
+	void updateSum(Node* node);
 	void fixInsert(Node* node); //fixing the tree due to RBT rules after the insertion
 	int queryPrivate(Node* node, int l, int r); //Get the sum number on some range
 	void updatePrivate(Node* node, int l, int r, int newValue);
