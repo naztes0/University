@@ -2,8 +2,6 @@
 
 #include<iostream>
 #include<vector>
-#include<iomanip>
-#include<queue>
 
 
 class SegmentTree
@@ -21,7 +19,7 @@ private:
 	};
 
 	Node* root;
-	Node* NIL; //equ to the nullptr in RBT
+	Node* NIL; //special nullptr in RBT
 
 	
 	void rightRotate(Node* x); 
@@ -29,7 +27,7 @@ private:
 	void updateSum(Node* node);
 	void fixInsert(Node* node); //fixing the tree due to RBT rules after the insertion
 	int queryPrivate(Node* node, int l, int r); //Get the sum number on some range
-	void updatePrivate(Node* node, int l, int r, int newValue);
+	
 	
 	//Remove methods
 	void removeNode(Node* node, int l, int r);
@@ -46,8 +44,7 @@ public:
 	}
 	void insert(int l, int r, int sum); //insertion of node 
 	int query(int l, int r); //the call of private method querry 
-	void update(int l, int r, int newValue); //change the sum  some range and update sum in other nodes
-	void remove(int l, int r);
-	void printTree();
+	void remove(int l, int r); //deletion of the node
+	void printTree(); //tree print
 };
 
