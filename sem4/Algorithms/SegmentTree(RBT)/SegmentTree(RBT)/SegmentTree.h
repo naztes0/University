@@ -1,7 +1,9 @@
 #pragma once
 
 #include<iostream>
-
+#include<vector>
+#include<iomanip>
+#include<queue>
 
 
 class SegmentTree
@@ -33,6 +35,7 @@ private:
 	void transplant(Node* u, Node* v);
 	Node* minimum(Node* node); 
 	void fixDelete(Node* node);
+	void printTreePriv(Node* node, int depth );
 
 public:
 	SegmentTree() { 
@@ -42,7 +45,8 @@ public:
 	}
 	void insert(int l, int r, int sum); //insertion of node 
 	int query(int l, int r); //the call of private method querry 
-	void update(int l, int r, int newValue); //change the sum on some range and update sum in other nodes
+	void update(int l, int r, int newValue); //change the sum  some range and update sum in other nodes
 	void remove(int l, int r);
+	void printTree();
 };
 

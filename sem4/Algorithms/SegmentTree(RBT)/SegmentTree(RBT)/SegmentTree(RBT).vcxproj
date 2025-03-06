@@ -130,6 +130,7 @@
     <ClInclude Include="SegmentTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main_SegmentTree.cpp" />
     <ClCompile Include="SegmentTree.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
