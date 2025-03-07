@@ -52,8 +52,8 @@ void SegmentTree::leftRotate(Node* x) {
 
 void SegmentTree::updateSum(Node* node) {
 	while (node != NIL && node != nullptr) {
-		int leftSum = (node->leftChild != NIL) ? node->leftChild->sum : 0;
-		int rightSum = (node->rightChild != NIL) ? node->rightChild->sum : 0;
+		double leftSum = (node->leftChild != NIL) ? node->leftChild->sum : 0;
+		double rightSum = (node->rightChild != NIL) ? node->rightChild->sum : 0;
 
 		if (node->leftChild == NIL && node->rightChild == NIL) {
 		}
@@ -112,7 +112,7 @@ void SegmentTree::fixInsert(Node* node) {
 
 
 
-int SegmentTree::queryPrivate(Node* node, int l, int r) {
+double SegmentTree::queryPrivate(Node* node, double l, double r) {
 	if (node == NIL) return 0;
 
 	//full overlap
@@ -125,7 +125,7 @@ int SegmentTree::queryPrivate(Node* node, int l, int r) {
 	}
 
 	// Partial overlap
-	int totalSum = 0;
+	double totalSum = 0;
 	if (node->leftChild != NIL)
 		totalSum += queryPrivate(node->leftChild, l, r);
 	if (node->rightChild != NIL)
@@ -261,7 +261,7 @@ void SegmentTree::fixDelete(Node* x) {
 }
 
 // Deleting of node from the range including his children
-void SegmentTree::removeNode(Node* node, int l, int r) {
+void SegmentTree::removeNode(Node* node, double l, double r) {
 	if (node == NIL) return;
 
 	// Check for ranges intersection
@@ -373,7 +373,7 @@ void SegmentTree::removeNode(Node* node, int l, int r) {
 ////////////PUBLIC//////////////////////
 
 
-void SegmentTree::insert(int l, int r, int sum) {
+void SegmentTree::insert(double l, double r, double sum) {
 	// New node creation
 	Node* newNode = new Node(l, r, sum);
 	newNode->leftChild = NIL;
@@ -430,7 +430,7 @@ void SegmentTree::insert(int l, int r, int sum) {
 	newNode->parent = parent;
 
 	// Define which side node will be
-	int mid = (parent->left + parent->right) / 2;
+	double mid = (parent->left + parent->right) / 2;
 	if (parent->left <= l && r <= parent->right) {
 		//Range included
 		if (r <= mid) {
@@ -465,12 +465,12 @@ void SegmentTree::insert(int l, int r, int sum) {
 }
 
 //Public function callers
-int SegmentTree::query(int l, int r) {
+double SegmentTree::query(double l, double r) {
 	return queryPrivate(root, l, r);
 }
 
 
-void SegmentTree::remove(int l, int r) {
+void SegmentTree::remove(double l, double r) {
 	removeNode(root, l, r);
 }
 

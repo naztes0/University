@@ -8,12 +8,12 @@ class SegmentTree
 {
 private:
 	struct Node {
-		int left, right;  
-		int sum;      
+		double left, right;  
+		double sum;
 		bool color;       
 		Node* parent, * leftChild, * rightChild;
 
-		Node(int l, int r, int s) : left(l), right(r), sum(s),
+		Node(double l, double r, double s) : left(l), right(r), sum(s),
 			color(false), parent(nullptr),
 			leftChild(nullptr), rightChild(nullptr) {}
 	};
@@ -26,11 +26,11 @@ private:
 	void leftRotate(Node* x);
 	void updateSum(Node* node);
 	void fixInsert(Node* node); //fixing the tree due to RBT rules after the insertion
-	int queryPrivate(Node* node, int l, int r); //Get the sum number on some range
+	double queryPrivate(Node* node, double l, double r); //Get the sum number on some range
 	
 	
 	//Remove methods
-	void removeNode(Node* node, int l, int r);
+	void removeNode(Node* node, double l, double r);
 	void transplant(Node* u, Node* v);
 	Node* minimum(Node* node); 
 	void fixDelete(Node* node);
@@ -42,9 +42,9 @@ public:
 		NIL->color = false;
 		root = NIL;
 	}
-	void insert(int l, int r, int sum); //insertion of node 
-	int query(int l, int r); //the call of private method querry 
-	void remove(int l, int r); //deletion of the node
+	void insert(double l, double r, double sum); //insertion of node 
+	double query(double l, double r); //the call of private method querry 
+	void remove(double l, double r); //deletion of the node
 	void printTree(); //tree print
 };
 
