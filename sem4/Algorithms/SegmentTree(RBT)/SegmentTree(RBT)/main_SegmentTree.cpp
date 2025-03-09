@@ -81,12 +81,12 @@ int main() {
     std::cout << "=======================================\n";
 
     // Removing an interval
-    std::cout << "\n===========Deleting [6.3, 8.9]===========\n\n";
-    tree.remove(6.3, 8.9);
+    std::cout << "\n===========Deleting [9.5, 10.7]===========\n\n";
+    tree.remove(9.5, 10.7);
     tree.printTree();
 
     // Query sum after deletion
-    std::cout << "\nQuery SUM [1.2, 5.8] after deletion: " << tree.query(1.2, 5.8) << "\n";
+    std::cout << "\nQuery SUM [1.1, 5.9] after deletion: " << tree.query(1.1, 5.9) << "\n";
     std::cout << "Query SUM [6.2, 10.8] after deletion: " << tree.query(6.2, 10.8) << "\n\n";
 
     std::cout << "\n===========Deleting [6.2, 10.8]===========\n\n";
@@ -94,15 +94,15 @@ int main() {
     tree.printTree();
 
     // Query sum after deletion
-    std::cout << "\nQuery SUM [1.2, 5.8] after deletion: " << tree.query(1.2, 5.8) << "\n";
+    std::cout << "\nQuery SUM [1.1, 5.9] after deletion: " << tree.query(1.1, 5.9) << "\n";
     std::cout << "Query SUM [6.2, 10.8] after deletion: " << tree.query(6.2, 10.8) << "\n\n";
 
-    std::cout << "\n===========Deleting [1.3, 3.5]===========\n\n";
-    tree.remove(1.3, 3.5);
+    std::cout << "\n===========Deleting [1.1, 3.7]===========\n\n";
+    tree.remove(1.1, 3.7);
     tree.printTree();
 
     // Query sum after deletion
-    std::cout << "\nQuery SUM [1.2, 5.8] after deletion: " << tree.query(1.2, 5.8) << "\n";
+    std::cout << "\nQuery SUM [1.1, 5.9] after deletion: " << tree.query(1.1, 5.9) << "\n";
     std::cout << "Query SUM [6.2, 10.8] after deletion: " << tree.query(6.2, 10.8) << "\n\n";
 
 }

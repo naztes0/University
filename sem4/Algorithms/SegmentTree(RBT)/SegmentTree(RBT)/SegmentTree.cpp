@@ -127,13 +127,13 @@ SegmentTree::Node* SegmentTree::findInsertionPoint(double l, double r) {
 
 	while (current != NIL) {
 		//CASE 1: Current node is fully contained in new range
-
+	
 		if (l <= current->left && r >= current->right) {
 			// New node must be a parent of current node
 			best = current->parent;
 			break;
 		}
-
+		
 
 		//Case2 : New range contained in the current node
 		if (l >= current->left && r <= current->right) {
