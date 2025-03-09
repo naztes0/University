@@ -35,6 +35,7 @@ private:
 	Node* minimum(Node* node); 
 	void fixDelete(Node* node);
 	void printTreePriv(Node* node, int depth );
+	Node* findInsertionPoint(double l, double r);
 
 public:
 	SegmentTree() { 

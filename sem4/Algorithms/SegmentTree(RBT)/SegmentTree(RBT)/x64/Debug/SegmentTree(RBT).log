@@ -1,5 +1,2 @@
 ﻿  SegmentTree.cpp
-C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\SegmentTree(RBT)\SegmentTree(RBT)\SegmentTree.cpp(401,12): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  main_SegmentTree.cpp
-  Generating Code...
   SegmentTree(RBT).vcxproj -> C:\Users\ASUS TUF\GitRepos\University\sem4\Algorithms\SegmentTree(RBT)\x64\Debug\SegmentTree(RBT).exe

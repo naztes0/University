@@ -110,6 +110,72 @@ void SegmentTree::fixInsert(Node* node) {
 	root->color = true;
 }
 
+//Find optimal place for insertion a  new node with renge [l;r]
+//Return the pointer on the parent node, you need to insert the node under
+
+SegmentTree::Node* SegmentTree::findInsertionPoint(double l, double r) {
+	if (root == NIL) return NIL; // Tree is empty
+
+	// Check if new 3range has a root
+	if (l <= root->left && r >= root->right) {
+		//New range has a root => NIL
+		return NIL;
+	}
+
+	Node* best = NIL;    // Best palce for insertion
+	Node* current = root;
+
+	while (current != NIL) {
+		//CASE 1: Current node is fully contained in new range
+
+		if (l <= current->left && r >= current->right) {
+			// New node must be a parent of current node
+			best = current->parent;
+			break;
+		}
+
+
+		//Case2 : New range contained in the current node
+		if (l >= current->left && r <= current->right) {
+			best = current; // Curretn node is potential fate 
+
+			// Trying to find more ooptimal node among children
+			bool foundBetter = false;
+
+			if (current->leftChild != NIL &&
+				l >= current->leftChild->left && r <= current->leftChild->right) {
+				current = current->leftChild;
+				foundBetter = true;
+			}
+			else if (current->rightChild != NIL &&
+				l >= current->rightChild->left && r <= current->rightChild->right) {
+				current = current->rightChild;
+				foundBetter = true;
+			}
+
+			//If not found => break
+			if (!foundBetter) {
+				break;
+			}
+		}
+		//Case 3: Ranges are intersects or have no nesting relations
+		else {
+			best = current; //write the current node
+
+			// Choose  tree way
+			if (l < current->left || (l == current->left && r < current->right)) {
+				if (current->leftChild == NIL) break;
+				current = current->leftChild;
+			}
+			else {
+				if (current->rightChild == NIL) break;
+				current = current->rightChild;
+			}
+		}
+	}
+
+	return best;
+}
 
 
 double SegmentTree::queryPrivate(Node* node, double l, double r) {
@@ -162,8 +228,7 @@ void SegmentTree::printTreePriv(Node* node, int depth) {
 }
 
 
-
-
+////////////////////////DELETING METHODS////////////////////////////////
 
 // Putting of v subtree at hte place of u subtree
 void SegmentTree::transplant(Node* u, Node* v) {
@@ -261,6 +326,7 @@ void SegmentTree::fixDelete(Node* x) {
 }
 
 // Deleting of node from the range including his children
+
 void SegmentTree::removeNode(Node* node, double l, double r) {
 	if (node == NIL) return;
 
@@ -374,83 +440,71 @@ void SegmentTree::removeNode(Node* node, double l, double r) {
 
 
 void SegmentTree::insert(double l, double r, double sum) {
-	// New node creation
+	// Node creation
 	Node* newNode = new Node(l, r, sum);
 	newNode->leftChild = NIL;
 	newNode->rightChild = NIL;
-	newNode->color = false;  // New node has RED color (false)
+	newNode->color = false;
 	newNode->parent = NIL;
 
-	// If the tree is empty
+	// ‗ךשמ הונוגמ ןמנמזם÷
 	if (root == NIL) {
 		root = newNode;
-		newNode->color = true;  // Root always black
+		newNode->color = true; 
 		return;
 	}
 
-	// Finding the place for insert 
-	Node* parent = NIL;
-	Node* current = root;
-	while (current != NIL) {
-		parent = current;
+	// Find optimal place for indsertion
+	Node* parent = findInsertionPoint(l, r);
 
-		// Check if new range is included
-		if (l >= current->left && r <= current->right) {
-			
-			//Included => go on the right/left. Depends on the intersaction of mid of the range
-			int mid = (current->left + current->right) / 2;
-			if (r <= mid) {
-				current = current->leftChild;
-			}
-			else if (l > mid) {
-				current = current->rightChild;
-			}
-			else {
-				//If intersects the mid => choose the direction bases on the limit comparison
-				if (l < current->left || (l == current->left && r < current->right)) {
-					current = current->leftChild;
-				}
-				else {
-					current = current->rightChild;
-				}
-			}
+	// Range has a root
+	if (parent == NIL && root != NIL) {
+		// New node => root
+		newNode->color = true; 
+
+		// Define where to place the old root
+		if (root->left < l || (root->left == l && root->right < r)) {
+			newNode->leftChild = root;
 		}
 		else {
-			// If the range wasn`t included => use lexicographic comparison
-			if (l < current->left || (l == current->left && r < current->right)) {
-				current = current->leftChild;
-			}
-			else {
-				current = current->rightChild;
-			}
+			newNode->rightChild = root;
 		}
+
+		root->parent = newNode;
+		root = newNode;
 	}
+	//Current parent has more narrow range than the node
+	else if (parent != NIL && l <= parent->left && r >= parent->right) {
 
-	// Insert the node
-	newNode->parent = parent;
+		newNode->parent = parent->parent;
 
-	// Define which side node will be
-	double mid = (parent->left + parent->right) / 2;
-	if (parent->left <= l && r <= parent->right) {
-		//Range included
-		if (r <= mid) {
-			parent->leftChild = newNode;
-		}
-		else if (l > mid) {
-			parent->rightChild = newNode;
-		}
-		else {
-			// intersects mid =>lexicographic comparison
-			if (l < parent->left || (l == parent->left && r < parent->right)) {
-				parent->leftChild = newNode;
+		// Updating the parent`s ref (it its exists)
+		if (parent->parent != NIL) {
+			if (parent->parent->leftChild == parent) {
+				parent->parent->leftChild = newNode;
 			}
 			else {
-				parent->rightChild = newNode;
+				parent->parent->rightChild = newNode;
 			}
 		}
+		else {
+			// if parent was a root
+			root = newNode;
+		}
+
+		// Choose where to place the parent
+		if (parent->left < l || (parent->left == l && parent->right < r)) {
+			newNode->leftChild = parent;
+		}
+		else {
+			newNode->rightChild = parent;
+		}
+
+		parent->parent = newNode;
 	}
 	else {
-		// Not included, use lexicographic compariosn
+		newNode->parent = parent;
+
 		if (l < parent->left || (l == parent->left && r < parent->right)) {
 			parent->leftChild = newNode;
 		}
@@ -458,11 +512,12 @@ void SegmentTree::insert(double l, double r, double sum) {
 			parent->rightChild = newNode;
 		}
 	}
-	std::cout << "Node range: [" << l << ";" << r << "]" << "with parent" << "[" <<newNode->parent->left<<";"<<newNode->parent->right<<"]"<<"\n";
-	// Correct the violation of properties and update the sum
+
 	fixInsert(newNode);
 	updateSum(newNode);
 }
+
+
 
 //Public function callers
 double SegmentTree::query(double l, double r) {
