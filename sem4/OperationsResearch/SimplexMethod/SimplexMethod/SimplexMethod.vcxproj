@@ -130,9 +130,11 @@
     <ClCompile Include="LinearProgram.cpp" />
     <ClCompile Include="main_SimplexMethod.cpp" />
     <ClCompile Include="SimplexMethod.cpp" />
+    <ClCompile Include="SimplexTableau.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinearProgram.h" />
+    <ClInclude Include="SimplexTableau.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
