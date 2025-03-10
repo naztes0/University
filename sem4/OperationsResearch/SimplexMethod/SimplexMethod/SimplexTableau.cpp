@@ -69,4 +69,101 @@ int SimplexTableau::findPivotRow(int pivotColumn)const {
 	return pivotRow;
 }
 
+bool SimplexTableau::performIteration() {
+	if (isOptimal()) return false;
 
+	//Find col
+	int pivotCol = findPivotColumn();
+	if (pivotCol==-1) return false;
+
+	//Find row
+	int pivotRow = findPivotRow(pivotCol);
+	if (pivotRow == -1)	return false;
+	
+	//Update basis var
+	basis[pivotRow] = pivotCol;
+
+	//Pivot element
+	double pivotElement = tableau[pivotRow][pivotCol];
+
+	//Normalizing of a pivot el row
+	for (int j = 0; j < cols; j++) {
+		tableau[pivotCol][j] /= pivotElement;
+	}
+
+	for (int i= 0; i < rows; i++) {
+		if (i != pivotRow) {
+			double factor = tableau[i][pivotCol];
+			for (int j = 0; j < cols; j++) {
+				tableau[i][j] -= factor * tableau[pivotRow][j];
+			}
+		}
+	}
+	return true;
+}
+
+bool SimplexTableau::isUnbounded()const {
+	int pivotCol = findPivotColumn();
+	if (pivotCol == -1) {
+		return false;
+	}
+	//if all elements in da column <=0 than the task is infiniteбмежена
+	for (int i = 0; i < rows - 1; i++) {
+		if (tableau[i][pivotCol] > 0) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+vector<double> SimplexTableau::getSolution() const {
+	int n = cols - basis.size() - 1; 
+	vector<double> solution(n, 0); 
+
+
+	//Set values for basis vars
+	for (int i = 0; i < basis.size(); i++) {
+		if (basis[i] < n) { 
+			solution[basis[i]] = tableau[i][cols - 1];
+		}
+	}
+
+	return solution;
+}
+
+double SimplexTableau::getObjectiveValue() const {
+	//Value of obj Func placed in right down corner tableau
+	return -tableau[rows - 1][cols - 1]; 
+}
+
+void SimplexTableau::printTableau() const {
+	std::cout << "\n=== Simplex Tableau ===\n";
+
+	// Виводимо заголовки стовпців
+	std::cout << std::setw(6) << "Basis";
+	for (int j = 0; j < cols - basis.size() - 1; j++) {
+		std::cout << std::setw(10) << "x" + (j + 1);
+	}
+	for (int j = 0; j < basis.size(); j++) {
+		std::cout << std::setw(10) << "s" + (j + 1);
+	}
+	std::cout << std::setw(10) << "RHS" << std::endl;
+
+	// Виводимо рядки з обмеженнями
+	for (int i = 0; i < rows - 1; i++) {
+		std::cout << std::setw(6) << "x" + (basis[i] + 1);
+		for (int j = 0; j < cols; j++) {
+			std::cout << std::setw(10) << std::fixed << std::setprecision(2) << tableau[i][j];
+		}
+		std::cout << std::endl;
+	}
+
+	// Виводимо рядок цільової функції
+	std::cout << std::setw(6) << "Z";
+	for (int j = 0; j < cols; j++) {
+		std::cout << std::setw(10) << std::fixed << std::setprecision(2) << tableau[rows - 1][j];
+	}
+	std::cout << std::endl;
+}

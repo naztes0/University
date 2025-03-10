@@ -27,12 +27,18 @@
     <ClCompile Include="SimplexTableau.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SimplexSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinearProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SimplexTableau.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimplexSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
