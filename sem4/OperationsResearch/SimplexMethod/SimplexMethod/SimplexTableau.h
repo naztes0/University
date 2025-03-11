@@ -16,7 +16,7 @@ class SimplexTableau{
 private:
 	int rows;
 	int cols;
-	vector<vector<double>> tableau;
+	vector<vector<long double>> tableau;
 	vector<int> basis;
 
 	int findPivotColumn() const;

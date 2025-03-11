@@ -1,6 +1,6 @@
 #include "LinearProgram.h"
 
-LinearProgram::LinearProgram():variablesNumb(0),constraintsNumb(0){}
+LinearProgram::LinearProgram():variablesNumb(0.0),constraintsNumb(0.0){}
 
 
 
@@ -29,7 +29,7 @@ void LinearProgram::readInput() {
 
 
 	objectiveFunc.resize(variablesNumb);
-	constraintsMatrix.resize(constraintsNumb, vector<int>(variablesNumb));
+	constraintsMatrix.resize(constraintsNumb, vector<double>(variablesNumb));
 	constraintsValues.resize(constraintsNumb);
 
 	std::cout << "Enter coefficients of Objective Function:\n";
@@ -43,7 +43,7 @@ void LinearProgram::readInput() {
 	std::cout << "Enter coefficients of Contraints:\n";
 	for (int i = 0; i < constraintsNumb; i++) {
 		std::cout << "Constraint " << i+1<<": ";
-		for (int j = 0; j < constraintsNumb; j++) {
+		for (int j = 0; j < variablesNumb; j++) {
 			while (!(std::cin >> constraintsMatrix[i][j])) {
 				std::cout << "Error! Enter a number \n";
 				std::cin.clear();
@@ -94,4 +94,14 @@ void LinearProgram:: printData() const {
 7 8 9
 6 15 24
 
+*/
+
+/*
+3
+3
+5 4 6
+2 3 1
+1 2 4
+3 1 2
+10 15 12
 */

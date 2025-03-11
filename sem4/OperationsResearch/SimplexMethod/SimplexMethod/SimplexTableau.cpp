@@ -10,7 +10,7 @@ SimplexTableau::SimplexTableau(const LinearProgram& lp) {
 	cols = n + m + 1; //Constraints + slck vars + "b " col
 
 	//Init simplex table
-	tableau.resize(rows, vector<double>(cols, 0));
+	tableau.resize(rows, vector<long double>(cols, 0));
 	basis.resize(m);
 
 	for (int i = 0; i < m; i++) {
@@ -35,8 +35,8 @@ SimplexTableau::SimplexTableau(const LinearProgram& lp) {
 }
 
 bool SimplexTableau::isOptimal()const {
-	for (int j = 0; j < cols - 1; j++) {
-		if (tableau[rows - 1][j] < 0) {
+	for (int j = 0; j < cols - rows; j++) {
+		if (tableau[rows-1][j] < 0) {
 			return false;
 		}
 	}
@@ -53,6 +53,7 @@ int SimplexTableau::findPivotColumn() const {
 			pivotColumn = i;
 		}
 	}
+	std::cout << "\nPIVOT COLUMN: " << pivotColumn;
 	return pivotColumn;
 }
 
@@ -63,42 +64,53 @@ int SimplexTableau::findPivotRow(int pivotColumn)const {
 		double ratio = tableau[i][cols - 1] / tableau[i][pivotColumn];
 		if (ratio < minRatio) {
 			minRatio = ratio;
-			pivotColumn = i;
+			pivotRow = i;
 		}
 	}
+	std::cout << "\nPIVOT ROW: " << pivotRow;
 	return pivotRow;
 }
 
 bool SimplexTableau::performIteration() {
 	if (isOptimal()) return false;
 
-	//Find col
+	//Pivot column
 	int pivotCol = findPivotColumn();
-	if (pivotCol==-1) return false;
+	if (pivotCol == -1) return false;
 
-	//Find row
+	// Pivot row
 	int pivotRow = findPivotRow(pivotCol);
-	if (pivotRow == -1)	return false;
+	if (pivotRow == -1) return false;
+
 	
-	//Update basis var
 	basis[pivotRow] = pivotCol;
 
-	//Pivot element
-	double pivotElement = tableau[pivotRow][pivotCol];
-
-	//Normalizing of a pivot el row
+	// Опорний елемент
+	long double pivotElement = tableau[pivotRow][pivotCol];
+	std::cout << "PIVOT ELEMENT: " << pivotElement;
+	// Нормалізація рядка з опорним елементом
 	for (int j = 0; j < cols; j++) {
-		tableau[pivotCol][j] /= pivotElement;
+		tableau[pivotRow][j] /= pivotElement;
+		// Уникаємо проблем з дуже малими значеннями через округлення
+		
 	}
 
-	for (int i= 0; i < rows; i++) {
+	// Перераховуємо решту таблиці
+	for (int i = 0; i < rows; i++) {
 		if (i != pivotRow) {
-			double factor = tableau[i][pivotCol];
+			long double factor = tableau[i][pivotCol];
 			for (int j = 0; j < cols; j++) {
+				// Використовуємо безпосередньо long double без перетворення
 				tableau[i][j] -= factor * tableau[pivotRow][j];
+				// Уникаємо проблем з дуже малими значеннями через округлення
+				if (std::abs(tableau[i][j]) < 1e-10) {
+					tableau[i][j] = 0.0;
+				}
 			}
 		}
 	}
+
+	printTableau();
 	return true;
 }
 
@@ -135,7 +147,7 @@ vector<double> SimplexTableau::getSolution() const {
 
 double SimplexTableau::getObjectiveValue() const {
 	//Value of obj Func placed in right down corner tableau
-	return -tableau[rows - 1][cols - 1]; 
+	return tableau[rows - 1][cols - 1]; 
 }
 
 void SimplexTableau::printTableau() const {
@@ -143,19 +155,16 @@ void SimplexTableau::printTableau() const {
 
 	// Виводимо заголовки стовпців
 	std::cout << std::setw(6) << "Basis";
-	for (int j = 0; j < cols - basis.size() - 1; j++) {
-		std::cout << std::setw(10) << "x" + (j + 1);
-	}
-	for (int j = 0; j < basis.size(); j++) {
-		std::cout << std::setw(10) << "s" + (j + 1);
+	for (int j = 0; j < cols - 1; j++) {
+		std::cout << std::setw(9) << "x" <<(j + 1);
 	}
 	std::cout << std::setw(10) << "RHS" << std::endl;
 
 	// Виводимо рядки з обмеженнями
 	for (int i = 0; i < rows - 1; i++) {
-		std::cout << std::setw(6) << "x" + (basis[i] + 1);
+		std::cout << std::setw(5) << "x" <<(basis[i] + 1);
 		for (int j = 0; j < cols; j++) {
-			std::cout << std::setw(10) << std::fixed << std::setprecision(2) << tableau[i][j];
+			std::cout << std::setw(10) << std::fixed << std::setprecision(3) << tableau[i][j];
 		}
 		std::cout << std::endl;
 	}
@@ -163,7 +172,7 @@ void SimplexTableau::printTableau() const {
 	// Виводимо рядок цільової функції
 	std::cout << std::setw(6) << "Z";
 	for (int j = 0; j < cols; j++) {
-		std::cout << std::setw(10) << std::fixed << std::setprecision(2) << tableau[rows - 1][j];
+		std::cout << std::setw(10) << std::fixed << std::setprecision(3) << tableau[rows - 1][j];
 	}
 	std::cout << std::endl;
 }

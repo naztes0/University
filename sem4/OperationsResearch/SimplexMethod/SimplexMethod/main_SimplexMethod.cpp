@@ -1,10 +1,15 @@
 #include"LinearProgram.h"
+#include"SimplexSolver.h"
 
 int main() {
 
-	LinearProgram solve;
-	solve.readInput();
-	solve.printData();
+	LinearProgram lp;
+	lp.readInput();
+	lp.printData();
 
+	SimplexSolver solver(lp);
+	solver.solve();
+	solver.printSolution();
 
+	return 0;
 }
