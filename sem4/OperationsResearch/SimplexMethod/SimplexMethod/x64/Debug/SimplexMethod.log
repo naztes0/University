@@ -1,3 +1,3 @@
-﻿  SimplexTableau.cpp
-C:\Users\ASUS TUF\GitRepos\University\sem4\OperationsResearch\SimplexMethod\SimplexMethod\SimplexTableau.cpp(134,8): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+﻿  SimplexSolver.cpp
+C:\Users\ASUS TUF\GitRepos\University\sem4\OperationsResearch\SimplexMethod\SimplexMethod\SimplexSolver.cpp(37,15): warning C4129: '=': unrecognized character escape sequence
   SimplexMethod.vcxproj -> C:\Users\ASUS TUF\GitRepos\University\sem4\OperationsResearch\SimplexMethod\x64\Debug\SimplexMethod.exe

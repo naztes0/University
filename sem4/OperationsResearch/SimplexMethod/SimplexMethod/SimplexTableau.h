@@ -21,7 +21,7 @@ private:
 
 	int findPivotColumn() const;
 	int findPivotRow(int pivotColumn) const;
-	bool isOptimal()const;
+	bool isOptimal()const; //Check if obj func still has a negative numbers in table
 
 public:
 	SimplexTableau(const LinearProgram& lp);
@@ -36,7 +36,8 @@ public:
 	// Print current simplex table
 	void printTableau() const;
 
-	// Check if the task has an infinit solution 
+	// Check if the problem has an unbounded or infeassible solution 
 	bool isUnbounded() const;
+	bool isInfeasible() const;
 };
 

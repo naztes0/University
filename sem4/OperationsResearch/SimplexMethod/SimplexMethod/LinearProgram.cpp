@@ -3,7 +3,7 @@
 LinearProgram::LinearProgram():variablesNumb(0.0),constraintsNumb(0.0){}
 
 
-
+//Check for correct input 
 void LinearProgram::isValidNumber(int& num, const std::string& message) {
 	while (true) {
 		std::cout << message;
@@ -82,7 +82,7 @@ void LinearProgram:: printData() const {
 		std::cout << " = " << constraintsValues[i];
 		std::cout << "\n";
 	}
-	std::cout << "============================================\n";
+	std::cout << "============================================\n\n\n";
 }
 
 /*

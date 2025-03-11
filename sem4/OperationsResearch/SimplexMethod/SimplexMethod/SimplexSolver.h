@@ -12,6 +12,7 @@ enum class SolutionType {
 	OPTIMAL, UNBOUNDED,INFEASIBLE, ERROR
 };
 
+//struct for solution print out 
 struct Solution {
 	SolutionType type;
 	vector<double> variables;

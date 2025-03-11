@@ -34,6 +34,7 @@ SimplexTableau::SimplexTableau(const LinearProgram& lp) {
 	}
 }
 
+//
 bool SimplexTableau::isOptimal()const {
 	for (int j = 0; j < cols - rows; j++) {
 		if (tableau[rows-1][j] < 0) {
@@ -85,32 +86,34 @@ bool SimplexTableau::performIteration() {
 	
 	basis[pivotRow] = pivotCol;
 
-	// Опорний елемент
+	// Pivot El
 	long double pivotElement = tableau[pivotRow][pivotCol];
-	std::cout << "PIVOT ELEMENT: " << pivotElement;
-	// Нормалізація рядка з опорним елементом
+	std::cout << "\nPIVOT ELEMENT: " << pivotElement<<"\n";
+
+	// Normalizing row
 	for (int j = 0; j < cols; j++) {
 		tableau[pivotRow][j] /= pivotElement;
-		// Уникаємо проблем з дуже малими значеннями через округлення
+		//to avoid very small digits
+		if (std::abs(tableau[pivotRow][j]) < 1e-10) {
+			tableau[pivotRow][j] = 0.0;
+		}
 		
 	}
 
-	// Перераховуємо решту таблиці
+	// Recalc rest of the table
 	for (int i = 0; i < rows; i++) {
 		if (i != pivotRow) {
 			long double factor = tableau[i][pivotCol];
 			for (int j = 0; j < cols; j++) {
-				// Використовуємо безпосередньо long double без перетворення
+
 				tableau[i][j] -= factor * tableau[pivotRow][j];
-				// Уникаємо проблем з дуже малими значеннями через округлення
+				// Avoid very small digits 
 				if (std::abs(tableau[i][j]) < 1e-10) {
 					tableau[i][j] = 0.0;
 				}
 			}
 		}
 	}
-
-	printTableau();
 	return true;
 }
 
@@ -119,7 +122,7 @@ bool SimplexTableau::isUnbounded()const {
 	if (pivotCol == -1) {
 		return false;
 	}
-	//if all elements in da column <=0 than the task is infiniteбмежена
+	//if all elements in da row < 0 than the problem is unbounded
 	for (int i = 0; i < rows - 1; i++) {
 		if (tableau[i][pivotCol] > 0) {
 			return false;
@@ -127,6 +130,16 @@ bool SimplexTableau::isUnbounded()const {
 	}
 
 	return true;
+}
+bool SimplexTableau::isInfeasible() const {
+	// if "b" contains numberss <0
+	for (int i = 0; i < rows - 1; i++) {
+		//compare to a tiny number 
+		if (tableau[i][cols - 1] < -1e-10) {
+			return true;
+		}
+	}
+	return false;
 }
 
 
@@ -151,16 +164,16 @@ double SimplexTableau::getObjectiveValue() const {
 }
 
 void SimplexTableau::printTableau() const {
-	std::cout << "\n=== Simplex Tableau ===\n";
+	std::cout << "\n\n=== Simplex Tableau ===\n";
 
-	// Виводимо заголовки стовпців
+	// Columns` headers 
 	std::cout << std::setw(6) << "Basis";
 	for (int j = 0; j < cols - 1; j++) {
 		std::cout << std::setw(9) << "x" <<(j + 1);
 	}
 	std::cout << std::setw(10) << "RHS" << std::endl;
 
-	// Виводимо рядки з обмеженнями
+	// Print out rows with constraints
 	for (int i = 0; i < rows - 1; i++) {
 		std::cout << std::setw(5) << "x" <<(basis[i] + 1);
 		for (int j = 0; j < cols; j++) {
@@ -169,7 +182,7 @@ void SimplexTableau::printTableau() const {
 		std::cout << std::endl;
 	}
 
-	// Виводимо рядок цільової функції
+	// Print out the row of obj func
 	std::cout << std::setw(6) << "Z";
 	for (int j = 0; j < cols; j++) {
 		std::cout << std::setw(10) << std::fixed << std::setprecision(3) << tableau[rows - 1][j];
