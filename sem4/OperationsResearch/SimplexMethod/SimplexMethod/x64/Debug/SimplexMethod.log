@@ -1,3 +1,4 @@
-﻿  SimplexSolver.cpp
-C:\Users\ASUS TUF\GitRepos\University\sem4\OperationsResearch\SimplexMethod\SimplexMethod\SimplexSolver.cpp(37,15): warning C4129: '=': unrecognized character escape sequence
+﻿  LinearProgram.cpp
+C:\Users\ASUS TUF\GitRepos\University\sem4\OperationsResearch\SimplexMethod\SimplexMethod\LinearProgram.cpp(3,45): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\ASUS TUF\GitRepos\University\sem4\OperationsResearch\SimplexMethod\SimplexMethod\LinearProgram.cpp(3,66): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   SimplexMethod.vcxproj -> C:\Users\ASUS TUF\GitRepos\University\sem4\OperationsResearch\SimplexMethod\x64\Debug\SimplexMethod.exe
