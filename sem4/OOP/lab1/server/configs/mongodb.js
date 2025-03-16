@@ -11,7 +11,7 @@ const connectDB = async () => {
             connectTimeoutMS: 5000
         };
         
-        await mongoose.connect(process.env.MONGODB_URI, options);
+        await mongoose.connect(`${process.env.MONGODB_URI}/bg-removal`, options);
         return true;
     } catch (error) {
         console.error("MongoDB connection error:", error);
