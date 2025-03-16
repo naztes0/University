@@ -35,7 +35,7 @@ const clerkWebhooks=async(req,res)=>{
             }
             case "user.updated":{
                 const userData={
-                    email:data.email_addreses[0].email_addreses,
+                    email:data.email_addresses[0].email_addresses,
                     firstName:data.first_name,
                     lastName:data.last_name,
                     photo:data.image_url
@@ -56,7 +56,7 @@ const clerkWebhooks=async(req,res)=>{
 
     } catch (error) {
        console.log(error.message)
-       res.json({success:false,messge:error.message})
+       res.json({success:false, message:error.message})
     }
 }
 
