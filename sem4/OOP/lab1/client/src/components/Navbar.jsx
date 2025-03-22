@@ -29,7 +29,7 @@ const Navbar = () => {
               Credits: {credit}
             </p>
           </button>
-          <p class="text-gray-600">Hi,{user.fullName}</p>
+          <p className="text-gray-600">Hi,{user.fullName}</p>
           <UserButton />
         </div>
       ) : (
