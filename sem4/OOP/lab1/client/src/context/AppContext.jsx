@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useAuth, useClerk, useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -10,6 +10,9 @@ const AppContextProvider = (props) => {
   const [credit, setCredit] = useState(false);
   const [image, setImage] = useState(false);
   const [resultImage, setResultImage] = useState(false);
+  const [timerActive, setTimerActive] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(null);
+  const [nextCreditAt, setNextCreditAt] = useState(null);
 
   const backenUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
@@ -18,15 +21,97 @@ const AppContextProvider = (props) => {
   const { isSignedIn } = useUser();
   const { openSignIn } = useClerk();
 
+  // Format time remaining in hours, minutes, seconds
+  const formatTimeRemaining = (milliseconds) => {
+    if (!milliseconds) return "";
+
+    const seconds = Math.floor((milliseconds / 1000) % 60);
+    const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
+    const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  // Timer countdown effect
+  useEffect(() => {
+    let interval;
+
+    if (timerActive && timeRemaining) {
+      interval = setInterval(() => {
+        setTimeRemaining((prev) => {
+          const newTime = prev - 1000;
+          if (newTime <= 0) {
+            // Reload credits data when timer reaches zero
+            loadCreditsData();
+            return 0;
+          }
+          return newTime;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [timerActive, timeRemaining]);
+
+  // Initial check of timer status when user signs in
+  useEffect(() => {
+    if (isSignedIn) {
+      loadCreditsData();
+      checkTimerStatus();
+    }
+  }, [isSignedIn]);
+
   const loadCreditsData = async () => {
     try {
       const token = await getToken();
       const { data } = await axios.get(backenUrl + "/api/user/credits", {
         headers: { token },
       });
+
       if (data.success) {
         setCredit(data.credits);
-        console.log(data.credits);
+        setTimerActive(data.timerActive);
+        setNextCreditAt(data.nextCreditAt);
+
+        if (data.timeRemaining) {
+          setTimeRemaining(data.timeRemaining);
+        } else if (data.nextCreditAt) {
+          setTimeRemaining(
+            Math.max(0, new Date(data.nextCreditAt) - new Date())
+          );
+        }
+
+        console.log("Credits data loaded:", data);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const checkTimerStatus = async () => {
+    try {
+      const token = await getToken();
+      const { data } = await axios.post(
+        backenUrl + "/api/user/check-timer",
+        {},
+        { headers: { token } }
+      );
+
+      if (data.success) {
+        setTimerActive(data.timerActive);
+        setNextCreditAt(data.nextCreditAt);
+        setCredit(data.creditBalance);
+
+        if (data.nextCreditAt) {
+          setTimeRemaining(
+            Math.max(0, new Date(data.nextCreditAt) - new Date())
+          );
+        }
+
+        console.log("Timer status checked:", data);
       }
     } catch (error) {
       console.log(error);
@@ -55,10 +140,26 @@ const AppContextProvider = (props) => {
 
       if (data.success) {
         setResultImage(data.resultImage);
-        data.creditBalance && setCredit(data.creditBalance);
+
+        if (data.creditBalance !== undefined) {
+          setCredit(data.creditBalance);
+        }
+
+        if (data.timerActive !== undefined) {
+          setTimerActive(data.timerActive);
+        }
+
+        if (data.nextCreditAt) {
+          setNextCreditAt(data.nextCreditAt);
+          setTimeRemaining(
+            Math.max(0, new Date(data.nextCreditAt) - new Date())
+          );
+        }
       } else {
         toast.error(data.message);
-        data.creditBalance && setCredit(data.creditBalance);
+        if (data.creditBalance !== undefined) {
+          setCredit(data.creditBalance);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -76,6 +177,10 @@ const AppContextProvider = (props) => {
     removeBg,
     resultImage,
     setResultImage,
+    timerActive,
+    timeRemaining,
+    formatTimeRemaining,
+    checkTimerStatus,
   };
 
   return (
