@@ -7,6 +7,7 @@ import BuyCredit from "./pages/BuyCredit";
 import Navbar from "./components/Navbar";
 import Footer from "./components/footer";
 import { ToastContainer, toast } from "react-toastify";
+import CreditTimer from "./components/CreditTimer";
 
 export const App = () => {
   return (
@@ -18,6 +19,7 @@ export const App = () => {
         <Route path="/result" element={<Result />} />
         <Route path="/buy" element={<BuyCredit />} />
       </Routes>
+      <CreditTimer />
       <Footer />
     </div>
   );
