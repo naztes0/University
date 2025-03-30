@@ -27,7 +27,7 @@ const clerkWebhooks=async(req,res)=>{
                     firstName:data.first_name,
                     lastName:data.last_name,
                     photo:data.profile_image_url || data.image_url
-
+                 
                 }
                 console.log("Creating user with data:", userData);
                 await userModel.create(userData)
@@ -64,19 +64,115 @@ const clerkWebhooks=async(req,res)=>{
 
 
 //Api controller function to get user available credits data 
-
-const userCredits = async (req, res)=>{
+const userCredits = async (req, res) => {
     try {
+        const { clerkId } = req.body
+        const userData = await userModel.findOne({ clerkId })
         
-        const {clerkId}=req.body
-        const userData = await userModel.findOne({clerkId})
+        // Check if credits should be updated
+        if (userData.timerActive && userData.nextCreditAt && new Date() >= new Date(userData.nextCreditAt)) {
+            // Calculate how many credits to add based on time passed
+            const timePassedSinceLastUpdate = new Date() - new Date(userData.lastCreditUpdate);
+            const hoursPassedSinceLastUpdate = timePassedSinceLastUpdate / (1000  *  60 ); //* 60
+            const creditsToAdd = Math.min(
+                Math.floor(hoursPassedSinceLastUpdate/3  ),// 
+                5 - userData.creditBalance
+            );
+            
+            if (creditsToAdd > 0) {
+                userData.creditBalance += creditsToAdd;
+                userData.lastCreditUpdate = new Date();
+                
+                // If reached max credits, deactivate timer
+                if (userData.creditBalance >= 5) {
+                    userData.timerActive = false;
+                    userData.nextCreditAt = null;
+                } else {
+                    // Set next credit time to 3 hours from now
+                    userData.nextCreditAt = new Date(new Date().getTime() + 3 * 60 * 1000); // 60 * 
+                }
+                
+                await userData.save();
+            }
+        }
+        
+        // Calculate time remaining if timer active
+        let timeRemaining = null;
+        if (userData.timerActive && userData.nextCreditAt) {
+            timeRemaining = Math.max(0, new Date(userData.nextCreditAt) - new Date());
+        }
 
-        res.json({success:true, credits:userData.creditBalance})
+        res.json({
+            success: true, 
+            credits: userData.creditBalance,
+            timerActive: userData.timerActive,
+            nextCreditAt: userData.nextCreditAt,
+            timeRemaining
+        });
 
     } catch (error) {
         console.log(error.message)
-       res.json({success:false, message:error.message})
+        res.json({ success: false, message: error.message })
     }
 }
 
-export {clerkWebhooks,userCredits}
+// Function to check and manage credit timer
+const checkCreditTimer = async (req, res) => {
+    try {
+        const { clerkId } = req.body;
+        const user = await userModel.findOne({ clerkId });
+        
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
+        }
+        
+        // If user already has max credits, ensure timer is off
+        if (user.creditBalance >= 5) {
+            if (user.timerActive) {
+                user.timerActive = false;
+                user.nextCreditAt = null;
+                await user.save();
+            }
+            
+            return res.json({ 
+                success: true, 
+                message: "Max credits reached, timer disabled",
+                timerActive: false,
+                creditBalance: user.creditBalance
+            });
+        }
+        
+        // If timer should be active but isn't
+        if (user.creditBalance < 5 && !user.timerActive) {
+            // Set next credit time to 3 hours from now
+            user.nextCreditAt = new Date(new Date().getTime() +  3 * 60 * 1000); // 60 *
+            user.timerActive = true;
+            user.lastCreditUpdate = new Date();
+            await user.save();
+            
+            return res.json({ 
+                success: true, 
+                message: "Timer activated", 
+                timerActive: true,
+                nextCreditAt: user.nextCreditAt,
+                creditBalance: user.creditBalance
+            });
+        }
+        
+        // Timer is already running correctly
+        return res.json({ 
+            success: true, 
+            message: "Timer status checked", 
+            timerActive: user.timerActive,
+            nextCreditAt: user.nextCreditAt,
+            creditBalance: user.creditBalance
+        });
+        
+    } catch (error) {
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+
+export { clerkWebhooks, userCredits, checkCreditTimer }
