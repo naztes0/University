@@ -38,7 +38,7 @@ describe('Multer Middleware tests', () => {
         );
     });
 
-    test('повинен повернути налаштований middleware multer', () => {
+    test('have to return setup middleware multer', () => {
         expect(multer).toHaveBeenCalledWith({
             storage: expect.anything()
         });

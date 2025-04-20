@@ -110,7 +110,7 @@ describe('UserController test', () => {
             expect(mockUser.nextCreditAt).toEqual(expect.any(Date));
         })
 
-        test('error habdling', async () => {
+        test('error handling', async () => {
             const errormessage = 'Error occurred';
             userModel.findOne.mockRejectedValue(new Error(errormessage));
             //Act

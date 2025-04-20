@@ -3,7 +3,7 @@ import userModel from '../../models/userModel.js';
 import axios from 'axios';
 import fs from 'fs';
 
-// Мокуємо залежності
+// Mock dependencies
 jest.mock('../../models/userModel.js');
 jest.mock('axios');
 jest.mock('fs');
@@ -35,7 +35,7 @@ describe('ImageController test', () => {
             json: jest.fn().mockReturnThis()
         };
 
-        // Мокуємо fs.createReadStream
+        // Mock fs.createReadStream
         fs.createReadStream.mockReturnValue('mocked-file-stream');
     });
 
@@ -53,7 +53,7 @@ describe('ImageController test', () => {
             userModel.findOne.mockResolvedValue(mockUser);
             userModel.findByIdAndUpdate.mockResolvedValue(mockUser);
 
-            // Мокуємо відповідь від API для видалення фону
+            // Mock the response from the API for background removal
             const mockBuffer = Buffer.from('fake-image-data');
             axios.post.mockResolvedValue({
                 data: mockBuffer
@@ -174,7 +174,7 @@ describe('ImageController test', () => {
             userModel.findOne.mockResolvedValue(mockUser);
             userModel.findByIdAndUpdate.mockResolvedValue(mockUser);
 
-            // Мокуємо відповідь від API для видалення фону
+            // Mock the response from the API for background removal
             const mockBuffer = Buffer.from('fake-image-data');
             axios.post.mockResolvedValue({
                 data: mockBuffer
