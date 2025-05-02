@@ -1,19 +1,22 @@
 import { removeBgImage } from '../../controllers/ImageController.js';
-import userModel from '../../models/userModel.js';
-import axios from 'axios';
-import fs from 'fs';
+import { findUserByClerkId } from '../../services/userService.js';
+import { removeImageBackground } from '../../services/imageService.js';
+import config from '../../configs/appConfig.js';
 
 // Mock dependencies
-jest.mock('../../models/userModel.js');
-jest.mock('axios');
-jest.mock('fs');
-jest.mock('form-data', () => {
-    return function () {
-        return {
-            append: jest.fn()
-        };
-    };
-});
+jest.mock('../../services/userService.js');
+jest.mock('../../services/imageService.js');
+jest.mock('../../configs/appConfig.js', () => ({
+
+    apiKeys: {
+        clipdrop: 'test-clipdrop-api-key'
+    },
+    credits: {
+        max: 5,
+        refreshTimer: 2
+    }
+
+}));
 
 describe('ImageController test', () => {
     let req, res;
@@ -34,9 +37,6 @@ describe('ImageController test', () => {
         res = {
             json: jest.fn().mockReturnThis()
         };
-
-        // Mock fs.createReadStream
-        fs.createReadStream.mockReturnValue('mocked-file-stream');
     });
 
     describe('removeBgImage function', () => {
@@ -50,66 +50,54 @@ describe('ImageController test', () => {
                 lastCreditUpdate: new Date()
             };
 
-            userModel.findOne.mockResolvedValue(mockUser);
-            userModel.findByIdAndUpdate.mockResolvedValue(mockUser);
+            const mockResult = {
+                resultImage: 'base64-image-data',
+                creditBalance: 2,
+                timerActive: true,
+                nextCreditAt: new Date()
+            };
 
-            // Mock the response from the API for background removal
-            const mockBuffer = Buffer.from('fake-image-data');
-            axios.post.mockResolvedValue({
-                data: mockBuffer
-            });
+            findUserByClerkId.mockResolvedValue(mockUser);
+            removeImageBackground.mockResolvedValue(mockResult);
 
             // Act
             await removeBgImage(req, res);
 
             // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(fs.createReadStream).toHaveBeenCalledWith('test/file/path.jpg');
-            expect(axios.post).toHaveBeenCalledWith(
-                'https://clipdrop-api.co/remove-background/v1',
-                expect.anything(),
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
+            expect(removeImageBackground).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    headers: {
-                        'x-api-key': process.env.CLIPDROP_API
-                    },
-                    responseType: 'arraybuffer'
-                })
+                    _id: 'user-123',
+                    creditBalance: 3,
+                    mime: 'image/jpeg'
+                }),
+                'test/file/path.jpg'
             );
 
-            expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(
-                'user-123',
-                expect.objectContaining({
-                    creditBalance: 2,
-                    timerActive: true,
-                    nextCreditAt: expect.any(Date),
-                    lastCreditUpdate: expect.any(Date)
-                })
-            );
-
-            expect(res.json).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    success: true,
-                    resultImage: expect.stringContaining('data: image/jpeg;base64,'),
-                    creditBalance: 2,
-                    message: 'Background Removed'
-                })
-            );
+            expect(res.json).toHaveBeenCalledWith({
+                success: true,
+                resultImage: 'base64-image-data',
+                creditBalance: 2,
+                timerActive: true,
+                nextCreditAt: expect.any(Date),
+                message: 'Background Removed'
+            });
         });
 
         test('should handle user not found error', async () => {
             // Arrange
-            userModel.findOne.mockResolvedValue(null);
+            findUserByClerkId.mockResolvedValue(null);
 
             // Act
             await removeBgImage(req, res);
 
             // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
             expect(res.json).toHaveBeenCalledWith({
                 success: false,
                 message: 'User not found'
             });
-            expect(axios.post).not.toHaveBeenCalled();
+            expect(removeImageBackground).not.toHaveBeenCalled();
         });
 
         test('should handle insufficient credits error', async () => {
@@ -119,22 +107,22 @@ describe('ImageController test', () => {
                 timerActive: false
             };
 
-            userModel.findOne.mockResolvedValue(mockUser);
+            findUserByClerkId.mockResolvedValue(mockUser);
 
             // Act
             await removeBgImage(req, res);
 
             // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
             expect(res.json).toHaveBeenCalledWith({
                 success: false,
                 message: 'No credit balance',
                 creditBalance: 0
             });
-            expect(axios.post).not.toHaveBeenCalled();
+            expect(removeImageBackground).not.toHaveBeenCalled();
         });
 
-        test('should handle API error', async () => {
+        test('should handle image service error', async () => {
             // Arrange
             const mockUser = {
                 _id: 'user-123',
@@ -143,63 +131,21 @@ describe('ImageController test', () => {
                 nextCreditAt: null
             };
 
-            userModel.findOne.mockResolvedValue(mockUser);
+            findUserByClerkId.mockResolvedValue(mockUser);
 
-            const errorMessage = 'API error';
-            axios.post.mockRejectedValue(new Error(errorMessage));
+            const errorMessage = 'Error removing background';
+            removeImageBackground.mockRejectedValue(new Error(errorMessage));
 
             // Act
             await removeBgImage(req, res);
 
             // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(fs.createReadStream).toHaveBeenCalledWith('test/file/path.jpg');
-            expect(axios.post).toHaveBeenCalled();
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
+            expect(removeImageBackground).toHaveBeenCalled();
             expect(res.json).toHaveBeenCalledWith({
                 success: false,
                 message: errorMessage
             });
-        });
-
-        test('should activate timer when credits go below max', async () => {
-            // Arrange
-            const mockUser = {
-                _id: 'user-123',
-                creditBalance: 5, // Max credits
-                timerActive: false,
-                nextCreditAt: null,
-                lastCreditUpdate: new Date()
-            };
-
-            userModel.findOne.mockResolvedValue(mockUser);
-            userModel.findByIdAndUpdate.mockResolvedValue(mockUser);
-
-            // Mock the response from the API for background removal
-            const mockBuffer = Buffer.from('fake-image-data');
-            axios.post.mockResolvedValue({
-                data: mockBuffer
-            });
-
-            // Act
-            await removeBgImage(req, res);
-
-            // Assert
-            expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(
-                'user-123',
-                expect.objectContaining({
-                    creditBalance: 4, // Credits reduced by 1
-                    timerActive: true, // Timer activated
-                    nextCreditAt: expect.any(Date)
-                })
-            );
-
-            expect(res.json).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    success: true,
-                    creditBalance: 4,
-                    timerActive: true
-                })
-            );
         });
     });
 });

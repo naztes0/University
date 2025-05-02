@@ -1,12 +1,32 @@
 import { userCredits, clerkWebhooks, checkCreditTimer } from '../../controllers/UserController.js';
-import userModel from '../../models/userModel.js';
+import {
+    findUserByClerkId,
+    createUser,
+    updateUser,
+    deleteUser,
+    checkAndUpdateCredits,
+    manageCreditTimer,
+    MAX_CREDITS,
+    CREDIT_REFRESH_TIME
+} from '../../services/userService.js';
 import { Webhook } from 'svix';
-import mongoose from 'mongoose';
-import jestConfig from '../../jest.config.js';
+import config from '../../configs/appConfig.js';
 
-//mock the userModel
-jest.mock('../../models/userModel.js');
-jest.mock('svix')
+// Mock dependencies
+jest.mock('../../services/userService.js');
+jest.mock('svix');
+jest.mock('../../configs/appConfig.js', () => ({
+
+    apiKeys: {
+        clerk: {
+            webhookSecret: 'test-webhook-secret'
+        }
+    },
+    credits: {
+        max: 5,
+        refreshTimer: 2
+    }
+}));
 
 describe('UserController test', () => {
     let req, res;
@@ -26,130 +46,73 @@ describe('UserController test', () => {
         res = {
             json: jest.fn().mockReturnThis()
         };
-
-    })
+    });
 
     describe('userCredits function', () => {
-        test('should return user credits when timer is inactive', async () => {
-
+        test('should return user credits when user is found', async () => {
+            // Arrange
             const mockUser = {
-                creditBalance: 5,
-                timerActive: false,
-                nextCreditAt: null,
-                lastCreditUPdate: new Date(),
-                save: jest.fn()
+                _id: 'user-123',
+                creditBalance: 3,
+                timerActive: true,
+                nextCreditAt: new Date(),
+                lastCreditUpdate: new Date()
             };
-            userModel.findOne.mockResolvedValue(mockUser);
+
+            const mockCreditInfo = {
+                credits: 3,
+                timerActive: true,
+                nextCreditAt: new Date(),
+                timeRemaining: 120000 // 2 minutes in ms
+            };
+
+            findUserByClerkId.mockResolvedValue(mockUser);
+            checkAndUpdateCredits.mockResolvedValue(mockCreditInfo);
 
             // Act
             await userCredits(req, res);
 
             // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
+            expect(checkAndUpdateCredits).toHaveBeenCalledWith(mockUser);
             expect(res.json).toHaveBeenCalledWith({
                 success: true,
-                credits: 5,
-                timerActive: false,
-                nextCreditAt: null,
-                timeRemaining: null
+                ...mockCreditInfo
             });
-            expect(mockUser.save).not.toHaveBeenCalled();
         });
-        test('should not add credits when timer is active but not expired', async () => {
 
-            const futureDate = new Date();
-            futureDate.setHours(futureDate.getHours() + 1); // Set the future date to 1 hour from now
+        test('should handle user not found error', async () => {
+            // Arrange
+            findUserByClerkId.mockResolvedValue(null);
 
-            const mockUser = {
-                creditBalance: 2,
-                timerActive: true,
-                nextCreditAt: futureDate,
-                lastCreditUPdate: new Date(),
-                save: jest.fn()
-            }
-            userModel.findOne.mockResolvedValue(mockUser);
-            //Act
+            // Act
             await userCredits(req, res);
 
-            //Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(mockUser.save).not.toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith({
-                success: true,
-                credits: 2,
-                timerActive: true,
-                nextCreditAt: futureDate,
-                timeRemaining: expect.any(Number)
-            });
-
-        });
-        test('should add credits when timer has expired', async () => {
-            const pastDate = new Date();
-            pastDate.setMinutes(pastDate.getMinutes() - 4); // Set to  4 Minutes in past
-
-            const lastUpdate = new Date();
-            lastUpdate.setMinutes(lastUpdate.getMinutes() - 6); // Last update 6 Minutes ago
-            const mockUser = {
-                creditBalance: 2,
-                timerActive: true,
-                nextCreditAt: pastDate,
-                lastCreditUpdate: lastUpdate,
-                save: jest.fn()
-            }
-
-            userModel.findOne.mockResolvedValue(mockUser);
-            //Act
-            await userCredits(req, res);
-
-            //Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(mockUser.save).toHaveBeenCalled();
-            expect(mockUser.creditBalance).toBe(4);
-            expect(mockUser.timerActive).toBe(true);
-            expect(mockUser.lastCreditUpdate).toEqual(expect.any(Date));
-            expect(mockUser.nextCreditAt).toEqual(expect.any(Date));
-        })
-
-        test('error handling', async () => {
-            const errormessage = 'Error occurred';
-            userModel.findOne.mockRejectedValue(new Error(errormessage));
-            //Act
-            await userCredits(req, res);
-            //Assert
+            // Assert
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
+            expect(checkAndUpdateCredits).not.toHaveBeenCalled();
             expect(res.json).toHaveBeenCalledWith({
                 success: false,
-                message: errormessage
-            })
+                message: 'User not found'
+            });
         });
-        test('timer deactivated when max credits reached', async () => {
-            const pastDate = new Date();
-            pastDate.setMinutes(pastDate.getMinutes() - 4); // Set to 4 Minutes in past
-            const lastUpdate = new Date();
-            lastUpdate.setMinutes(lastUpdate.getMinutes() - 9);
 
-            const mockUser = {
-                creditBalance: 4,
-                timerActive: true,
-                nextCreditAt: pastDate,
-                lastCreditUpdate: lastUpdate,
-                save: jest.fn()
-            }
-            userModel.findOne.mockResolvedValue(mockUser);
+        test('should handle service errors', async () => {
+            // Arrange
+            const errorMessage = 'Service error';
+            findUserByClerkId.mockRejectedValue(new Error(errorMessage));
 
-            //Act
+            // Act
             await userCredits(req, res);
 
-            //Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(mockUser.save).toHaveBeenCalled()
-            expect(mockUser.creditBalance).toBe(5);
-            expect(mockUser.timerActive).toBe(false);
-            expect(mockUser.nextCreditAt).toBe(null);
-            expect(mockUser.lastCreditUpdate).toEqual(expect.any(Date));
-
-
-        })
-    })
+            // Assert
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: errorMessage
+            });
+        });
+    });
 
     describe('clerkWebhooks function', () => {
         test('should create new user when webhook type is user.created', async () => {
@@ -170,13 +133,28 @@ describe('UserController test', () => {
                 verify: verifyMock
             }));
 
+            createUser.mockResolvedValue({
+                clerkId: 'clerk-123',
+                email: 'test@example.com',
+                firstName: 'Test',
+                lastName: 'User',
+                photo: 'https://example.com/photo.jpg'
+            });
+
             // Act
             await clerkWebhooks(req, res);
 
             // Assert
-            expect(Webhook).toHaveBeenCalledWith(process.env.CLERK_WEBHOOK_SECRET);
-            expect(verifyMock).toHaveBeenCalled();
-            expect(userModel.create).toHaveBeenCalledWith({
+            expect(Webhook).toHaveBeenCalledWith(config.apiKeys.clerk.webhookSecret);
+            expect(verifyMock).toHaveBeenCalledWith(
+                JSON.stringify(req.body),
+                {
+                    'svix-id': 'test-svix-id',
+                    'svix-timestamp': 'test-timestamp',
+                    'svix-signature': 'test-signature'
+                }
+            );
+            expect(createUser).toHaveBeenCalledWith({
                 clerkId: 'clerk-123',
                 email: 'test@example.com',
                 firstName: 'Test',
@@ -204,14 +182,22 @@ describe('UserController test', () => {
                 verify: verifyMock
             }));
 
+            updateUser.mockResolvedValue({
+                clerkId: 'clerk-123',
+                email: 'updated@example.com',
+                firstName: 'Updated',
+                lastName: 'User',
+                photo: 'https://example.com/updated.jpg'
+            });
+
             // Act
             await clerkWebhooks(req, res);
 
             // Assert
-            expect(Webhook).toHaveBeenCalledWith(process.env.CLERK_WEBHOOK_SECRET);
+            expect(Webhook).toHaveBeenCalledWith(config.apiKeys.clerk.webhookSecret);
             expect(verifyMock).toHaveBeenCalled();
-            expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
-                { clerkId: 'clerk-123' },
+            expect(updateUser).toHaveBeenCalledWith(
+                'clerk-123',
                 {
                     email: 'updated@example.com',
                     firstName: 'Updated',
@@ -223,25 +209,30 @@ describe('UserController test', () => {
         });
 
         test('should delete user when webhook type is user.deleted', async () => {
+            // Arrange
             req.body = {
                 type: 'user.deleted',
                 data: {
                     id: 'clerk-123'
                 }
-            }
+            };
 
-            const verifyMock = jest.fn()
+            const verifyMock = jest.fn();
             Webhook.mockImplementation(() => ({
-                verify: verifyMock,
+                verify: verifyMock
             }));
+
+            deleteUser.mockResolvedValue({ acknowledged: true });
+
             // Act
             await clerkWebhooks(req, res);
+
             // Assert
-            expect(Webhook).toHaveBeenCalledWith(process.env.CLERK_WEBHOOK_SECRET)
+            expect(Webhook).toHaveBeenCalledWith(config.apiKeys.clerk.webhookSecret);
             expect(verifyMock).toHaveBeenCalled();
-            expect(userModel.findOneAndDelete).toHaveBeenCalledWith({ clerkId: 'clerk-123' })
+            expect(deleteUser).toHaveBeenCalledWith('clerk-123');
             expect(res.json).toHaveBeenCalledWith({});
-        })
+        });
 
         test('should handle webhook verification error', async () => {
             // Arrange
@@ -256,7 +247,7 @@ describe('UserController test', () => {
             await clerkWebhooks(req, res);
 
             // Assert
-            expect(Webhook).toHaveBeenCalledWith(process.env.CLERK_WEBHOOK_SECRET);
+            expect(Webhook).toHaveBeenCalledWith(config.apiKeys.clerk.webhookSecret);
             expect(verifyMock).toHaveBeenCalled();
             expect(res.json).toHaveBeenCalledWith({
                 success: false,
@@ -266,120 +257,68 @@ describe('UserController test', () => {
     });
 
     describe('checkCreditTimer function', () => {
-        test('should return max credits message when credits are full', async () => {
+        test('should call manageCreditTimer service and return result', async () => {
             // Arrange
             const mockUser = {
-                creditBalance: 5,
-                timerActive: true,
-                nextCreditAt: new Date(),
-                save: jest.fn()
-            };
-
-            userModel.findOne.mockResolvedValue(mockUser);
-
-            // Act
-            await checkCreditTimer(req, res);
-
-            // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(mockUser.save).toHaveBeenCalled();
-            expect(mockUser.timerActive).toBe(false);
-            expect(mockUser.nextCreditAt).toBe(null);
-            expect(res.json).toHaveBeenCalledWith({
-                success: true,
-                message: 'Max credits reached, timer disabled',
-                timerActive: false,
-                creditBalance: 5
-            });
-        });
-
-        test('should activate timer when credits are below max and timer is inactive', async () => {
-            // Arrange
-            const mockUser = {
-                creditBalance: 3,
-                timerActive: false,
-                nextCreditAt: null,
-                save: jest.fn()
-            };
-
-            userModel.findOne.mockResolvedValue(mockUser);
-
-            // Act
-            await checkCreditTimer(req, res);
-
-            // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(mockUser.save).toHaveBeenCalled();
-            expect(mockUser.timerActive).toBe(true);
-            expect(mockUser.nextCreditAt).toEqual(expect.any(Date));
-            expect(mockUser.lastCreditUpdate).toEqual(expect.any(Date));
-            expect(res.json).toHaveBeenCalledWith({
-                success: true,
-                message: 'Timer activated',
-                timerActive: true,
-                nextCreditAt: expect.any(Date),
-                creditBalance: 3
-            });
-        });
-
-        test('should return timer status when timer is already running', async () => {
-            // Arrange
-            const nextCreditAt = new Date();
-            nextCreditAt.setMinutes(nextCreditAt.getMinutes() + 30);
-
-            const mockUser = {
+                _id: 'user-123',
                 creditBalance: 3,
                 timerActive: true,
-                nextCreditAt: nextCreditAt,
-                save: jest.fn()
+                nextCreditAt: new Date()
             };
 
-            userModel.findOne.mockResolvedValue(mockUser);
-
-            // Act
-            await checkCreditTimer(req, res);
-
-            // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(mockUser.save).not.toHaveBeenCalled();
-            expect(res.json).toHaveBeenCalledWith({
+            const mockTimerResult = {
                 success: true,
                 message: 'Timer status checked',
                 timerActive: true,
-                nextCreditAt: nextCreditAt,
+                nextCreditAt: new Date(),
                 creditBalance: 3
-            });
+            };
+
+            findUserByClerkId.mockResolvedValue(mockUser);
+            manageCreditTimer.mockResolvedValue(mockTimerResult);
+
+            // Act
+            await checkCreditTimer(req, res);
+
+            // Assert
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
+            expect(manageCreditTimer).toHaveBeenCalledWith(mockUser);
+            expect(res.json).toHaveBeenCalledWith(mockTimerResult);
         });
 
         test('should handle user not found error', async () => {
             // Arrange
-            userModel.findOne.mockResolvedValue(null);
+            findUserByClerkId.mockResolvedValue(null);
 
             // Act
             await checkCreditTimer(req, res);
 
             // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
-            expect(res.json).toHaveBeenCalledWith({
-                success: false,
-                message: 'User not found'
-            });
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
+            expect(manageCreditTimer).not.toHaveBeenCalled();
         });
-
-        test('should handle general errors', async () => {
+        test('should handle service errors', async () => {
             // Arrange
-            const errorMessage = 'Database error';
-            userModel.findOne.mockRejectedValue(new Error(errorMessage));
+            const mockUser = {
+                _id: 'user-123',
+                creditBalance: 3
+            };
+            const errorMessage = 'Service error';
+
+            findUserByClerkId.mockResolvedValue(mockUser);
+            manageCreditTimer.mockRejectedValue(new Error(errorMessage));
 
             // Act
             await checkCreditTimer(req, res);
 
             // Assert
-            expect(userModel.findOne).toHaveBeenCalledWith({ clerkId: 'test-clerk-id' });
+            expect(findUserByClerkId).toHaveBeenCalledWith('test-clerk-id');
+            expect(manageCreditTimer).toHaveBeenCalledWith(mockUser);
             expect(res.json).toHaveBeenCalledWith({
                 success: false,
                 message: errorMessage
             });
         });
     });
-})
+});
+
