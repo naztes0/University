@@ -2,24 +2,27 @@
 
 #include "Graph.h"
 #include "ShortestPathStr.h"
-#include"JohnsonAlg.h"
+#include "JohnsonAlg.h"
 #include <memory>
 
 class Menu {
 private:
     std::unique_ptr<Graph> graph;
-    std::unique_ptr<ShortestPathStrategy> strategy;
-    std::unique_ptr<JohnsonAlgorithm> johnAlg;
+    int defaultThreads;
 
     void displayMainMenu();
     void createGraph();
     void addEdges();
-    void selectAlgorithm();
-    void runAlgorithm();
-    void displayResults(const ShortestPathResult& result);
+    void runBellmanFordComparison();
+    void runDijkstraComparison();
+    void runJohnsonComparison();
+    void displaySingleSourceResults(const ShortestPathResult& result, const std::string& algorithmName, double executionTime);
+    void displayJohnsonResults(const JohnsonResult& result, const std::string& algorithmName);
     void printGraph();
     int getIntInput(const std::string& prompt);
     double getDoubleInput(const std::string& prompt);
+    int getSourceVertex();
+    void addSampleEdges(Graph& graph, int vertexCount = 200, int edgeCount = 2000);
 
 public:
     Menu();
