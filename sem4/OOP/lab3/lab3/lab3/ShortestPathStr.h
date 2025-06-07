@@ -56,12 +56,29 @@ public:
 class ParallelDijkstraStrategy : public ShortestPathStrategy {
 private:
     int numThreads;
+    bool useEfficient; // Прапорець для вибору версії алгоритму
 
 public:
-    explicit ParallelDijkstraStrategy(int threads = 4) : numThreads(threads) {}
+    explicit ParallelDijkstraStrategy(int threads = 4, bool efficient = true)
+        : numThreads(threads), useEfficient(efficient) {}
 
-    ShortestPathResult findShortestPaths(const Graph& graph, int source) override;
+    ShortestPathResult findShortestPaths(const Graph& graph, int source) override {
+        if (useEfficient) {
+            return findShortestPathsEfficient(graph, source);
+        }
+        else {
+            return findShortestPathsOriginal(graph, source);
+        }
+    }
+
+    // Ефективна версія (рекомендована)
+    ShortestPathResult findShortestPathsEfficient(const Graph& graph, int source);
+
+    // Оригінальна версія з Fibonacci heap
+    ShortestPathResult findShortestPathsOriginal(const Graph& graph, int source);
+
     std::string getAlgorithmName() const override {
-        return "Parallel Dijkstra (" + std::to_string(numThreads) + " threads)";
+        return "Parallel Dijkstra (" + std::to_string(numThreads) + " threads)" +
+            (useEfficient ? " [Efficient]" : " [Fibonacci Heap]");
     }
 };

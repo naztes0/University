@@ -1,4 +1,4 @@
-#include "JohnsonAlgorithm.h"
+#include "JohnsonAlg.h"
 #include <thread>
 #include <mutex>
 #include <algorithm>

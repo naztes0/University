@@ -51,19 +51,16 @@ ShortestPathResult BellmanFordStrategy::findShortestPaths(const Graph& graph, in
 ShortestPathResult ParallelBellmanFordStrategy::findShortestPaths(const Graph& graph, int source) {
     int V = graph.getVertices();
     ShortestPathResult result(V);
-
     result.distances[source] = 0.0;
 
-    std::mutex distMutex;
     std::atomic<bool> updated{ false };
-
 
     for (int i = 0; i < V - 1; ++i) {
         updated = false;
 
         auto processVertices = [&](int start, int end) {
-            bool localUpdated = false;
             std::vector<std::pair<int, double>> localUpdates;
+            bool localUpdated = false;
 
             for (int u = start; u < end; ++u) {
                 if (result.distances[u] != std::numeric_limits<double>::infinity()) {
@@ -80,14 +77,17 @@ ShortestPathResult ParallelBellmanFordStrategy::findShortestPaths(const Graph& g
                 }
             }
 
-            //Applying updates with mutex
+            // Застосовуємо оновлення з правильною синхронізацією
             if (localUpdated) {
-                std::lock_guard<std::mutex> lock(distMutex);
+                static std::mutex updateMutex;
+                std::lock_guard<std::mutex> lock(updateMutex);
+
                 for (const auto& update : localUpdates) {
                     int v = update.first;
                     double newDist = update.second;
                     if (newDist < result.distances[v]) {
                         result.distances[v] = newDist;
+                        result.predecessors[v] = -1; // Знайдемо попередника пізніше
                         updated = true;
                     }
                 }
@@ -96,19 +96,30 @@ ShortestPathResult ParallelBellmanFordStrategy::findShortestPaths(const Graph& g
 
         graph.parallelProcessVertices(numThreads, processVertices);
 
-        if (!updated) break; // Prev break
+        if (!updated) break;
     }
 
-    //Parallel check for negative cycles
-    std::atomic<bool> hasNegativeCycle{ false };
+    // Відновлюємо попередників
+    for (int u = 0; u < V; ++u) {
+        if (result.distances[u] != std::numeric_limits<double>::infinity()) {
+            for (const auto& edge : graph.getNeighbors(u)) {
+                int v = edge.to;
+                double weight = edge.weight;
+                if (std::abs(result.distances[v] - (result.distances[u] + weight)) < 1e-9) {
+                    result.predecessors[v] = u;
+                }
+            }
+        }
+    }
 
+    // Перевірка на від'ємні цикли
+    std::atomic<bool> hasNegativeCycle{ false };
     auto checkNegativeCycle = [&](int start, int end) {
         for (int u = start; u < end; ++u) {
             if (result.distances[u] != std::numeric_limits<double>::infinity()) {
                 for (const auto& edge : graph.getNeighbors(u)) {
                     int v = edge.to;
                     double weight = edge.weight;
-
                     if (result.distances[u] + weight < result.distances[v]) {
                         hasNegativeCycle = true;
                         return;
@@ -161,7 +172,7 @@ ShortestPathResult DijkstraStrategy::findShortestPaths(const Graph& graph, int s
     return result;
 }
 
-// Realis of parallel alg of Dej
+// Виправлений алгоритм Дейкстри з правильною синхронізацією
 ShortestPathResult ParallelDijkstraStrategy::findShortestPaths(const Graph& graph, int source) {
     int V = graph.getVertices();
     ShortestPathResult result(V);
@@ -169,6 +180,7 @@ ShortestPathResult ParallelDijkstraStrategy::findShortestPaths(const Graph& grap
     FibonacciHeap<double> heap;
     std::vector<std::atomic<bool>> visited(V);
     std::mutex heapMutex;
+    std::mutex resultMutex; // Додаємо мьютекс для результатів
 
     for (int i = 0; i < V; ++i) {
         visited[i] = false;
@@ -182,37 +194,42 @@ ShortestPathResult ParallelDijkstraStrategy::findShortestPaths(const Graph& grap
 
         if (visited[u].exchange(true)) continue;
 
-        //Parallel neighbour proccessing
-        std::vector<std::thread> threads;
         const auto& neighbors = graph.getNeighbors(u);
-        int neighborsPerThread = std::max(1, static_cast<int>(neighbors.size()) / numThreads);
 
-        auto processNeighbors = [&](int start, int end) {
-            std::vector<std::pair<double, int>> localInserts;
+        // Паралелізуємо тільки якщо є достатньо сусідів
+        if (neighbors.size() >= numThreads * 2) {
+            std::vector<std::thread> threads;
+            int neighborsPerThread = std::max(1, static_cast<int>(neighbors.size()) / numThreads);
 
-            for (int i = start; i < end && i < neighbors.size(); ++i) {
-                const auto& edge = neighbors[i];
-                int v = edge.to;
-                double weight = edge.weight;
-                double newDist = result.distances[u] + weight;
+            auto processNeighbors = [&](int start, int end) {
+                std::vector<std::pair<double, int>> localInserts;
 
-                if (newDist < result.distances[v]) {
-                    result.distances[v] = newDist;
-                    result.predecessors[v] = u;
+                for (int i = start; i < end && i < neighbors.size(); ++i) {
+                    const auto& edge = neighbors[i];
+                    int v = edge.to;
+                    double weight = edge.weight;
+                    double newDist = result.distances[u] + weight;
 
-                    if (!visited[v]) {
-                        localInserts.emplace_back(newDist, v);
+                    // Використовуємо мьютекс для безпечного доступу до distances
+                    {
+                        std::lock_guard<std::mutex> lock(resultMutex);
+                        if (newDist < result.distances[v]) {
+                            result.distances[v] = newDist;
+                            result.predecessors[v] = u;
+
+                            if (!visited[v].load()) {
+                                localInserts.emplace_back(newDist, v);
+                            }
+                        }
                     }
                 }
-            }
 
+                // Додаємо всі локальні вставки до купи одразу
+                for (const auto& insert : localInserts) {
+                    heap.insertSafe(insert.first, insert.second);
+                }
+                };
 
-            for (const auto& insert : localInserts) {
-                heap.insertSafe(insert.first, insert.second);
-            }
-            };
-
-        if (neighbors.size() >= numThreads) {
             int start = 0;
             for (int t = 0; t < numThreads; ++t) {
                 int end = start + neighborsPerThread;
@@ -227,7 +244,21 @@ ShortestPathResult ParallelDijkstraStrategy::findShortestPaths(const Graph& grap
             }
         }
         else {
-            processNeighbors(0, neighbors.size());
+            // Для малої кількості сусідів використовуємо послідовну обробку
+            for (const auto& edge : neighbors) {
+                int v = edge.to;
+                double weight = edge.weight;
+                double newDist = result.distances[u] + weight;
+
+                if (newDist < result.distances[v]) {
+                    result.distances[v] = newDist;
+                    result.predecessors[v] = u;
+
+                    if (!visited[v].load()) {
+                        heap.insertSafe(newDist, v);
+                    }
+                }
+            }
         }
     }
 

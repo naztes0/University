@@ -127,7 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FibonacciHeap.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="JohnsonAlgThreaded.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FibonacciHeap.h" />
+    <ClInclude Include="Graph.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -21,7 +21,6 @@ private:
 public:
 
 	explicit Graph(int vertices);
-    explicit Graph(int vertices);
 
     void addEdge(int from, int to, double weight);
     void removeEdge(int from, int to);

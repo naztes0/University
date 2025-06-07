@@ -3,6 +3,7 @@
 #include"Graph.h"
 #include<vector>
 #include<limits>
+#include <string>
 
 struct ShortestPathResult {
     std::vector<double> distances;
