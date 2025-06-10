@@ -53,29 +53,3 @@ void Graph::printGraph() const {
 		std::cout << std::endl;
 	}
 }
-
-std::vector<int> Graph::getVerticesRange(int start, int end) const {
-	std::vector<int> range;
-	for (int i = start; i < end && i < vertices; ++i) {
-		range.push_back(i);
-	}
-	return range;
-}
-
-void Graph::parallelProcessVertices(int numThreads,
-	std::function<void(int, int)> processor) const {
-	std::vector<std::thread> threads;
-	int verticesPerThread = vertices / numThreads;
-	int remainder = vertices % numThreads;
-
-	int start = 0;
-	for (int i = 0; i < numThreads; ++i) {
-		int end = start + verticesPerThread + (i < remainder ? 1 : 0);
-		threads.emplace_back(processor, start, end);
-		start = end;
-	}
-
-	for (auto& thread : threads) {
-		thread.join();
-	}
-}

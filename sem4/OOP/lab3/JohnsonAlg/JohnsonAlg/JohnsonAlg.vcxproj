@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{db28fec2-43a7-4cef-969d-9b146a0a9b3e}</ProjectGuid>
-    <RootNamespace>JohnsonAlgThreaded</RootNamespace>
+    <ProjectGuid>{118e13e5-ad5c-4b8f-b764-048de5961443}</ProjectGuid>
+    <RootNamespace>JohnsonAlg</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,13 +127,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FibonacciHeap.cpp" />
+    <ClCompile Include="BellmanFord.cpp" />
+    <ClCompile Include="Dijkstra.cpp" />
     <ClCompile Include="Graph.cpp" />
-    <ClCompile Include="JohnsonAlgThreaded.cpp" />
+    <ClCompile Include="Johnson.cpp" />
+    <ClCompile Include="JohnsonAlg.cpp" />
+    <ClCompile Include="ParallelJohnson.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FibonacciHeap.h" />
+    <ClInclude Include="BellmanFord.h" />
+    <ClInclude Include="Dijkstra.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="Johnson.h" />
+    <ClInclude Include="ParallelJohnson.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

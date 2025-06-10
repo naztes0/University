@@ -1,50 +1,47 @@
 #pragma once
-#include "ShortestPathAlgorithm.h"
 #include "Graph.h"
+#include "ShortestPathAlgorithm.h"  
 #include <vector>
 #include <memory>
 #include <chrono>
 #include <thread>
-#include <mutex>
-#include <atomic>
+#include<iomanip>
 
-// Additional interface for algorithms working with all pairs of vertices
-class AllPairsShortestPath {
-public:
-    virtual ~AllPairsShortestPath() = default;
-    virtual std::vector<std::vector<double>> findAllPairsShortestPaths(const Graph& graph) = 0;
-    virtual std::vector<std::vector<double>> findAllPairsShortestPathsParallel(const Graph& graph, int numThreads = std::thread::hardware_concurrency()) = 0;
-    virtual std::string getName() const = 0;
-    virtual std::chrono::microseconds getLastExecutionTime() const = 0;
-};
-
-// Johnson's algorithm implementation
-class JohnsonAlgorithm : public AllPairsShortestPath {
+class JohnsonAlgorithm {
 private:
     std::unique_ptr<ShortestPathAlgorithm> bellmanFord;
     std::unique_ptr<ShortestPathAlgorithm> dijkstra;
-    mutable std::chrono::microseconds lastExecutionTime{ 0 };
 
     // Helper methods
-    Graph reweightGraph(const Graph& originalGraph, const std::vector<double>& h) const;
-    void processVertexRange(const Graph& reweightedGraph, const std::vector<double>& h,
-        std::vector<std::vector<double>>& result, int start, int end) const;
+    Graph createAugmentedGraph(const Graph& original);
+
+    Graph createReweightedGraph(const Graph& graph, const std::vector<double>& h);
+
+    void restoreOriginalWeights(std::vector<std::vector<double>>& distances,
+        const std::vector<double>& h);
+
+    double calculateGraphDensity(const Graph& graph);
+
 
 public:
     JohnsonAlgorithm();
 
-    std::vector<std::vector<double>> findAllPairsShortestPaths(const Graph& graph) override;
-    std::vector<std::vector<double>> findAllPairsShortestPathsParallel(const Graph& graph,
-        int numThreads = std::thread::hardware_concurrency()) override;
+    // Sequential version
+    std::vector<std::vector<double>> findAllPairsShortestPaths(const Graph& graph);
 
-    // Alternative parallel implementation with batched processing
-    std::vector<std::vector<double>> findAllPairsShortestPathsParallelBatched(const Graph& graph,
+    // Parallel version
+    std::vector<std::vector<double>> findAllPairsShortestPathsParallel(const Graph& graph,
         int numThreads = std::thread::hardware_concurrency());
 
-    std::string getName() const override { return "Johnson"; }
-    std::chrono::microseconds getLastExecutionTime() const override { return lastExecutionTime; }
+    // Performance comparison
+    struct PerformanceResult {
+        std::vector<std::vector<double>> distances;
+        std::chrono::milliseconds sequentialTime;
+        std::chrono::milliseconds parallelTime;
+        double speedup;
+        int threadsUsed;
+    };
 
-    // Additional methods for testing
-    bool canHandleNegativeWeights() const { return true; }
-    void printExecutionStats() const;
+    PerformanceResult comparePerformance(const Graph& graph,
+        int numThreads = std::thread::hardware_concurrency());
 };

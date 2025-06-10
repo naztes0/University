@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="AlgorithmFactory.cpp" />
     <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="GraphBuilder.cpp" />
     <ClCompile Include="JohnsonAlgorithm.cpp" />
     <ClCompile Include="lab3.1.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -137,8 +138,10 @@
   <ItemGroup>
     <ClInclude Include="AlgorithmFactory.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="GraphBuilder.h" />
     <ClInclude Include="JohnsonAlgorithm.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="ShortestPathAlgorithm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

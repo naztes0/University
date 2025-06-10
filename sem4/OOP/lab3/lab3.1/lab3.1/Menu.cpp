@@ -1,377 +1,238 @@
 #include "Menu.h"
-#include "Graph.h"
-#include "JohnsonAlgorithm.h"
+#include"GraphBuilder.h"
 #include <iostream>
-#include <memory>
 #include <iomanip>
+#include <limits>
+#include <random>
 #include <thread>
 
-void Menu::displayMenu() {
-    std::cout << "\n========== MENU FOR JOHNSON'S ALGORITHM ==========" << std::endl;
-    std::cout << "1. Create a new graph" << std::endl;
-    std::cout << "2. Edge adding" << std::endl;
-    std::cout << "3. Show the graph" << std::endl;
-    std::cout << "4. Run Johnson's algorithm (sequential)" << std::endl;
-    std::cout << "5. Run Johnson's algorithm (multi-threaded)" << std::endl;
-    std::cout << "6. Efficiency comparison" << std::endl;
-    std::cout << "7. Create test graph " << std::endl;
-    std::cout << "0. Exit" << std::endl;
-    std::cout << "==============================================" << std::endl;
-    std::cout << "Your choice: ";
+Menu::Menu() : johnsonAlgorithm(std::make_unique<JohnsonAlgorithm>()) {
+}
+
+void Menu::displayMainMenu() {
+    std::cout << "\n=================================" << std::endl;
+    std::cout << "    JOHNSON'S ALGORITHM MENU    " << std::endl;
+    std::cout << "=================================" << std::endl;
+    std::cout << "1. Create new graph" << std::endl;
+    std::cout << "2. Display current graph" << std::endl;
+    std::cout << "3. Run sequential Johnson's algorithm" << std::endl;
+    std::cout << "4. Run parallel Johnson's algorithm" << std::endl;
+    std::cout << "5. Compare sequential vs parallel performance" << std::endl;
+    std::cout << "6. Exit" << std::endl;
+    std::cout << "=================================" << std::endl;
+}
+
+void Menu::createGraph() {
+    int vertices = getIntInput("Enter number of vertices: ");
+    int edges = getIntInput("Enter number of edges: ", 0, vertices * (vertices - 1));
+
+    GraphBuilder builder;
+    builder.setVertices(vertices).setTargetEdges(edges);
+
+    std::cout << "\nChoose edge input method:" << std::endl;
+    std::cout << "1. Manual input" << std::endl;
+    std::cout << "2. Random generation" << std::endl;
+
+    int choice = getIntInput("Enter choice (1-2): ", 1, 2);
+
+    if (choice == 1) {
+        // Manual edge input
+        std::cout << "\nEnter edges (from to weight):" << std::endl;
+        for (int i = 0; i < edges; ++i) {
+            std::cout << "Edge " << (i + 1) << ": ";
+            int from = getIntInput("From vertex: ", 0, vertices - 1);
+            int to = getIntInput("To vertex: ", 0, vertices - 1);
+            double weight = getDoubleInput("Weight: ");
+
+            builder.addManualEdge(from, to, weight);
+        }
+    }
+    else {
+        // Random edge generation
+        double minWeight = 1.0, maxWeight = 100.0;
+
+        std::cout << "Choose weight range:" << std::endl;
+        std::cout << "1. Positive weights only (1-100)" << std::endl;
+        std::cout << "2. Mixed weights (-50 to 100)" << std::endl;
+        std::cout << "3. Custom range" << std::endl;
+
+        int weightChoice = getIntInput("Enter choice (1-3): ", 1, 3);
+
+        switch (weightChoice) {
+        case 2:
+            minWeight = -50.0;
+            maxWeight = 100.0;
+            break;
+        case 3:
+            minWeight = getDoubleInput("Enter minimum weight: ");
+            maxWeight = getDoubleInput("Enter maximum weight: ");
+            break;
+        }
+
+        builder.setWeightRange(minWeight, maxWeight).useRandomGeneration();
+    }
+
+    graph = builder.build();
+    std::cout << "\nGraph created successfully!" << std::endl;
+}
+
+void Menu::displayGraph() {
+    if (!graph) {
+        std::cout << "No graph exists. Please create a graph first." << std::endl;
+        return;
+    }
+
+    std::cout << "\nCurrent Graph:" << std::endl;
+    std::cout << "Vertices: " << graph->getVertices() << std::endl;
+    std::cout << "Has negative weights: " << (graph->hasNegativeWeights() ? "Yes" : "No") << std::endl;
+    std::cout << "\nAdjacency List:" << std::endl;
+    graph->printGraph();
+}
+
+void Menu::runSequentialJohnson() {
+    if (!graph) {
+        std::cout << "No graph exists. Please create a graph first." << std::endl;
+        return;
+    }
+
+    std::cout << "\nRunning Sequential Johnson's Algorithm..." << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    auto distances = johnsonAlgorithm->findAllPairsShortestPaths(*graph);
+    auto end = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    std::cout << "Sequential execution completed in " << duration.count() << " ms" << std::endl;
+}
+
+void Menu::runParallelJohnson() {
+    if (!graph) {
+        std::cout << "No graph exists. Please create a graph first." << std::endl;
+        return;
+    }
+
+    std::cout << "\nRunning Parallel Johnson's Algorithm..." << std::endl;
+    std::cout << "Automatically selecting optimal thread configuration..." << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    auto distances = johnsonAlgorithm->findAllPairsShortestPathsParallel(*graph);
+    auto end = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    std::cout << "Parallel execution completed in " << duration.count() << " ms" << std::endl;
+
+    
+}
+
+void Menu::compareAlgorithms() {
+    if (!graph) {
+        std::cout << "No graph exists. Please create a graph first." << std::endl;
+        return;
+    }
+
+    int maxThreads = std::thread::hardware_concurrency();
+    std::cout << "Available CPU threads: " << maxThreads << std::endl;
+
+    int numThreads = getIntInput("Enter number of threads for parallel version: ", 1, maxThreads );
+
+    std::cout << "\n" << std::string(50, '=') << std::endl;
+    std::cout << "PERFORMANCE COMPARISON" << std::endl;
+    std::cout << std::string(50, '=') << std::endl;
+
+    auto result = johnsonAlgorithm->comparePerformance(*graph, numThreads);
+
+    std::cout << "\n" << std::string(50, '=') << std::endl;
+    std::cout << "SUMMARY" << std::endl;
+    std::cout << std::string(50, '=') << std::endl;
+
+    if (result.speedup > 1.0) {
+        std::cout << "Parallel version is " << std::fixed << std::setprecision(2)
+            << result.speedup << "x FASTER" << std::endl;
+    }
+    else if (result.speedup < 1.0) {
+        std::cout << "Sequential version is " << std::fixed << std::setprecision(2)
+            << (1.0 / result.speedup) << "x FASTER" << std::endl;
+    }
+    else {
+        std::cout << "Both versions have similar performance" << std::endl;
+    }
+}
+
+bool Menu::isValidVertex(int vertex) {
+    return graph && vertex >= 0 && vertex < graph->getVertices();
+}
+
+int Menu::getIntInput(const std::string& prompt, int min, int max) {
+    int value;
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> value && value >= min && value <= max) {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            return value;
+        }
+        else {
+            std::cout << "Invalid input. Please enter a number between " << min << " and " << max << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
+}
+
+double Menu::getDoubleInput(const std::string& prompt) {
+    double value;
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> value) {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            return value;
+        }
+        else {
+            std::cout << "Invalid input. Please enter a valid number." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
 }
 
 void Menu::run() {
-    std::unique_ptr<Graph> graph = nullptr;
-    JohnsonAlgorithm johnson;
     int choice;
 
+    std::cout << "Welcome to Johnson's Algorithm Implementation!" << std::endl;
+    std::cout << "This program finds all-pairs shortest paths in weighted graphs." << std::endl;
 
     do {
-        displayMenu();
-
-        if (!(std::cin >> choice)) {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Incorrect input! Try one more time" << std::endl;
-            continue;
-        }
+        displayMainMenu();
+        choice = getIntInput("Enter your choice (1-6): ", 1, 6);
 
         switch (choice) {
         case 1:
-            createGraph(graph);
+            createGraph();
             break;
         case 2:
-            addEdge(graph);
+            displayGraph();
             break;
-      
         case 3:
-            displayGraph(graph);
+            runSequentialJohnson();
             break;
         case 4:
-            runSequentialJohnson(graph, johnson);
+            runParallelJohnson();
             break;
         case 5:
-            runParallelJohnson(graph, johnson);
+            compareAlgorithms();
             break;
         case 6:
-            comparePerformance(graph, johnson);
-            break;
-        case 7:
-            createTestGraph(graph);
-            break;
-        case 0:
-            std::cout << "Good bye!" << std::endl;
+            std::cout << "Thank you for using Johnson's Algorithm Implementation!" << std::endl;
             break;
         default:
-            std::cout << "Incorrect choice! Try one more time" << std::endl;
+            std::cout << "Invalid choice. Please try again." << std::endl;
         }
 
-  
-
-    } while (choice != 0);
-}
-
-void Menu::createGraph(std::unique_ptr<Graph>& graph) {
-    int vertices;
-    std::cout << "Enter the amount of vertices: ";
-
-    if (!(std::cin >> vertices) || vertices <= 0) {
-        std::cout << "Incorrect edge number!" << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        return;
-    }
-
-    graph = std::make_unique<Graph>(vertices);
-    std::cout << "Graph with " << vertices << " vertices succefully created!" << std::endl;
-}
-
-void Menu::addEdge(std::unique_ptr<Graph>& graph) {
-    if (!graph) {
-        std::cout << "You have to create a graph!" << std::endl;
-        return;
-    }
-
-    int from, to;
-    double weight;
-
-    std::cout << "Enter the initial vertex (0-" << (graph->getVertices() - 1) << "): ";
-    if (!(std::cin >> from)) {
-        std::cout << "Incorrect input!" << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        return;
-    }
-
-    std::cout << "Enter the final vertex (0-" << (graph->getVertices() - 1) << "): ";
-    if (!(std::cin >> to)) {
-        std::cout << "Incorrect input!" << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        return;
-    }
-
-    std::cout << "Enter the edge weight: ";
-    if (!(std::cin >> weight)) {
-        std::cout << "Incorrect input!" << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        return;
-    }
-
-    graph->addEdge(from, to, weight);
-    std::cout << "Edge (" << from << " -> " << to << ") with weight " << weight << " added!" << std::endl;
-}
-
-
-void Menu::displayGraph(const std::unique_ptr<Graph>& graph) {
-    if (!graph) {
-        std::cout << "The graph has not yet been created!" << std::endl;
-        return;
-    }
-
-    std::cout << "\n========== GRAPH STRUCCTURE ==========" << std::endl;
-    graph->printGraph();
-    std::cout << "\nVertices number: " << graph->getVertices() << std::endl;
-    std::cout << "Has negative weight: " << (graph->hasNegativeWeights() ? "Yes" : "No") << std::endl;
-    std::cout << "====================================" << std::endl;
-}
-
-void Menu::runSequentialJohnson(const std::unique_ptr<Graph>& graph, JohnsonAlgorithm& johnson) {
-    if (!graph) {
-        std::cout << "The graph has not yet been created!" << std::endl;
-        return;
-    }
-
-    std::cout << "\nRunning the Johnson's alogrithm" << std::endl;
-
-    auto result = johnson.findAllPairsShortestPaths(*graph);
-
-    std::cout << "\n========== Results (sequnential) ==========" << std::endl;
-    johnson.printExecutionStats();
-    std::cout << "===========================================" << std::endl;
-}
-
-void Menu::runParallelJohnson(const std::unique_ptr<Graph>& graph, JohnsonAlgorithm& johnson) {
-    if (!graph) {
-        std::cout << "The graph has not yet been created." << std::endl;
-        return;
-    }
-
-    int numThreads;
-    std::cout << "Enter threads amount (recomended:  " << std::thread::hardware_concurrency() << "): ";
-
-    if (!(std::cin >> numThreads) || numThreads <= 0) {
-        numThreads = std::thread::hardware_concurrency();
-        std::cout << "It will be used the default threads amount: " << numThreads << std::endl;
-    }
-
-    std::cout << "\nRunning of multi-threaded Johnson's algorithm with " << numThreads << " threads..." << std::endl;
-
-    auto result = johnson.findAllPairsShortestPathsParallel(*graph, numThreads);
-
-    std::cout << "\n========== RESULT (MULTI-THREADED) ==========" << std::endl;
-
-    johnson.printExecutionStats();
-    std::cout << "=============================================" << std::endl;
-}
-
-void Menu::comparePerformance(const std::unique_ptr<Graph>& graph, JohnsonAlgorithm& johnson) {
-    if (!graph) {
-        std::cout << "The graph has not yet been created!" << std::endl;
-        return;
-    }
-
-    std::cout << "\n Efficiency comparisson" << std::endl;
-    std::cout << "It will take a while for huge grphs.\n" << std::endl;
-
-    // Seq execution
-    std::cout << "Running the sequential algorithm: " << std::endl;
-    auto sequentialResult = johnson.findAllPairsShortestPaths(*graph);
-    auto sequentialTime = johnson.getLastExecutionTime();
-
-    // Multi-th execution
-    int numThreads = std::thread::hardware_concurrency();
-    std::cout << "Running the multi-threaded algorithm with " << numThreads << " threads..." << std::endl;
-    auto parallelResult = johnson.findAllPairsShortestPathsParallel(*graph, numThreads);
-    auto parallelTime = johnson.getLastExecutionTime();
-
-    // Output of results
-    std::cout << "\n========== EFFICIENCY COMPARISSON ==========" << std::endl;
-    std::cout << std::fixed << std::setprecision(2);
-    std::cout << "Sequential time:     " << sequentialTime.count() << " us" << std::endl;
-    std::cout << "Multi threaded time:  " << parallelTime.count() << " us" << std::endl;
-
-    if (parallelTime.count() > 0) {
-        double speedup = static_cast<double>(sequentialTime.count()) / parallelTime.count();
-        std::cout << "Speed up:         " << speedup << "x" << std::endl;
-        std::cout << "Efficiency:        " << (speedup / numThreads) * 100 << "%" << std::endl;
-    }
-
-    std::cout << "=============================================" << std::endl;
-}
-
-void Menu::createTestGraph(std::unique_ptr<Graph>& graph) {
-    std::cout << "\nChoose type:" << std::endl;
-    std::cout << "1. Small graph with negative edges" << std::endl;
-    std::cout << "2. Middle graph" << std::endl;
-    std::cout << "3. Huge graph for productivity test" << std::endl;
-    std::cout << "Your choice: ";
-
-    int choice;
-    if (!(std::cin >> choice)) {
-        std::cout << "Incorrect input!" << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        return;
-    }
-
-    switch (choice) {
-    case 1:
-        createSmallTestGraph(graph);
-        break;
-    case 2:
-        createMediumTestGraph(graph);
-        break;
-    case 3:
-        createLargeTestGraph(graph);
-        break;
-    default:
-        std::cout << "Incorrect choice!" << std::endl;
-    }
-}
-
-void Menu::createSmallTestGraph(std::unique_ptr<Graph>& graph) {
-    graph = std::make_unique<Graph>(4);
-
-    graph->addEdge(0, 1, 5);
-    graph->addEdge(0, 2, 8);
-    graph->addEdge(1, 2, -3);
-    graph->addEdge(1, 3, 7);
-    graph->addEdge(2, 3, 2);
-    graph->addEdge(3, 0, -2);
-
-    std::cout << "Created small test graph with negative edges (4 vertices)!" << std::endl;
-}
-
-void Menu::createMediumTestGraph(std::unique_ptr<Graph>& graph) {
-    graph = std::make_unique<Graph>(8);
-
-    // Creation of more complicated strucutre
-    graph->addEdge(0, 1, 4);
-    graph->addEdge(0, 7, 8);
-    graph->addEdge(1, 2, 8);
-    graph->addEdge(1, 7, 11);
-    graph->addEdge(2, 3, 7);
-    graph->addEdge(2, 8, 2);
-    graph->addEdge(2, 5, 4);
-    graph->addEdge(3, 4, 9);
-    graph->addEdge(3, 5, 14);
-    graph->addEdge(4, 5, 10);
-    graph->addEdge(5, 6, 2);
-    graph->addEdge(6, 7, 1);
-    graph->addEdge(6, 8, 6);
-    graph->addEdge(7, 8, 7);
-
-    std::cout << "Created middle graph (8 edges)" << std::endl;
-}
-
-void Menu::createLargeTestGraph(std::unique_ptr<Graph>& graph) {
-    //int vertices = 1000;
-    //graph = std::make_unique<Graph>(vertices);
-
-    //srand(time(nullptr));
-
-    //for (int i = 0; i < vertices; ++i) {
-    //    for (int j = 0; j < vertices; ++j) {
-    //        if (i != j && rand() % 4 == 0) { // 25% ймовірність ребра
-    //            double weight = (rand() % 20) - 5; // Ваги від -5 до 14
-    //            graph->addEdge(i, j, weight);
-    //        }
-    //    }
-    //}
-    int V;
-    std::cout << "Enter vertices amount for graph: ";
-    std::cin >> V;
-    if ( V <= 0) {
-        std::cout << "Enter correct amount of vertices" << std::endl;
-        return;
-    }
-    graph = std::make_unique<Graph>(V);
-
-    int edges;
-    int maxEdgesForGraph = V * (V - 1);
-
-    std::cout << "Enter the amount of edges for the graph: ";
-    std::cin >> edges;
-    if(!edges || edges <=0){
-        std::cout << "Enter the correct number of edges" << std::endl;
-        return;
-    }
-    if (edges > maxEdgesForGraph) {
-        std::cout << "The max amount of edges fot graph with" << V << " vertices is " << maxEdgesForGraph << std::endl;
-        return;
-    }
-
-    srand(static_cast<unsigned>(time(nullptr)));
-    int edgesAdded=0;
-    while (edgesAdded < edges) {
-        int from = rand() % V;
-        int to = rand() % V;
-
-        if (from != to) {
-            bool edgeExists = false;
-            for (const auto& edge : graph->getNeighbors(from)) {
-                if (edge.to == to) {
-                    edgeExists = true;
-                    break;
-                }
-            }
-
-            if (!edgeExists) {
-                double weight = (rand() % 20) +1; 
-                graph->addEdge(from, to, weight);
-                edgesAdded++;
-            }
+        if (choice != 6) {
+            std::cout << "\nPress Enter to continue...";
+            std::cin.get();
         }
-    }
 
-
-
-    std::cout << "Created a huge test graph (" << V << " vertices) with "<< edges<<" edges for productivity testing!" << std::endl;
+    } while (choice != 6);
 }
-
-//void Menu::printDistanceMatrix(const std::vector<std::vector<double>>& distances) {
-//    int size = distances.size();
-//
-//    if (size > 15) {
-//        std::cout << "Graph is too huge for displaying as matrix adjacency." << std::endl;
-//        std::cout << "Show elemnts 10x10:" << std::endl;
-//        size = 10;
-//    }
-//
-//    std::cout << std::fixed << std::setprecision(1);
-//    std::cout << "\nMatrix of the shortest distances:" << std::endl;
-//
-//    //Headers
-//    std::cout << "     ";
-//    for (int j = 0; j < size; ++j) {
-//        std::cout << std::setw(7) << j;
-//    }
-//    std::cout << std::endl;
-//
-//    // Rows
-//    for (int i = 0; i < size; ++i) {
-//        std::cout << std::setw(3) << i << ": ";
-//        for (int j = 0; j < size; ++j) {
-//            if (distances[i][j] == std::numeric_limits<double>::infinity()) {
-//                std::cout << std::setw(7) << "infinity";
-//            }
-//            else {
-//                std::cout << std::setw(7) << distances[i][j];
-//            }
-//        }
-//        std::cout << std::endl;
-//    }
-//}
-

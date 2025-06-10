@@ -27,3 +27,4 @@ std::unique_ptr<ShortestPathAlgorithm> AlgorithmFactory::createAlgorithm(const s
         throw std::invalid_argument("Unknown algorithm name: " + name);
     }
 }
+

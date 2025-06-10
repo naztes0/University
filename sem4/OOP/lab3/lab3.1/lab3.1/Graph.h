@@ -31,9 +31,7 @@ public:
     bool hasNegativeWeights() const;
     void printGraph() const;
 
-    // Методи для паралельної обробки
-    std::vector<int> getVerticesRange(int start, int end) const;
-    void parallelProcessVertices(int numThreads, std::function<void(int, int)> processor) const;
+  
 
 };
 

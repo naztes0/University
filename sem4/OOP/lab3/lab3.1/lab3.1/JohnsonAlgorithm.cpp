@@ -1,245 +1,237 @@
-#include "JohnsonAlgorithm.h"
+﻿#include "JohnsonAlgorithm.h"
 #include "AlgorithmFactory.h"
-#include <iostream>
 #include <limits>
-#include <algorithm>
-#include <atomic>
+#include <iostream>
+#include <mutex>
+#include <future>
 
-JohnsonAlgorithm::JohnsonAlgorithm() {
-    bellmanFord = AlgorithmFactory::createAlgorithm(AlgorithmFactory::AlgorithmType::BELLMAN_FORD);
-    dijkstra = AlgorithmFactory::createAlgorithm(AlgorithmFactory::AlgorithmType::DIJKSTRA);
+JohnsonAlgorithm::JohnsonAlgorithm() 
+    :bellmanFord(AlgorithmFactory::createAlgorithm(AlgorithmFactory::AlgorithmType::BELLMAN_FORD)),
+    dijkstra( AlgorithmFactory::createAlgorithm(AlgorithmFactory::AlgorithmType::DIJKSTRA)){}
+
+
+Graph JohnsonAlgorithm::createAugmentedGraph(const Graph& original) {
+    int originalVertices = original.getVertices();
+    Graph augmented(originalVertices + 1);
+
+    // Copying edges from orig graph
+    for (int u = 0; u < originalVertices; ++u) {
+        for (const auto& edge : original.getNeighbors(u)) {
+            augmented.addEdge(u, edge.to, edge.weight);
+        }
+    }
+    //Adding new vertex s with edges to all of the vetices with 0 weight
+    int s = originalVertices;
+    for (int v = 0; v < originalVertices; ++v) {
+        augmented.addEdge(s, v, 0.0);
+    }
+
+    return augmented;
+}
+
+Graph JohnsonAlgorithm::createReweightedGraph(const Graph& graph, const std::vector<double>& h) {
+    int vertices = graph.getVertices();
+    Graph reweighted(vertices);
+
+    for (int u = 0; u < vertices; ++u) {
+        for (const auto& edge : graph.getNeighbors(u)) {
+            // New weight: w'(u,v) = w(u,v) + h(u) - h(v)
+            double newWeight = edge.weight + h[u] - h[edge.to];
+            reweighted.addEdge(u, edge.to, newWeight);
+        }
+    }
+
+    return reweighted;
+}
+
+void JohnsonAlgorithm::restoreOriginalWeights(std::vector<std::vector<double>>& distances,
+    const std::vector<double>& h) {
+    int vertices = distances.size();
+
+    for (int u = 0; u < vertices; ++u) {
+        for (int v = 0; v < vertices; ++v) {
+            if (distances[u][v] != std::numeric_limits<double>::infinity()) {
+                //Restoring the original weight : d(u,v) = d'(u,v) - h(u) + h(v)
+                distances[u][v] = distances[u][v] - h[u] + h[v];
+            }
+        }
+    }
 }
 
 std::vector<std::vector<double>> JohnsonAlgorithm::findAllPairsShortestPaths(const Graph& graph) {
-    auto start = std::chrono::high_resolution_clock::now();
+    int vertices = graph.getVertices();
+    std::vector<std::vector<double>> distances(vertices,
+        std::vector<double>(vertices, std::numeric_limits<double>::infinity()));
 
-    int V = graph.getVertices();
-    std::vector<std::vector<double>> result(V, std::vector<double>(V, std::numeric_limits<double>::infinity()));
+    // Init diagonal with 0
+    for (int i = 0; i < vertices; ++i) {
+        distances[i][i] = 0.0;
+    }
 
-    // Step 1: Creation of auxiliary graph
-    Graph augmentedGraph(V + 1);
+    // Step 1 : creation of augmentes graph
+    Graph augmentedGraph = createAugmentedGraph(graph);
+    int augmentedVertices = augmentedGraph.getVertices();
+    int source = augmentedVertices - 1; // New s vertex
 
-    // Copy all edges from original graph
-    for (int u = 0; u < V; ++u) {
-        for (const auto& edge : graph.getNeighbors(u)) {
-            augmentedGraph.addEdge(u, edge.to, edge.weight);
+    // Step 2: Running Bellman Ford from s vertex
+    std::vector<double> h = bellmanFord->findShortestPaths(augmentedGraph, source);
+
+    // Step 3^ Check for negative cycles
+    auto* bf = dynamic_cast<BellmanFordAlgorithm*>(bellmanFord.get());
+    if (bf && bf->hasNegativeCycle(augmentedGraph, source)) {
+        std::cout << "Graph contains a negative cycle!" << std::endl;
+        return distances; // Return infinits
+    }
+
+    // Removing the last elem for s vertex
+    h.pop_back();
+
+    //Step 4: creation of new reweighted graph
+    Graph reweightedGraph = createReweightedGraph(graph, h);
+
+    //Step 5: Running Dijkstra from each vertex
+    for (int u = 0; u < vertices; ++u) {
+        std::vector<double> singleSourceDistances = dijkstra->findShortestPaths(reweightedGraph, u);
+
+        for (int v = 0; v < vertices; ++v) {
+            distances[u][v] = singleSourceDistances[v];
         }
     }
 
-    // Add edges from a new vertex to rest one with weight 0
-    for (int v = 0; v < V; ++v) {
-        augmentedGraph.addEdge(V, v, 0.0);
-    }
+    // Step 6: restoring original weights
+    restoreOriginalWeights(distances, h);
 
-    // Step 2: Running Bellman-Ford from the new vertex
-    std::vector<double> h = bellmanFord->findShortestPaths(augmentedGraph, V);
-
-    // Check graph for negative cycles
-    auto* bellmanFordPtr = dynamic_cast<BellmanFordAlgorithm*>(bellmanFord.get());
-    if (bellmanFordPtr && bellmanFordPtr->hasNegativeCycle(augmentedGraph, V)) {
-        std::cout << "Graph contains negative cycles!" << std::endl;
-        return result;
-    }
-
-    // Step 3: reweighting the graph
-    Graph reweightedGraph = reweightGraph(graph, h);
-
-    // Step 4: Running Dijkstra from each vertex sequentially
-    for (int u = 0; u < V; ++u) {
-        std::vector<double> distances = dijkstra->findShortestPaths(reweightedGraph, u);
-
-        // Restore original distances
-        for (int v = 0; v < V; ++v) {
-            if (distances[v] != std::numeric_limits<double>::infinity()) {
-                result[u][v] = distances[v] + h[v] - h[u];
-            }
-        }
-        result[u][u] = 0.0; // The distance from the vertex to itself
-    }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    lastExecutionTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-
-    return result;
+    return distances;
 }
 
-std::vector<std::vector<double>> JohnsonAlgorithm::findAllPairsShortestPathsParallel(const Graph& graph, int numThreads) {
-    auto start = std::chrono::high_resolution_clock::now();
+std::vector<std::vector<double>> JohnsonAlgorithm::findAllPairsShortestPathsParallel(const Graph& graph,
+    int numThreads) {
+    int vertices = graph.getVertices();
 
-    int V = graph.getVertices();
-    
-    // Use parallel processing only for larger graphs
-    const int MIN_VERTICES_FOR_PARALLEL = 50;
-    if (V < MIN_VERTICES_FOR_PARALLEL) {
-        std::cout << "Graph too small for efficient parallelization, using sequential version..." << std::endl;
-        return findAllPairsShortestPaths(graph);
+    // Automatically determine optimal number of threads
+    if (numThreads <= 0) {
+        numThreads = std::thread::hardware_concurrency();
+        if (numThreads == 0) numThreads = 4;
     }
 
-    // Limit thread count to reasonable values
-    numThreads = std::min(numThreads, std::max(1, V / 10));
-    numThreads = std::min(numThreads, static_cast<int>(std::thread::hardware_concurrency()));
+    numThreads = std::min(numThreads, vertices / 50);  // Minimum 50 vertices per thread
 
-    std::vector<std::vector<double>> result(V, std::vector<double>(V, std::numeric_limits<double>::infinity()));
+    std::vector<std::vector<double>> distances(vertices,
+        std::vector<double>(vertices, std::numeric_limits<double>::infinity()));
 
-    // Steps 1-3 same as sequential algorithm
-    Graph augmentedGraph(V + 1);
-
-    for (int u = 0; u < V; ++u) {
-        for (const auto& edge : graph.getNeighbors(u)) {
-            augmentedGraph.addEdge(u, edge.to, edge.weight);
-        }
+    for (int i = 0; i < vertices; ++i) {
+        distances[i][i] = 0.0;
     }
 
-    for (int v = 0; v < V; ++v) {
-        augmentedGraph.addEdge(V, v, 0.0);
+    // Steps 1-4 remain unchanged
+    Graph augmentedGraph = createAugmentedGraph(graph);
+    int augmentedVertices = augmentedGraph.getVertices();
+    int source = augmentedVertices - 1;
+
+    std::vector<double> h = bellmanFord->findShortestPaths(augmentedGraph, source);
+
+    auto* bf = dynamic_cast<BellmanFordAlgorithm*>(bellmanFord.get());
+    if (bf && bf->hasNegativeCycle(augmentedGraph, source)) {
+        std::cout << "Graph contains a negative cycle!" << std::endl;
+        return distances;
     }
 
-    std::vector<double> h = bellmanFord->findShortestPaths(augmentedGraph, V);
+    h.pop_back();
+    Graph reweightedGraph = createReweightedGraph(graph, h);
 
-    auto* bellmanFordPtr = dynamic_cast<BellmanFordAlgorithm*>(bellmanFord.get());
-    if (bellmanFordPtr && bellmanFordPtr->hasNegativeCycle(augmentedGraph, V)) {
-        std::cout << "Graph contains negative cycles!" << std::endl;
-        return result;
-    }
-
-    Graph reweightedGraph = reweightGraph(graph, h);
-
-    // Step 4: Optimized parallel Dijkstra execution
+    // Use threads instead of async with dynamic work distribution
+    std::atomic<int> nextVertex{ 0 };
     std::vector<std::thread> threads;
-    std::atomic<int> nextVertex(0);
-    
-    // Create worker threads
-    for (int i = 0; i < numThreads; ++i) {
-        threads.emplace_back([&, this]() {
+
+    for (int t = 0; t < numThreads; ++t) {
+        threads.emplace_back([&]() {
             // Create local Dijkstra instance once per thread
-            auto localDijkstra = AlgorithmFactory::createAlgorithm(AlgorithmFactory::AlgorithmType::DIJKSTRA);
-            
+            auto localDijkstra = std::make_unique<DijkstraAlgorithm>();
+
             int vertex;
-            // Dynamic work distribution - each thread takes next available work
-            while ((vertex = nextVertex.fetch_add(1)) < V) {
-                std::vector<double> distances = localDijkstra->findShortestPaths(reweightedGraph, vertex);
-                
-                // Store results (each thread works on different rows)
-                for (int v = 0; v < V; ++v) {
-                    if (distances[v] != std::numeric_limits<double>::infinity()) {
-                        result[vertex][v] = distances[v] + h[v] - h[vertex];
-                    }
+            while ((vertex = nextVertex.fetch_add(1)) < vertices) {
+                std::vector<double> singleSourceDistances =
+                    localDijkstra->findShortestPaths(reweightedGraph, vertex);
+
+                // Copy results (each thread writes to its own row)
+                for (int v = 0; v < vertices; ++v) {
+                    distances[vertex][v] = singleSourceDistances[v];
                 }
-                result[vertex][vertex] = 0.0;
             }
-        });
+            });
     }
 
     // Wait for all threads to complete
     for (auto& thread : threads) {
-        thread.join();
+        if (thread.joinable()) {
+            thread.join();
+        }
     }
 
-    auto end = std::chrono::high_resolution_clock::now();
-    lastExecutionTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    // Step 6: Restore original weights
+    restoreOriginalWeights(distances, h);
 
-    return result;
+    return distances;
 }
+JohnsonAlgorithm::PerformanceResult JohnsonAlgorithm::comparePerformance(const Graph& graph, int numThreads) {
+    PerformanceResult result;
+    int vertices = graph.getVertices();
+    double density = calculateGraphDensity(graph);
 
-std::vector<std::vector<double>> JohnsonAlgorithm::findAllPairsShortestPathsParallelBatched(const Graph& graph, int numThreads) {
+    if (numThreads <= 0) {
+        numThreads = std::thread::hardware_concurrency();
+        if (numThreads == 0) numThreads = 4;
+    }
+
+    result.threadsUsed = numThreads;
+
+   
+    auto warmupDistances = findAllPairsShortestPaths(graph);
+
+    // Seq case
+    std::cout << "Running sequential version..." << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
-
-    int V = graph.getVertices();
-    std::vector<std::vector<double>> result(V, std::vector<double>(V, std::numeric_limits<double>::infinity()));
-
-    // Steps 1-3 same as before
-    Graph augmentedGraph(V + 1);
-
-    for (int u = 0; u < V; ++u) {
-        for (const auto& edge : graph.getNeighbors(u)) {
-            augmentedGraph.addEdge(u, edge.to, edge.weight);
-        }
-    }
-
-    for (int v = 0; v < V; ++v) {
-        augmentedGraph.addEdge(V, v, 0.0);
-    }
-
-    std::vector<double> h = bellmanFord->findShortestPaths(augmentedGraph, V);
-
-    auto* bellmanFordPtr = dynamic_cast<BellmanFordAlgorithm*>(bellmanFord.get());
-    if (bellmanFordPtr && bellmanFordPtr->hasNegativeCycle(augmentedGraph, V)) {
-        std::cout << "Graph contains negative cycles!" << std::endl;
-        return result;
-    }
-
-    Graph reweightedGraph = reweightGraph(graph, h);
-
-    // Step 4: Batched parallel processing
-    std::vector<std::thread> threads;
-    const int BATCH_SIZE = std::max(1, V / (numThreads * 4)); // Process multiple vertices per thread acquisition
-    std::atomic<int> nextBatch(0);
-    
-    for (int i = 0; i < numThreads; ++i) {
-        threads.emplace_back([&, this]() {
-            auto localDijkstra = AlgorithmFactory::createAlgorithm(AlgorithmFactory::AlgorithmType::DIJKSTRA);
-            
-            int batchStart;
-            while ((batchStart = nextBatch.fetch_add(BATCH_SIZE)) < V) {
-                int batchEnd = std::min(batchStart + BATCH_SIZE, V);
-                
-                for (int vertex = batchStart; vertex < batchEnd; ++vertex) {
-                    std::vector<double> distances = localDijkstra->findShortestPaths(reweightedGraph, vertex);
-                    
-                    for (int v = 0; v < V; ++v) {
-                        if (distances[v] != std::numeric_limits<double>::infinity()) {
-                            result[vertex][v] = distances[v] + h[v] - h[vertex];
-                        }
-                    }
-                    result[vertex][vertex] = 0.0;
-                }
-            }
-        });
-    }
-
-    for (auto& thread : threads) {
-        thread.join();
-    }
-
+    result.distances = findAllPairsShortestPaths(graph);
     auto end = std::chrono::high_resolution_clock::now();
-    lastExecutionTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    result.sequentialTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    //Parallel case
+        std::cout << "Running parallel version with " << numThreads << " threads..." << std::endl;
+        start = std::chrono::high_resolution_clock::now();
+        auto parallelDistances = findAllPairsShortestPathsParallel(graph, numThreads);
+        end = std::chrono::high_resolution_clock::now();
+        result.parallelTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    if (result.parallelTime.count() > 0) {
+        result.speedup = static_cast<double>(result.sequentialTime.count()) /
+            static_cast<double>(result.parallelTime.count());
+    }
+    else {
+        result.speedup = 1.0;
+    }
+
+    //Detailed report
+    std::cout << "\nPerformance Results:" << std::endl;
+    std::cout << "Graph stats: " << vertices << " vertices, density: "
+        << std::fixed << std::setprecision(3) << density << std::endl;
+    std::cout << "Sequential time: " << result.sequentialTime.count() << " ms" << std::endl;
+    std::cout << "Parallel time: " << result.parallelTime.count() << " ms" << std::endl;
+    std::cout << "Speedup: " << std::fixed << std::setprecision(2) << result.speedup << "x" << std::endl;
+
+    if (result.speedup < 1.0) {
+        std::cout << "Note: Sequential version is faster due to parallelization overhead" << std::endl;
+    }
 
     return result;
 }
+double JohnsonAlgorithm::calculateGraphDensity(const Graph& graph) {
+    int vertices = graph.getVertices();
+    int edges = 0;
 
-Graph JohnsonAlgorithm::reweightGraph(const Graph& originalGraph, const std::vector<double>& h) const {
-    int V = originalGraph.getVertices();
-    Graph reweightedGraph(V);
-
-    for (int u = 0; u < V; ++u) {
-        for (const auto& edge : originalGraph.getNeighbors(u)) {
-            double newWeight = edge.weight + h[u] - h[edge.to];
-            reweightedGraph.addEdge(u, edge.to, newWeight);
-        }
+    for (int i = 0; i < vertices; ++i) {
+        edges += graph.getNeighbors(i).size();
     }
 
-    return reweightedGraph;
-}
-
-void JohnsonAlgorithm::processVertexRange(const Graph& reweightedGraph, const std::vector<double>& h,
-    std::vector<std::vector<double>>& result, int start, int end) const {
-    // Create a separate Dijkstra instance for this thread
-    auto localDijkstra = AlgorithmFactory::createAlgorithm(AlgorithmFactory::AlgorithmType::DIJKSTRA);
-
-    for (int u = start; u < end; ++u) {
-        std::vector<double> distances = localDijkstra->findShortestPaths(reweightedGraph, u);
-
-        // Restore the original distances 
-        for (int v = 0; v < static_cast<int>(distances.size()); ++v) {
-            if (distances[v] != std::numeric_limits<double>::infinity()) {
-                result[u][v] = distances[v] + h[v] - h[u];
-            }
-        }
-        result[u][u] = 0.0;
-    }
-}
-
-void JohnsonAlgorithm::printExecutionStats() const {
-    std::cout << "Algorithm: " << getName() << std::endl;
-    std::cout << "Execution time: " << lastExecutionTime.count() << " us" << std::endl;
+    int maxPossibleEdges = vertices * (vertices - 1);
+    return maxPossibleEdges > 0 ? static_cast<double>(edges) / maxPossibleEdges : 0.0;
 }
