@@ -7,6 +7,12 @@
 #include <thread>
 
 Menu::Menu() : johnsonAlgorithm(std::make_unique<JohnsonAlgorithm>()) {
+    // Create observers
+    consoleObserver = std::make_shared<ConsoleObserver>();
+    progressObserver = std::make_shared<ProgressBarObserver>();
+    // Add observers to Johnson's algorithm
+    johnsonAlgorithm->addObserver(consoleObserver);
+    johnsonAlgorithm->addObserver(progressObserver);
 }
 
 void Menu::displayMainMenu() {
@@ -18,7 +24,8 @@ void Menu::displayMainMenu() {
     std::cout << "3. Run sequential Johnson's algorithm" << std::endl;
     std::cout << "4. Run parallel Johnson's algorithm" << std::endl;
     std::cout << "5. Compare sequential vs parallel performance" << std::endl;
-    std::cout << "6. Exit" << std::endl;
+    std::cout << "6. Configure observers" << std::endl;
+    std::cout << "7. Exit" << std::endl;
     std::cout << "=================================" << std::endl;
 }
 
@@ -196,6 +203,42 @@ double Menu::getDoubleInput(const std::string& prompt) {
     }
 }
 
+void Menu::configureObservers() {
+    std::cout << "\nObserver Configuration:" << std::endl;
+    std::cout << "1. Enable/Disable Console Output" << std::endl;
+    std::cout << "2. Enable/Disable Progress Bar" << std::endl;
+    std::cout << "3. Back to main menu" << std::endl;
+
+    int choice = getIntInput("Enter choice (1-3): ", 1, 4);
+
+    switch (choice) {
+    case 1:
+        if (consoleObserver) {
+            johnsonAlgorithm->removeObserver(consoleObserver);
+            consoleObserver.reset();
+            std::cout << "Console observer disabled." << std::endl;
+        }
+        else {
+            consoleObserver = std::make_shared<ConsoleObserver>();
+            johnsonAlgorithm->addObserver(consoleObserver);
+            std::cout << "Console observer enabled." << std::endl;
+        }
+        break;
+    case 2:
+        if (progressObserver) {
+            johnsonAlgorithm->removeObserver(progressObserver);
+            progressObserver.reset();
+            std::cout << "Progress bar observer disabled." << std::endl;
+        }
+        else {
+            progressObserver = std::make_shared<ProgressBarObserver>();
+            johnsonAlgorithm->addObserver(progressObserver);
+            std::cout << "Progress bar observer enabled." << std::endl;
+        }
+        break;
+      
+    }
+}
 void Menu::run() {
     int choice;
 
@@ -204,7 +247,7 @@ void Menu::run() {
 
     do {
         displayMainMenu();
-        choice = getIntInput("Enter your choice (1-6): ", 1, 6);
+        choice = getIntInput("Enter your choice (1-7): ", 1, 7);
 
         switch (choice) {
         case 1:
@@ -223,16 +266,19 @@ void Menu::run() {
             compareAlgorithms();
             break;
         case 6:
+            configureObservers();
+            break;
+        case 7:
             std::cout << "Thank you for using Johnson's Algorithm Implementation!" << std::endl;
             break;
         default:
             std::cout << "Invalid choice. Please try again." << std::endl;
         }
 
-        if (choice != 6) {
+        if (choice != 7) {
             std::cout << "\nPress Enter to continue...";
             std::cin.get();
         }
 
-    } while (choice != 6);
+    } while (choice != 7);
 }
