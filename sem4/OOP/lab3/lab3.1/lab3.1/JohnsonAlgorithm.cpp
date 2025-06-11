@@ -135,7 +135,7 @@ std::vector<std::vector<double>> JohnsonAlgorithm::findAllPairsShortestPathsPara
         if (numThreads == 0) numThreads = 4;
     }
 
-    numThreads = std::min(numThreads, vertices / 50);
+  
 
     std::vector<std::vector<double>> distances(vertices,
         std::vector<double>(vertices, std::numeric_limits<double>::infinity()));

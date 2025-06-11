@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgorithmFactory.h" />
+    <ClInclude Include="ConcreteObservers.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="GraphBuilder.h" />
     <ClInclude Include="JohnsonAlgorithm.h" />

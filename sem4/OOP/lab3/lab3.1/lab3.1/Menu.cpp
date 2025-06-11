@@ -31,10 +31,11 @@ void Menu::displayMainMenu() {
 
 void Menu::createGraph() {
     int vertices = getIntInput("Enter number of vertices: ");
-    int edges = getIntInput("Enter number of edges: ", 0, vertices * (vertices - 1));
+    int edges = vertices;
+    //int edges = getIntInput("Enter number of edges: ", 0, vertices * (vertices - 1));
 
     GraphBuilder builder;
-    builder.setVertices(vertices).setTargetEdges(edges);
+    builder.setVertices(vertices).setTargetEdges(vertices);
 
     std::cout << "\nChoose edge input method:" << std::endl;
     std::cout << "1. Manual input" << std::endl;
@@ -49,7 +50,7 @@ void Menu::createGraph() {
             std::cout << "Edge " << (i + 1) << ": ";
             int from = getIntInput("From vertex: ", 0, vertices - 1);
             int to = getIntInput("To vertex: ", 0, vertices - 1);
-            double weight = getDoubleInput("Weight: ");
+            double weight = getDoubleInput("Weight: "); 
 
             builder.addManualEdge(from, to, weight);
         }
