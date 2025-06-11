@@ -4,6 +4,7 @@ import config from "./appConfig.js";
 
 const connectDB = async () => {
     try {
+
         mongoose.connection.on("connected", () => {
             console.log("Database connected");
         });
