@@ -5,6 +5,19 @@ import userModel from "../models/userModel.js";
 import { MAX_CREDITS, CREDIT_REFRESH_TIME } from "./userService.js";
 import config from "../configs/appConfig.js";
 
+
+class ImageFormatAdapter {
+    constructor(binaryData, mimeType) {
+        this.binaryData = binaryData;
+        this.mimeType = mimeType;
+    }
+
+    toBase64DataUrl() {
+        const base64Image = Buffer.from(this.binaryData, "binary").toString("base64");
+        return `data:${this.mimeType};base64,${base64Image}`;
+    }
+}
+
 // Function to remove background from an image 
 export const removeImageBackground = async (user, imagePath) => {
     try {
@@ -21,12 +34,12 @@ export const removeImageBackground = async (user, imagePath) => {
             responseType: "arraybuffer"
         });
 
-        // Reuslt in base64 format
-        const base64Image = Buffer.from(data, "binary").toString("base64");
-        const resultImage = `data: ${user.mime};base64,${base64Image}`;
+        // Result in base64 format
+        const imageAdapter = new ImageFormatAdapter(data, user.mime);
+        const resultImage = imageAdapter.toBase64DataUrl();
 
         const newCreditBalance = user.creditBalance - 1;
-        //Cehck for timer 
+        // Check for timer
         let timerActive = user.timerActive;
         let nextCreditAt = user.nextCreditAt;
 
