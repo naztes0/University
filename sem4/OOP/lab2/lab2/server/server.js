@@ -1,10 +1,10 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-import connectDB from './configs/mongodb.js'
 import userRouter from './routes/userRoutes.js';
 import imageRouter from './routes/imageRoutes.js';
 import config from './configs/appConfig.js';
+import { getConnection } from './configs/dbConnection.js';
 
 //App config
 
@@ -23,7 +23,7 @@ app.use('/api/image', imageRouter)
 
 app.listen(PORT, () => console.log("Server Running on port " + PORT))
 
-connectDB()
+await getConnection()
   .then(() => {
   })
   .catch(err => {
