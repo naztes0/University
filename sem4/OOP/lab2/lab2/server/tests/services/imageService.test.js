@@ -52,7 +52,7 @@ describe('imageService tests', () => {
             expect(fs.createReadStream).toHaveBeenCalledWith(mockImagePath);
             expect(axios.post).toHaveBeenCalledWith(
                 'https://clipdrop-api.co/remove-background/v1',
-                expect.anything(),
+                expect.any(FormData),
                 expect.objectContaining({
                     headers: {
                         'x-api-key': 'test-api-key'
@@ -71,7 +71,7 @@ describe('imageService tests', () => {
             );
 
             expect(result).toEqual({
-                resultImage: 'data: image/jpeg;base64,ZmFrZS1pbWFnZS1kYXRh',
+                resultImage: 'data:image/jpeg;base64,ZmFrZS1pbWFnZS1kYXRh',
                 creditBalance: 2,
                 timerActive: true,
                 nextCreditAt: expect.any(Date)
@@ -187,7 +187,7 @@ describe('imageService tests', () => {
             const result = await removeImageBackground(mockUser, mockImagePath);
 
             // Assert
-            expect(result.resultImage).toBe('data: image/png;base64,ZmFrZS1pbWFnZS1kYXRh');
+            expect(result.resultImage).toBe('data:image/png;base64,ZmFrZS1pbWFnZS1kYXRh');
         });
 
         test('should update user\'s lastCreditUpdate timestamp when processing image', async () => {
