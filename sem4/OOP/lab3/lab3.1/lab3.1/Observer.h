@@ -3,6 +3,16 @@
 #include <memory>
 #include <string>
 
+
+/**
+ * @file Observer.h
+ * @brief Observer pattern implementation for algorithm monitoring
+ */
+
+ /**
+  * @class AlgorithmObserver
+  * @brief Abstract observer interface for algorithm execution events
+  */
 // Observer interface
 class AlgorithmObserver {
 public:
@@ -16,6 +26,11 @@ public:
     virtual void onStepCompleted(const std::string& stepName) = 0;
 };
 
+
+/**
+ * @class AlgorithmSubject
+ * @brief Subject class for observer pattern implementation
+ */
 // Subject interface
 class AlgorithmSubject {
 private:

@@ -4,14 +4,28 @@
 #include <memory>
 #include <limits>
 #include <functional>
+/**
+ * @file Graph.h
+ * @brief Weighted directed graph implementation using adjacency list
+ */
+
+ /**
+  * @struct Edge
+  * @brief Represents a weighted edge in the graph
+  */
 
 struct Edge {
-    int to;
-    double weight;
+    int to;      
+    double weight; 
 
     Edge(int to, double weight) : to(to), weight(weight) {}
 };
 
+
+/**
+ * @class Graph
+ * @brief Weighted directed graph using adjacency list representation
+ */
 class Graph {
 private:
 

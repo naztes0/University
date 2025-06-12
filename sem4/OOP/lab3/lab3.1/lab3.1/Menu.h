@@ -4,6 +4,18 @@
 #include "ConcreteObservers.h"
 #include <memory>
 
+/**
+ * @file Menu.h
+ * @brief Interactive menu system for the application
+ */
+
+ /**
+  * @class Menu
+  * @brief Provides interactive command-line interface for Johnson's algorithm
+  *
+  * Manages user interaction, graph creation, algorithm execution,
+  * and performance comparison through a menu-driven interface.
+  */
 class Menu {
 private:
     std::unique_ptr<Graph> graph;
@@ -26,5 +38,8 @@ private:
 
 public:
     Menu();
+    /**
+     * @brief Runs the main menu loop
+     */
     void run();
 };

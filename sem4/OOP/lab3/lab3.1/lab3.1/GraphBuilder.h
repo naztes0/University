@@ -3,6 +3,19 @@
 #include <memory>
 #include <random>
 
+
+/**
+ * @file GraphBuilder.h
+ * @brief Builder pattern implementation for graph construction
+ */
+
+ /**
+  * @class GraphBuilder
+  * @brief Builder class for creating graphs with various configurations
+  *
+  * Uses the Builder pattern to provide a fluent interface for graph construction.
+  * Supports both manual edge specification and random graph generation.
+  */
 class GraphBuilder {
 private:
     int vertices = 0;
@@ -22,9 +35,24 @@ public:
     GraphBuilder& setVertices(int v);
     GraphBuilder& setTargetEdges(int edges);
     GraphBuilder& setWeightRange(double min, double max);
+    /**
+     * @brief Enables random edge generation mode
+     * @return Reference to this builder for method chaining
+     */
     GraphBuilder& useRandomGeneration();
+    /**
+* @brief Adds a manual edge to the graph
+* @param from Source vertex
+* @param to Destination vertex
+* @param weight Edge weight
+* @return Reference to this builder for method chaining
+*/
     GraphBuilder& addManualEdge(int from, int to, double weight);
 
+    /**
+     * @brief Builds and returns the configured graph
+     * @return Unique pointer to the constructed graph
+     */
     std::unique_ptr<Graph> build();
 
 private:
