@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c856afce-3854-4552-a089-0f1eed792d73}</ProjectGuid>
-    <RootNamespace>lab31</RootNamespace>
+    <ProjectGuid>{2e741288-3a47-4792-b204-dc9e9defdf71}</ProjectGuid>
+    <RootNamespace>lab31Tests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,6 +104,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\ASUS TUF\GitRepos\University\sem4\OOP\lab3\lab3.1\lab3.1;C:\Users\ASUS TUF\Desktop\googletest-1.17.0\googletest\include;C:\Users\ASUS TUF\Desktop\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,23 +129,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AlgorithmFactory.cpp" />
-    <ClCompile Include="Graph.cpp" />
-    <ClCompile Include="GraphBuilder.cpp" />
-    <ClCompile Include="JohnsonAlgorithm.cpp" />
-    <ClCompile Include="lab3.1.cpp" />
-    <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="ShortestPathAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\Desktop\googletest-1.17.0\googletest\src\gtest-all.cc" />
+    <ClCompile Include="..\..\..\..\..\..\..\Desktop\googletest-1.17.0\googletest\src\gtest_main.cc" />
+    <ClCompile Include="..\lab3.1\AlgorithmFactory.cpp" />
+    <ClCompile Include="..\lab3.1\Graph.cpp" />
+    <ClCompile Include="..\lab3.1\GraphBuilder.cpp" />
+    <ClCompile Include="..\lab3.1\JohnsonAlgorithm.cpp" />
+    <ClCompile Include="..\lab3.1\ShortestPathAlgorithm.cpp" />
+    <ClCompile Include="GraphBuilderTests.cpp" />
+    <ClCompile Include="GraphTest.cpp" />
+    <ClCompile Include="JohnsonAlgorithmTests.cpp" />
+    <ClCompile Include="ObserverTests.cpp" />
+    <ClCompile Include="ShortestPathAlgorithmTests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AlgorithmFactory.h" />
-    <ClInclude Include="ConcreteObservers.h" />
-    <ClInclude Include="Graph.h" />
-    <ClInclude Include="GraphBuilder.h" />
-    <ClInclude Include="JohnsonAlgorithm.h" />
-    <ClInclude Include="Menu.h" />
-    <ClInclude Include="Observer.h" />
-    <ClInclude Include="ShortestPathAlgorithm.h" />
+    <ProjectReference Include="..\lab3.1\lab3.1.vcxproj">
+      <Project>{c856afce-3854-4552-a089-0f1eed792d73}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
 </Project>
