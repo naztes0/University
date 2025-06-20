@@ -1,0 +1,9 @@
+
+
+test1:14/16 
+№1. Невірно - контрприклад. №4. Роль ТТ?
+
+test2:19/20
+№4.Квантори можна перегрупувати компактніше.
+
+Pro's test: tried to complete it with Provotar's logic
