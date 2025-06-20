@@ -4,7 +4,6 @@
 int main()
 {
     OST tree;
-
     // ������ �������
     std::cout << "Insertion of elements\n";
     tree.insert(10);

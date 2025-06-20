@@ -1,6 +1,6 @@
 ﻿#include "OrderStatisticTree(RBT).h"
 
-//////PRIVATE/////////
+//////PRIVATE///////
 void OST::updateSize(Node *node)
 {
 	if (node == NIL)
