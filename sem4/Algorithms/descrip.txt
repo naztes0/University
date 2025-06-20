@@ -1,0 +1,7 @@
+labs: 60/60
+
+tasks: 
+1. Perfect Hashing (complex numbers)
+2. AA-tree (real numbers)
+3. Segment tree (as RBT) (real numbers)
+
