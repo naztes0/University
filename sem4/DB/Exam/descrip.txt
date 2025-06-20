@@ -1,0 +1,7 @@
+Those who got 75+ for course has semi-auto pass 
+
+Tasks for exams:
+1. Theory(test)  
+2-3: RelCalculus/RelAlgebra/SQL
+
+Tasks for semi-auto pass: 2,3 (without theory test)
