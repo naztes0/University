@@ -1,10 +1,11 @@
 #include "OrderStatisticTree(RBT).h"
 #include <iostream>
 
-int main() {
+int main()
+{
     OST tree;
 
-    // Додаємо елементи
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     std::cout << "Insertion of elements\n";
     tree.insert(10);
     tree.insert(20);
@@ -18,20 +19,22 @@ int main() {
     std::cout << "Red-Black Tree after the insert:\n";
     tree.printTree();
 
-    // Тестування findByOrder
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ findByOrder
     int k = 2;
-    try {
+    try
+    {
         std::cout << "\n Search by the size of the element\nElement " << k << ": " << tree.findByOrder(k) << std::endl;
     }
-    catch (const std::out_of_range& e) {
-        std::cout << "Помилка: " << e.what() << std::endl;
+    catch (const std::out_of_range &e)
+    {
+        std::cout << "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " << e.what() << std::endl;
     }
 
-    // Тестування orderOfKey
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ orderOfKey
     int key = 15;
     std::cout << "\nQuantity of numbers less than " << key << ": " << tree.orderOfKey(key) << std::endl;
 
-    // Видалення елементів
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     std::cout << "\nDeleting element with key 10\n";
     tree.remove(10);
     tree.printTree();

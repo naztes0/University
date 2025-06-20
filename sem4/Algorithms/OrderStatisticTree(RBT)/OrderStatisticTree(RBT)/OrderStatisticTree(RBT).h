@@ -1,34 +1,35 @@
 #pragma once
 
-
 #include <iostream>
 
-class OST {
+class OST
+{
 private:
-	struct Node {
+	struct Node
+	{
 		int key, size;
 		bool color;
-		Node* left,*right,*parent;
+		Node *left, *right, *parent;
 
-		Node(int key):key(key),size(1),color(true), left(nullptr), right(nullptr), parent(nullptr){}
+		Node(int key) : key(key), size(1), color(true), left(nullptr), right(nullptr), parent(nullptr) {}
 	};
-	Node* root;
-	Node* NIL;
+	Node *root;
+	Node *NIL;
 
-	void updateSize(Node*node);
-	void leftRotate(Node* node);
-	void rightRotate(Node* node);
-	void updateSizeAfterDelete(Node* node);
-	void fixInsert(Node* node);
-	void fixDelete(Node* node);
-	Node* findByOrderInternal(Node* node, int k);
-	int orderOfKeyInternal(Node* node, int x);
-	void callPrintTree(Node* node, int depth = 0);
-	void removeNode(Node* node, int key);
-
+	void updateSize(Node *node);
+	void leftRotate(Node *node);
+	void rightRotate(Node *node);
+	void updateSizeAfterDelete(Node *node);
+	void fixInsert(Node *node);
+	void fixDelete(Node *node);
+	Node *findByOrderInternal(Node *node, int k);
+	int orderOfKeyInternal(Node *node, int x);
+	void callPrintTree(Node *node, int depth = 0);
+	void removeNode(Node *node, int key);
 
 public:
-	OST() {
+	OST()
+	{
 		NIL = new Node(0);
 		NIL->color = false;
 		NIL->size = 0;
@@ -38,8 +39,6 @@ public:
 	void insert(int key);
 	void remove(int key);
 	int findByOrder(int k);
-	int orderOfKey (int x);
+	int orderOfKey(int x);
 	void printTree();
-	
 };
-
