@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body{
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            margin:0
+        }
+        .container{
+            position: relative;
+            width: 40%;
+            height:100%;
+            margin: 0;
+        }
+        .black-stripe{
+            position: relative;
+            width:100%;
+            height: 5%;
+            background-color: black;
+        }
+        #top_rectangle {
+            position: absolute;
+            background-color: #b2d1f3;
+            opacity: 0.5;
+            width: 100%;
+            height: 3%;
+            left: 0;
+            top: 5%;
+        }
+        #top_triangle {
+            position: absolute;
+            border-top: 40px solid #b2d1f3;
+            border-right: 600px solid transparent; 
+            opacity: 0.5;
+            left: 0;
+            top: 8%;
+            
+        }
+        #bottom_rectangle {
+            position: absolute;
+            background-color: #b2d1f3;
+            opacity: 0.5;
+            width: 100%;
+            height: 3%;
+            right: 0;
+            bottom: 0;
+         
+        }
+        #bottom_triangle {
+            position: absolute;
+            border-bottom: 40px solid #b2d1f3;
+            border-left: 600px solid transparent; 
+            opacity: 0.5;
+            right: 0;
+            bottom: 3%;
+            
+        }
+        aside{
+            background-color: #3b5e83a2;
+            height:100%;
+            width:25%;
+            top:0;
+            left:0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .img-col{
+            margin-bottom: 30px;
+            width: 85%;
+            height: 20%;
+            z-index: 999;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.8);
+        }
+        main{
+            top: 0;
+            width: 100%;
+            height: 95%;
+           background-color: #3e77b4c7 ;
+        }
+        .info{
+            position: absolute;
+            width: 75%;
+            height:100%;
+            top:0;
+            margin-left:25% ;
+            padding-top:5%;
+            padding-bottom:5%;
+            padding-left: 2%;
+            padding-right: 2%;
+            box-sizing: border-box;
+        }
+        .main_img{
+            position: relative;
+            width: 90%;
+            height:30%;
+        
+            left:5%;
+            margin:0;
+        }
+        b{
+            font-weight: bold;
+            font-size: 11px;
+        }
+        .left-text{
+            position: absolute;
+            left: 0 ;
+            width:45%;
+            overflow-x:hidden ;
+            font-size: 0.6rem;
+            height: 50%;
+            margin: 2%;
+          
+        }
+        .right-text{
+            position: absolute;
+            left: 48%;
+            width:45%;
+            overflow-x:hidden ;
+            font-size: 10px;
+            height: 50%;
+            margin: 2%;
+        }
+        ul{
+           list-style-type: square;
+        }
+
+       
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="black-stripe"></div>
+        <div id="top_rectangle"></div>
+        <div id="top_triangle"></div>
+        <main>
+            <aside>
+                <img class="img-col" src="https://i.pinimg.com/736x/3c/19/3d/3c193d69d81cb466643dcadfb305d7c1.jpg" alt="">
+                <img class="img-col" src="https://i.pinimg.com/736x/a6/e8/c3/a6e8c308a713870b5fa6423b0d5457ba.jpg" alt="">
+                <img class="img-col" src="https://i.pinimg.com/736x/a9/35/52/a935525d3041f98f996777a2b29465c8.jpg" alt="">
+                <img class="img-col" src="https://i.pinimg.com/736x/ff/02/8f/ff028f6f88a11888651c3e3e7f7881ef.jpg" alt="">
+            </aside>
+            <div class="info">
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi accusamus nihil error perspiciatis consequatur veritatis debitis voluptas vel, eveniet consequuntur, nulla libero atque esse maxime neque aut, corporis officia natus.</p>
+                <img class="main_img"src="https://i.pinimg.com/736x/78/ef/d1/78efd11fbd02f710cbe2b73c452f2f86.jpg" alt="">
+                <div class="left-text">
+                    <p>
+                        <b> Lorem "ipsum dolor sit amet"</b> <br>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis. Animi aliquam nesciunt repellat et corrupti soluta reprehenderit optio esse!
+
+                    </p>
+                    <p>
+                        <b> Lorem "ipsum dolor sit amet"</b><br>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis. Animi aliquam nesciunt repellat et corrupti soluta reprehenderit optio esse!
+
+                    </p>
+                    <p>
+                        <b> Lorem "ipsum dolor sit amet"</b><br>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis. Animi aliquam nesciunt repellat et corrupti soluta reprehenderit optio esse!
+
+                    </p>
+                    <p>
+                        <b> Lorem "ipsum dolor sit amet"</b><br>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. <mark> Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis.</mark>Animi aliquam nesciunt repellat et corrupti soluta reprehenderit optio esse!
+
+                    </p>
+                    
+                </div>
+                <div class="right-text">
+                    <p>
+                        <b> Lorem "ipsum dolor sit amet"</b><br>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis. Animi aliquam nesciunt repellat et corrupti soluta reprehenderit optio esse!
+                        <div>
+                            <b>Lorem ipsum dolor</b>
+                            <ul>
+                                <li>  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis.</li>
+                                <li>  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis.</li>
+                                <li>  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis.</li>
+                                <li>  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod deserunt labore dicta sed autem iure maiores aliquid vero perspiciatis.</li>
+                            </ul>
+                        </div>
+                    </p>
+                   
+                </div>
+            </div>
+        </main>
+        
+        
+        <div id="bottom_triangle"></div>
+        <div id="bottom_rectangle"></div>
+    </div>
+</body>
+</html>

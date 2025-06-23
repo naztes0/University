@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIN VINYL</title>
+
+    <!-- CSS LINK -->
+    <link rel="icon" type="image/png" href="https://pngimg.com/d/vinyl_PNG95.png">
+    <link rel="stylesheet" href="cssStyles/header.css">
+    <link rel="stylesheet" href="cssStyles/navbar.css">
+    <link rel="stylesheet" href="cssStyles/slider.css">
+    <link rel="stylesheet" href="cssStyles/content.css">
+    <link rel="stylesheet" href="cssStyles/text-block.css">
+    <link rel="stylesheet" href="cssStyles/footer.css">
+    <link rel="stylesheet" href="cssStyles/pagination.css">
+    <link rel="stylesheet" href="cssStyles/feedback.css">
+
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lilita+One&family=Pinyon+Script&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+
+
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: #222;
+            transition: transform 0.2s ease, color 0.2s ease;
+            display: inline-block;
+
+        }
+
+        ul li a:hover {
+            transform: scale(1.05);
+            color: #f3f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <header>
+        <div class="logo_block">
+            <img class="logo" src="https://pngimg.com/d/vinyl_PNG95.png" alt="logo">
+            <div class="name">
+                <h1 class="text">SPIN</h1>
+                <h2 class="text">VINYL</h2>
+            </div>
+        </div>
+        <div class="contact-block">
+            <!-- <h2 class="text">Contact us</h2> -->
+            <div class="socials">
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=KDWXXYcBSEcJ&format=png&color=000000"
+                        alt="insta logo button">
+                </button>
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=vBPr6H1m4buw&format=png&color=000000"
+                        alt="telegram logo button">
+                </button>
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=sklbS8ljpioq&format=png&color=000000"
+                        alt="messanger logo button">
+                </button>
+            </div>
+            <a class="feedback text" href="#">Feedback</a>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <div class="menu">
+            <ul>
+                <li><a class="active" href="index.html">Home</a></li>
+                <li class="separator">|</li>
+                <li><a href="cart.html">Cart</a></li>
+                <li class="separator">|</li>
+                <li><a href="delievery.html">Delivery</a></li>
+                <li class="separator">|</li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+
+        </div>
+    </nav>
+
+    <div class="slider">
+        <div class="slides">
+            <img class="slide" src="https://i.pinimg.com/736x/f7/92/34/f79234f3934185f1feb8d5307a901a6d.jpg" alt="1">
+            <img class="slide" src="https://i.pinimg.com/736x/0d/58/07/0d5807bcade2dc51e1797d27b27b8a1c.jpg" alt="2">
+            <img class="slide" src="https://i.pinimg.com/736x/02/6e/eb/026eebcbb1a5dc67534820c9c7c35421.jpg" alt="3">
+            <img class="slide" src="https://i.pinimg.com/736x/95/c0/0c/95c00ccfdfa37f9bfe64cb38c63726a2.jpg" alt="4">
+        </div>
+
+        <div class="left-arrow">
+            <a href="#" class="prev">🢀</a>
+        </div>
+        <div class="right-arrow">
+            <a href="# " class="next">🢂</a>
+        </div>
+
+        <div class="dots">
+            <span class="dot" data-index="0"></span>
+            <span class="dot" data-index="1"></span>
+            <span class="dot" data-index="2"></span>
+            <span class="dot" data-index="3"></span>
+        </div>
+
+    </div>
+
+    <content>
+
+        <div class="container">
+
+            <div class="list_container">
+
+                <ul class="list-group">
+                    <li class="no_markers">
+                        <a href="">VINYLS</a>
+                    </li>
+                    <li class="no_markers">
+                        <a href="">VINYL PLAYERS</a>
+                    </li>
+                    <ul>
+                        <li>
+                            <a href="">Suitcase players</a>
+                        </li>
+                        <li>
+                            <a href="">Players-Speakers System</a>
+                        </li>
+                        <li>
+                            <a href=""> Needles And Heads</a>
+                        </li>
+                        <li>
+                            <a href="">Cables</a>
+                        </li>
+                    </ul>
+                    <li class="no_markers">
+                        <a href="">ACOUSTICS</a>
+                    </li>
+                    <ul>
+                        <li>
+                            <a href="">All audio systems</a>
+                        </li>
+                        <li>
+                            <a href="">Shelf Acoustics</a>
+                        </li>
+                        <li>
+                            <a href="">Floor Acoustics</a>
+                        </li>
+                        <li>
+                            <a href="">Active Speakers</a>
+                        </li>
+                    </ul>
+                    <li class="no_markers">
+                        <a href="">STUDIO</a>
+                    </li>
+                    <ul>
+                        <li>
+                            <a href="">Studio Headphones</a>
+                        </li>
+                        <li>
+                            <a href="">Equalizers</a>
+                        </li>
+                        <li>
+                            <a href="">Microphones</a>
+                        </li>
+                    </ul>
+                </ul>
+            </div>
+            <div class="items-wrapper">
+                <div class="items_container">
+                    <div class="item">
+                        <img src="https://i.pinimg.com/736x/47/15/8e/47158ea269e507842ef052fb0aa63bd9.jpg"
+                            alt="vinyl cover">
+                        <h2>Ok Computer</h2>
+                        <h4>Radiohead</h4>
+                        <div class="buy-wrapper">
+                            <div class="price">
+                                <p>2600 uah</p>
+                            </div>
+                            <div class="buy">
+                                <button>Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="https://vinyla.com/files/products/b2/200/201160/vinilovi-plativki-lebanon-hanover-let-them-be-alien.800x800.jpg?09af8ea793d051525c48975940ca2dfe"
+                            alt="vinyl cover">
+                        <h2>Let Them Be Alien</h2>
+                        <h4>Lebanon Hanover</h4>
+                        <div class="buy-wrapper">
+                            <div class="price">
+                                <p>2950 uah</p>
+                            </div>
+                            <div class="buy">
+                                <button>Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="https://s3.us-east-1.amazonaws.com/product-image-bucket-nz-prod-us/166756-Product-0-I-638289891597254779.jpg"
+                            alt="vinyl cover">
+                        <h2>White Pony</h2>
+                        <h4>Deftones</h4>
+                        <div class="buy-wrapper">
+                            <div class="price">
+                                <p>3000 uah</p>
+                            </div>
+                            <div class="buy">
+                                <button>Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="https://static1.squarespace.com/static/5f4a6763a23dbb3ab86255f7/6204135dc433b4163df4f666/63ea8594c2ac293b7ff36d65/1743882392755/Vinyl++%281080+x+1080+px%29-4.png?format=1500w"
+                            alt="vinyl cover">
+                        <h2>Crystal Castles II</h2>
+                        <h4>Crystal Castles</h4>
+                        <div class="buy-wrapper">
+                            <div class="price">
+                                <p>4100 uah</p>
+                            </div>
+                            <div class="buy">
+                                <button>Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="https://cdn11.bigcommerce.com/s-aosdotbyxs/images/stencil/1280x1280/products/28440/47359/DOC132LP__20292.1716507556.jpg?c=1"
+                            alt="vinyl cover">
+                        <h2>Slowdive</h2>
+                        <h4>Slowdive</h4>
+                        <div class="buy-wrapper">
+                            <div class="price">
+                                <p>2600 uah</p>
+                            </div>
+                            <div class="buy">
+                                <button>Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="https://www.turntablelab.com/cdn/shop/products/crystalcastles-st_1200x1200.jpg?v=1571265426"
+                            alt="vinyl cover">
+                        <h2>Crystal Castles I</h2>
+                        <h4>Crystal Castles</h4>
+                        <div class="buy-wrapper">
+                            <div class="price">
+                                <p>4200 uah</p>
+                            </div>
+                            <div class="buy">
+                                <button>Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIDPqOZR_fydXtXPynpT0TbgC70XgZnLUe5A&s"
+                            alt="vinyl cover">
+                        <h2>Predestiny</h2>
+                        <h4>Mareux</h4>
+                        <div class="buy-wrapper">
+                            <div class="price">
+                                <p>2000 uah</p>
+                            </div>
+                            <div class="buy">
+                                <button>Buy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="text-content first">
+                <p>At Spin Vinyl, music isn't just sound — it's a lifestyle. Born from a deep love for analog warmth and
+                    timeless records, our company celebrates the spirit of vinyl in a digital world. We believe that
+                    every spin tells a story, and our mission is to bring that story to life for collectors,
+                    audiophiles, and curious newcomers alike. Whether you're rediscovering your favorite classics or
+                    hunting for rare finds, Spin Vinyl is here to amplify your musical journey with authenticity, care,
+                    and passion.</p>
+            </div>
+            <div class="text-content second">
+                <p>
+                    Our catalog features a handpicked selection of vintage records, brand-new pressings, turntables,
+                    accessories, and everything in between. From rock legends and jazz greats to underground beats and
+                    indie gems, there's something in our crates for every ear. But we’re more than a store — we’re a
+                    community hub for vinyl lovers. Enjoy curated playlists, exclusive releases, and expert guidance
+                    that makes shopping smooth and satisfying. With Spin Vinyl, every drop of the needle brings music to
+                    life.
+                </p>
+            </div>
+        </div>
+    </content>
+
+    <footer>
+        <div>
+            <p>SPIN VINYL</p>
+            <p>© 2025</p>
+        </div>
+        <div class="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="delievery.html">Delievery</a></li>
+                <li><a href="">Contact</a></li>
+            </ul>
+        </div>
+        <div class="contact-block">
+            <h3>Contact us</h3>
+            <ul>
+                <li>
+                    <p>+380991234567</p>
+                </li>
+                <li>
+                    <p>spinvinyl@email.ua</p>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+
+    <!-- FEEDBACK -->
+    <div class="feedback-container ">
+        <button class="close-window">✖</button>
+        <form class="feedback-form">
+            <h2>Feedback</h2>
+            <label for="name">Name *</label>
+            <input type="text" placeholder="Enter your name" required>
+            <label for="phone">Phone number *</label>
+            <input type="phone" placeholder="Enter your number" required>
+            <label for="email">Email *</label>
+            <input type="email" placeholder="Enter your email" required>
+            <label for="message">Comment *</label>
+            <textarea type="message" name="" id=""></textarea>
+            <button class="feedback-send" place="Leave the comment">Send</button>
+        </form>
+    </div>
+
+</body>
+<script src="script.js"></script>
+
+</html>

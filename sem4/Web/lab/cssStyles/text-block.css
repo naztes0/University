@@ -1,0 +1,41 @@
+/*TEXT*/
+.container .text-content {
+    margin: 0px 2rem;
+    padding: 1rem 1rem;
+}
+
+.container .text-content p {
+    line-height: 1.6;
+    font-size: 1rem;
+    color: #333;
+}
+
+.container .text-content.second {
+    margin-left: auto;
+}
+
+.container .text-content.first {
+    margin-right: auto;
+}
+
+/*Adaptive styles*/
+@media (max-width: 1024px) {
+    /*TEXT*/
+}
+
+@media (max-width: 768px) {
+
+    /*TEXT*/
+    .buy-wrapper:hover .price {
+        transform: scale(0.7);
+    }
+
+    .container .text-content {
+        padding: 0 0.6rem;
+    }
+
+}
+
+@media (max-width: 480px) {
+    /*TEXT*/
+}

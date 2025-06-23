@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            background: linear-gradient(to right, #a685b7, #73cd8e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 100px;
+        }
+
+        .container {
+            width: 50%;
+            background-color: white;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+
+        }
+
+        .diagram {
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            padding: 10px 15px;
+            max-width: 100%;
+            box-sizing: border-box;
+            margin: 15px
+        }
+
+        .chessTable {
+            max-width: 100%;
+            box-sizing: border-box;
+            margin: 15px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div>
+            <h2>Enter the number of diagram collumns</h2>
+            <input type="text" id="colNumb">
+            <button class="createDia">Create</button>
+        </div>
+        <div class="diagram">
+
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="container">
+            <h2>Enter the number of diagram collumns</h2>
+            <p>Row:</p> <input type="text" id="tabRow">
+            <p>Column:</p> <input type="text" id="tabCol">
+
+        </div>
+        <button class="createTab">Create</button>
+        <div class="chessTable">
+
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+
+
+</html>

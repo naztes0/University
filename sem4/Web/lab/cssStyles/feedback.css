@@ -1,0 +1,106 @@
+/*FEEDBACK*/
+.feedback {
+    /*button that calls window*/
+    font-family: "DM Sans";
+}
+
+.feedback-container {
+    position: fixed;
+    width: 30rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #e2e4e9;
+    box-shadow: 0px 0px 20px #e6e8f2;
+    border-radius: 5px;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    font-family: "DM Sans";
+    box-sizing: border-box
+}
+
+.feedback-container.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.feedback-form {
+    display: flex;
+    flex-direction: column;
+    padding: 5% 10%;
+    text-align: center;
+}
+
+.feedback-container .close-window {
+    color: white;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    margin: 6px;
+    padding: 5px 8px;
+    cursor: pointer;
+}
+
+.feedback-container h2 {
+    font-size: 2rem;
+    margin: 5% 5% 5% 5%;
+    letter-spacing: 1px;
+}
+
+.feedback-container input {
+    height: 2.3rem;
+    border: none;
+    margin-bottom: 2rem;
+    border-radius: 2px;
+    font-size: 0.9rem;
+    padding: 0 10px;
+}
+
+.feedback-container h4 {
+    margin: 0 0 1% 0;
+    font-size: 1.05rem
+}
+
+.feedback-container .feedback-send {
+    width: 40%;
+    border: none;
+    height: 2rem;
+    background-color: #1c1e22;
+    color: white;
+    align-self: center;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.feedback-container textarea {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 3rem;
+    max-height: 11rem;
+    margin: 0 0 2rem 0;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    box-sizing: border-box
+}
+
+/*Adaptive styles*/
+@media (max-width: 1024px) {}
+
+@media (max-width: 768px) {
+
+    /*FEEDBACK*/
+    .feedback-container {
+        width: 25rem;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /*FEEDBACK*/
+    .feedback-container {
+        width: 85%;
+    }
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIN VINYL</title>
+
+    <!-- CSS LINK -->
+    <link rel="stylesheet" href="cssStyles/header.css">
+    <link rel="stylesheet" href="cssStyles/navbar.css">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="cssStyles/slider.css">
+    <link rel="stylesheet" href="cssStyles/delievery.css">
+    <link rel="stylesheet" href="cssStyles/text-block.css">
+    <link rel="stylesheet" href="cssStyles/footer.css">
+    <link rel="stylesheet" href="cssStyles/pagination.css">
+    <link rel="stylesheet" href="cssStyles/feedback.css">
+    <!-- FONTS -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lilita+One&family=Pinyon+Script&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+
+
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: #222;
+            transition: transform 0.2s ease, color 0.2s ease;
+            display: inline-block;
+
+        }
+
+        ul li a:hover {
+            transform: scale(1.05);
+            color: #f3f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <header>
+        <div class="logo_block">
+            <img class="logo" src="https://pngimg.com/d/vinyl_PNG95.png" alt="">
+            <div class="name">
+                <h1 class="text">SPIN</h1>
+                <h2 class="text">VINYL</h2>
+            </div>
+        </div>
+        <div class="contact-block">
+            <div class="socials">
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=KDWXXYcBSEcJ&format=png&color=000000" alt="">
+                </button>
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=vBPr6H1m4buw&format=png&color=000000" alt="">
+                </button>
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=sklbS8ljpioq&format=png&color=000000" alt="">
+                </button>
+            </div>
+            <a class="feedback text" href="#">Feedback</a>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <div class="menu">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li class="separator">|</li>
+                <li><a href="cart.html">Cart</a></li>
+                <li class="separator">|</li>
+                <li><a class="active" href="delievery.html">Delivery</a></li>
+                <li class="separator">|</li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+
+        </div>
+    </nav>
+
+
+    <content>
+        <div class="container">
+            <div class=" sections text">
+                <h2>How to order?</h2>
+                <p>To place an order, simply browse our catalog, add your favorite vinyl records or audio equipment to
+                    the
+                    cart, and proceed to checkout. You can pay securely online and receive a confirmation email with the
+                    order details.</p>
+
+                <h2>What are the delivery terms?</h2>
+                <p>We offer standard and express delivery options. Orders are typically processed within 1–2 business
+                    days
+                    and delivered within 3–7 days depending on your location. Free shipping is available for orders over
+                    5000 UAH.</p>
+
+                <h2>What should I do if the item is damaged during delivery?</h2>
+                <p>If your order arrives damaged, please contact our support team within 48 hours. Send us photos of the
+                    damaged item and the packaging, and we’ll offer a replacement or refund depending on the situation.
+                </p>
+
+            </div>
+            <div class="sections delievers">
+                <div class="company">
+                    <img class="logo" id="novaposhta"
+                        src="https://static.novaposhta.ua/sitecard/misc/img/ico/med_Icon%203-svg.png  " alt="">
+                    <div class="text">
+                        <h2>Nova Poshta</h2>
+                        <h3>1-2 days</h3>
+                        <p>Pick-up point: 80 UAH</p>
+                        <p>Courier: 150 UAH</p>
+                    </div>
+                </div>
+                <div class="company">
+                    <img class="logo" id="ukrposhta"
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Ukrposhta-ua-icon.svg/1200px-Ukrposhta-ua-icon.svg.png"
+                        alt="">
+                    <div class="text">
+                        <h2>Ukrposhta</h2>
+                        <h3>2-5 days</h3>
+                        <p>Pick-up point: 50 UAH</p>
+                        <p>Courier: 120 UAH</p>
+                    </div>
+                </div>
+                <div class="company">
+                    <img class="logo" id="meest" src="https://meestposhta.com.ua/images/logo_2.svg" alt="">
+                    <div class="text">
+                        <h2>Meest</h2>
+                        <h3>3-7 days</h3>
+                        <p>Pick-up point: 50 UAH</p>
+                        <p>Courier: 80 UAH</p>
+                    </div>
+                </div>
+            </div>
+            <div class="sections wait">
+                <h1>
+                    We’re waiting for your orders at Spin Vinyl – your destination for authentic sound.
+                </h1>
+            </div>
+        </div>
+    </content>
+
+    <footer>
+        <div>
+            <p>SPIN VINYL</p>
+            <p>© 2025</p>
+        </div>
+        <div class="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="delievery.html">Delievery</a></li>
+                <li><a href="">Contact</a></li>
+            </ul>
+        </div>
+        <div class="contact-block">
+            <h3>Contact us</h3>
+            <ul>
+                <li>
+                    <p>+380991234567</p>
+                </li>
+                <li>
+                    <p>spinvinyl@email.ua</p>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+
+    <!-- FEEDBACK -->
+    <div class="feedback-container">
+        <button class="close-window">✖</button>
+        <form class="feedback-form">
+            <h2>Feedback</h2>
+
+            <label for="name">Name *</label>
+            <input type="text" placeholder="Enter your name" required>
+            <label for="phone">Phone number *</label>
+            <input type="phone" placeholder="Enter your number" required>
+            <label for="email">Email *</label>
+            <input type="email" placeholder="Enter your email" required>
+            <label for="message">Comment *</label>
+            <textarea type="message" name="" id=""></textarea>
+            <button class="feedback-send" place="Leave the comment">Send</button>
+        </form>
+    </div>
+
+</body>
+<script src="script.js"></script>
+
+</html>

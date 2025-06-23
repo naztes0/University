@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 7</title>
+    <style>
+        #container1 {
+            display: flex;
+            border: 1px solid #11464e;
+            border-radius: 10px;
+            max-width: 50%;
+            height: 10%;
+            padding: 10px;
+            background-color: #b2d3d8;
+            flex-wrap: wrap;
+            margin: 20px;
+            gap: 2px;
+            box-shadow: -4px 3px 6px 5px #11464e6a;
+
+        }
+
+        .blue,
+        .yellow,
+        .pink {
+            min-height: 80px;
+            flex-basis: 120px;
+            margin: 10px;
+            border-radius: 5px;
+
+        }
+
+        .blue {
+            background-color: #5dc6d4;
+            flex-grow: 1;
+            border: 2px solid #45939d;
+        }
+
+        .pink {
+            background-color: #e42a7b;
+            flex-grow: 2;
+            border: 2px solid #971b51;
+        }
+
+        .yellow {
+            background-color: #efe226;
+            flex-grow: 1;
+            border: 2px solid #b2a705;
+
+        }
+
+        #block6 {
+            flex-grow: 4;
+        }
+
+        #block8 {
+            flex-grow: 4;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container1">
+        <div class="blue"></div>
+        <div class="blue"></div>
+        <div class="blue"></div>
+        <div class="yellow"></div>
+        <div class="yellow"></div>
+        <div class="yellow" id="block6"></div>
+        <div class="pink"></div>
+        <div class="pink" id="block8"></div>
+    </div>
+</body>
+
+</html>

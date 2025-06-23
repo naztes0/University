@@ -1,0 +1,187 @@
+header {
+    position: relative;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 10px
+}
+
+.overlay {
+    background-color: rgba(23, 23, 27, 0.7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 998;
+    display: none;
+}
+
+
+header .logo {
+    width: 7rem;
+    height: 7rem;
+    aspect-ratio: 1/1;
+}
+
+header .logo_block {
+    width: 25%;
+    display: flex;
+    flex-direction: row;
+    color: #373a46;
+    font-size: 1.4rem;
+    gap: 20px;
+    margin: 15px;
+}
+
+
+header .name {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+header .text {
+    margin: 0;
+}
+
+
+header .contact-block {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+header .contact-block .socials {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    flex-direction: row;
+    align-items: center;
+    color: #373a46;
+    gap: 10px;
+}
+
+header .contact-block button {
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.4rem;
+    padding: 3px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+header .contact-block button:hover {
+    transform: scale(1.2);
+    box-shadow: 3px -1px 6px #2f3346a8;
+}
+
+header .contact-block button img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+header .contact-block .text {
+    font-size: 1.4rem;
+    color: #373a46;
+}
+
+
+/*Adaptive styles*/
+@media (max-width: 1024px) {
+
+    /*Header*/
+    header {
+        justify-content: space-between;
+    }
+
+    header .logo_block {
+        font-size: 1.3rem;
+        margin: 15px 50px;
+    }
+
+    header .logo {
+        width: 6rem;
+        height: 6rem;
+    }
+
+    header .contact-block {
+        width: 20%;
+        margin: 15px 50px;
+    }
+
+    header .contact-block button {
+        width: 2.1rem;
+    }
+
+    header .contact-block .text {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    header .logo_block {
+        font-size: 1.2rem;
+        margin: 10px 25px;
+    }
+
+    header .logo {
+        width: 5rem;
+        height: 5rem;
+    }
+
+    header .contact-block {
+        width: 25%;
+        margin: 10px 25px;
+    }
+
+    header .contact-block button {
+        width: 1.9rem;
+    }
+
+    header .contact-block .text {
+        font-size: 1.2rem;
+    }
+
+}
+
+@media (max-width: 480px) {
+    header .logo_block {
+        font-size: 1rem;
+        margin: 10px;
+        gap: 8px;
+    }
+
+    header .logo {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+
+    header .contact-block {
+        width: 30%;
+        margin: 10px;
+    }
+
+    header .contact-block .socials {
+        gap: 3px;
+    }
+
+    header .contact-block button {
+        width: 1.8rem;
+    }
+
+    header .contact-block .text {
+        font-size: 1rem;
+    }
+
+}

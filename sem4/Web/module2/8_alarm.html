@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Будильник</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: auto;
+        }
+
+        .container {
+            width: 70%;
+            padding: 3rem 5rem;
+            box-sizing: border-box;
+            border-radius: 10px;
+            background-color: rgba(0, 2, 14, 0.764);
+            color: white;
+            text-align: center;
+            justify-self: center;
+        }
+
+        input,
+        button {
+            margin: 5px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.286)
+        }
+
+        button {
+            height: 2rem;
+            background-color: rgb(193, 126, 10);
+            color: white;
+            font-size: 1rem;
+        }
+
+
+        .alarm-list {
+            margin-top: 20px;
+        }
+
+        .timeContainer {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            justify-content: center;
+            margin: 5px 20px;
+        }
+
+        .alarm-item p,
+        .alarm-item h4 {
+            margin: 1px;
+        }
+
+        .alarm-item p {
+            opacity: 50%;
+        }
+
+        .alarm-item h4 {
+            font-size: 1.5rem;
+        }
+
+        .alarm-item {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 10px;
+            background-color: rgba(173, 179, 186, 0.184);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Будильник</h1>
+
+        <label>Дата і час будильника:
+            <input type="datetime-local" id="setAlarm">
+        </label>
+        <button onclick="addAlarm()">Додати будильник</button>
+
+
+
+        <div class="alarm-list" id="alarmsList">
+            <h3>Список будильників</h3>
+        </div>
+
+    </div>
+    <script>
+
+        let alarms = [];
+
+        function addAlarm() {
+            const alarmTime = document.getElementById("setAlarm")
+            const time = new Date(alarmTime.value);
+            if (isNaN(time)) {
+                alert("Введіть корректний час")
+                return;
+            }
+            const id = Date.now()
+            alarms.push({ id, time, active: true });
+            displayAlarms();
+            alarmTime.value = "";
+        }
+
+        function displayAlarms() {
+            const list = document.getElementById("alarmsList");
+            list.innerHTML = "<h3>Список будильників</h3>";
+
+            alarms.forEach(alarm => {
+                const item = document.createElement("div");
+                item.className = "alarm-item";
+                const timeContainer = document.createElement("div")
+
+                timeContainer.classList.add("timeContainer")
+                const alarmTime = document.createElement("h4")
+                const alarmDate = document.createElement("p")
+                alarmTime.textContent = alarm.time.toLocaleTimeString();
+                alarmDate.textContent = alarm.time.toLocaleDateString()
+                timeContainer.appendChild(alarmTime)
+                timeContainer.appendChild(alarmDate)
+                item.appendChild(timeContainer)
+                const isTurned = document.createElement("span")
+                isTurned.textContent = alarm.active ? "увімкнено" : "вимкнено";
+
+                item.appendChild(isTurned)
+                const buttonContianer = document.createElement("div")
+
+                const toggleButton = document.createElement("button");
+                toggleButton.textContent = alarm.active ? "Вимкнути" : "Увімкнути";
+                toggleButton.addEventListener("click", () => toggleAlarm(alarm.id));
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Видалити";
+                deleteButton.addEventListener("click", () => removeAlarm(alarm.id));
+
+                buttonContianer.appendChild(toggleButton)
+                buttonContianer.appendChild(deleteButton)
+
+                item.appendChild(buttonContianer)
+                list.appendChild(item);
+            });
+        }
+
+        function toggleAlarm(id) {
+            for (let i = 0; i < alarms.length; i++) {
+                if (alarms[i].id === id) {
+                    alarms[i].active = !alarms[i].active;
+                    break;
+                }
+            }
+            displayAlarms();
+        }
+
+        function removeAlarm(id) {
+            for (let i = 0; i < alarms.length; i++) {
+                if (alarms[i].id === id) {
+                    alarms.splice(i, 1);
+                    break;
+                }
+            }
+            displayAlarms();
+        }
+
+
+        setInterval(() => {
+            const now = new Date();
+            alarms.forEach(alarm => {
+                if (
+                    alarm.active &&
+                    Math.abs(now - alarm.time) < 1000
+                ) {
+                    alert("Будильник! Час: " + alarm.time.toLocaleTimeString());
+                    alarm.active = false;
+                    displayAlarms();
+                }
+            });
+        }, 1000);
+
+    </script>
+</body>
+
+</html>

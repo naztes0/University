@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Tektur&display=swap" rel="stylesheet">
+
+    <title>Semi3</title>
+    <style>
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0;
+        }
+
+        em {
+            font-weight: bold;
+            color: red;
+        }
+
+        .blockF {
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 50%;
+
+        }
+
+
+        legend {
+            font-family: "Tektur", serif;
+            font-size: 16px;
+        }
+
+        input,
+        textarea {
+            width: 50%;
+            font-size: 15px;
+
+        }
+
+
+
+        input:focus {
+            background-color: rgb(170, 229, 245);
+        }
+
+
+        .fieldsTaged {
+            color: grey;
+            font-family: Apple Chancery, cursive;
+            font-size: 14px;
+        }
+
+        fieldset {
+
+            margin: 1%;
+            padding: 2%;
+        }
+
+        label {
+            width: 7em;
+            margin-bottom: 13px;
+            display: inline-block;
+
+        }
+
+        select {
+            font-size: 1em;
+            width: 50%;
+        }
+
+        input[type=submit] {
+            font-size: 15px;
+            width: 100px;
+        }
+
+        input[type=checkbox] {
+            width: 1em;
+        }
+    </style>
+</head>
+
+<body class="blockF">
+    <div class="formHeader">
+        <h1>Форма заявки на роботу в зоопарку</h1>
+        <p class="fieldsTaged"><i>Будь ласка заповніть форму. Обов'язкові поля відмічені </i><em>*</em></p>
+    </div>
+
+    <form>
+
+        <fieldset>
+            <legend>Контактна інформація</legend>
+            <label for="firstName">Ім'я<em>*</em></label>
+            <input type="text" name="firstName"><br>
+            <label for="phone">Телефон</label>
+            <input type="text" name="phone"><br>
+            <label for="email">Email<em>*</em></label>
+            <input type="email" name="email">
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Персональна інформація</legend>
+            <label for="age">Вік<em>*</em></label>
+            <input type="number" name="age"><br>
+            <label for="sex">Стать</label>
+            <select name="sex" id="sex">
+                <option value="Чоловік">Чоловік</option>
+                <option value="Жінка">Жінка</option>
+            </select><br>
+            <label for="persQ">Перерахуйте особисті якості</label>
+            <textarea name="persQ" id="persQ"></textarea>
+        </fieldset>
+
+        <fieldset>
+            <legend>Виберіть улюблених тварин:</legend>
+            <label for="zebra"><input type="checkbox" id="zebra">Зебра</label>
+            <label for="eleph"><input type="checkbox" id="eleph">Слон</label>
+            <label for="tiger"><input type="checkbox" id="tiger">Тигр</label>
+            <label for="human"><input type="checkbox" id="human">Людина</label>
+            <label for="skuns"><input type="checkbox" id="skuns">Скунс</label>
+            <label for="lion"><input type="checkbox" id="lion">Лев</label>
+            <label for="rhino"><input type="checkbox" id="rhino">Носорог</label>
+            <label for="turtle"><input type="checkbox" id="turtle">Черепаха</label>
+
+        </fieldset>
+        <input type="submit" value="Відправити">
+
+    </form>
+
+</body>
+
+</html>

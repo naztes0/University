@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .polyg {
+            width: 400px;
+            height: 400px;
+            background-color: blue;
+            clip-path: polygon(2% 20%, 50% 20%, 50% 10%, 60% 30%, 50% 50%, 50% 40%, 2% 40%, 2% 20%);
+            background-image: url(fon.png);
+            background-size: cover;
+
+        }
+
+        .block {
+            height: 20px;
+            width: 1000px;
+        }
+
+        .container {
+            margin-bottom: 90px;
+            padding-top: 20px;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="polyg"></div>
+    <div class="container">
+        <div class="block" style="background-color: cornflowerblue;">Блок1</div>
+        <div class="block" style="background-color: lightgreen;">Блок2</div>
+        <div class="block" style="background-color: lightcoral; position:relative; top:30px; left:-20px">Блок3</div>
+    </div>
+    <div class="container ">
+        <div class="block" style="background-color: cornflowerblue;">Блок1</div>
+        <div class="block" style="background-color: lightgreen;">Блок2</div>
+        <div class="block" style="background-color: lightcoral; position: absolute; top:0; left:0; width:fit-content ">
+            Блок3
+        </div>
+    </div>
+    <div class="container">
+        <div class="block" style="background-color: cornflowerblue;">Блок1</div>
+        <div class="block" style="background-color: lightgreen;">Блок2</div>
+        <div class="block"
+            style="background-color: lightcoral;position:absolute;left: -10px; height: fit-content; width: 100%;">
+            Блок3</div>
+    </div>
+
+    <div class="container">
+        <div class="block" style="background-color: cornflowerblue;">Блок1</div>
+        <div class="block" style="background-color: lightgreen;">Блок2</div>
+        <div class="block"
+            style="background-color: lightcoral;position:relative; top: 15px; height: fit-content; width: fit-content;">
+            Блок3</div>
+    </div>
+</body>
+
+</html>

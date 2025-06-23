@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semi4</title>
+    <style>
+        /*BASIC CONTAINERS AND PLACES*/
+        body {
+            background-color: rgb(201, 212, 241);
+        }
+
+        .container {
+            position: fixed;
+            background-image: url(https://i.pinimg.com/736x/3e/d5/f0/3ed5f0ce9cca3da96554700b456754b7.jpg);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 10px;
+            width: 600px;
+            height: 500px;
+            background-color: rgba(245, 188, 57, 0.948);
+            padding-right: 5px;
+            padding-left: 5px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            z-index: 2;
+            margin: 10px
+        }
+
+        .first {
+            top: 0;
+            left: 0
+        }
+
+        .second {
+            top: 160px;
+            left: 450px;
+        }
+
+        .third {
+            top: 0;
+            left: 905px
+        }
+
+
+        .block {
+            position: relative;
+            width: 60%;
+            height: 46%;
+            margin: 10px;
+            margin-bottom: 35px;
+        }
+
+
+        /*MAIN IMAGE */
+        .img1 {
+            position: relative;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            /* object-fit: cover; */
+            border: 5px solid rgb(211, 211, 211);
+            margin-bottom: 0px;
+            border-radius: 15px;
+
+        }
+
+        .text1 {
+            margin: 0;
+            font-size: 12px;
+            text-align: center;
+            color: white;
+        }
+
+
+        /*INFO BLOCK WITH BUTTONS*/
+        .inf {
+            box-sizing: border-box;
+            background-color: white;
+            padding: 5px;
+            font-size: 12px;
+            border-radius: 8px;
+
+        }
+
+        .inf-img {
+            position: relative;
+            box-sizing: border-box;
+            width: 40%;
+            height: 50%;
+            border: 2px solid #409dde;
+            margin-top: 13px;
+            margin-left: 10px;
+            margin-right: 7px;
+            margin-bottom: 5px;
+            float: left;
+            border-radius: 8px;
+        }
+
+        .inf p {
+            margin-bottom: 0;
+        }
+
+        .inf-link {
+            font-size: 16px;
+        }
+
+        .panel {
+            display: flex;
+            /* margin: 5px; */
+            position: relative;
+            width: 100%;
+            height: 15%;
+            background-color: rgb(94, 167, 201);
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        button {
+            position: relative;
+            flex-basis: 20%;
+            margin: 3px;
+            margin-bottom: 0;
+            border: 0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            background-color: white;
+            color: #409dde;
+            text-align: center;
+            transition-duration: 0.4s;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #0770BA;
+            /* Green */
+            color: white;
+        }
+
+
+        /*LIST BLOCK ON THE RIGHT */
+        .image-list {
+            display: flex;
+            position: absolute;
+            top: 3px;
+            left: 375px;
+            margin: 15px;
+            height: 93%;
+            width: 35%;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 10px;
+        }
+
+        .container.third .image-item {
+            min-width: 120px;
+            min-height: 90px;
+            padding-right: 5px;
+        }
+
+        .image-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            overflow: hidden;
+            flex-grow: 1;
+            margin-bottom: 0;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .image-item:hover {
+            transform: scale(1.1);
+            /* Збільшуємо картинку на 10% */
+        }
+
+        .image-item img {
+
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+
+        }
+
+        .image-text {
+            position: absolute;
+            bottom: 2%;
+            right: 3%;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 70%;
+            padding: 2% 3%;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container first">
+        <div class="block">
+            <img class="img1" src="https://i.pinimg.com/736x/3d/4f/38/3d4f389653ace1a4f68bf09a587c3d53.jpg" alt="">
+            <p class="text1">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+        </div>
+
+        <div class="block inf">
+            <div class="panel">
+                <button class="btn1">Home</button>
+                <button class="btn2">Marketplacce</button>
+                <button class="btn3">Bin</button>
+
+            </div>
+
+            <img class="inf-img" src="https://i.pinimg.com/736x/a2/4a/08/a24a08b73c4cbf6c940fd7dc55267f8b.jpg   "
+                alt="">
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non possimus nemo commodi quis tenetur
+                obcaecati dignissimos, qui nam quam veritatis repellendus exercitationem a ipsum voluptates debitis
+                aliquam vel accusamus doloremque. Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum
+                voluptatibus incidunt ipsa odit quaerat error totam adipisci, minima a obcaecati itaque non atque
+                accusantium nam. Earum enim maiores minus magni?</p>
+
+            <a class="inf-link" href="https://i.pinimg.com/736x/9c/92/b5/9c92b5766f81c8479cfc0539228b6e78.jpg">Click to
+                visit a page</a>
+        </div>
+
+        <div class="image-list">
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/7a/ad/0f/7aad0f9ebd5766e20a2b2a1bf8a1a4b0.jpg" alt="">
+                <span class="image-text"> 5:45 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/8c/de/b8/8cdeb89889bdd20f2c55876e3169bb37.jpg" alt="">
+                <span class="image-text">6:34 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/22/8a/60/228a6004c594e09117b37deb3e08ea8a.jpg" alt="">
+                <span class="image-text">10:30 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/6b/15/a4/6b15a4a3650fa2edab94f9bb91c0dcba.jpg" alt="">
+                <span class="image-text"> 11:11 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/79/3c/9b/793c9bb4a22742909b4d6d55691991c1.jpg" alt="">
+                <span class="image-text">05:56pm</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/47/3f/0a/473f0a6dbaf0a0679e023c8a00094fc0.jpg" alt="">
+                <span class="image-text">01:56 pm</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/04/81/0e/04810eb8256f8c5439661f75e281625b.jpg" alt="">
+                <span class="image-text"> 01:59 pm</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/f2/2f/da/f22fda1cf20873ef2159259bf0e0de7d.jpg" alt="">
+                <span class="image-text">05:23 pm</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/dc/45/13/dc45139a8153d14be2e2833754ff5296.jpg" alt="">
+                <span class="image-text">05:12 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/ee/72/f6/ee72f6a5cc050eed4c164b246ebaa985.jpg" alt="">
+                <span class="image-text">06:01 pm</span>
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+    <div class="container third">
+        <div class="block">
+            <img class="img1" src="https://i.pinimg.com/736x/50/4e/14/504e147b6ebc17d9c7f9889c24bd28ab.jpg" alt="">
+            <p class="text1">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+        </div>
+
+        <div class="block inf">
+            <div class="panel">
+                <button class="btn1">Home</button>
+                <button class="btn2">Marketplace</button>
+                <button class="btn3">Bin</button>
+
+            </div>
+
+            <img class="inf-img" src="https://i.pinimg.com/736x/a2/4a/08/a24a08b73c4cbf6c940fd7dc55267f8b.jpg  " alt="">
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non possimus nemo commodi quis tenetur
+                obcaecati dignissimos, qui nam quam veritatis repellendus exercitationem a ipsum voluptates debitis
+                aliquam vel accusamus doloremque. Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum
+                voluptatibus incidunt ipsa odit quaerat error totam adipisci, minima a obcaecati itaque non atque
+                accusantium nam. Earum enim maiores minus magni?</p>
+
+            <a class="inf-link" href="https://i.pinimg.com/736x/81/01/a2/8101a2de3a30589b935139e0f2474c3b.jpg">Click to
+                visit a page</a>
+        </div>
+
+        <div class="image-list">
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/7a/ad/0f/7aad0f9ebd5766e20a2b2a1bf8a1a4b0.jpg" alt="">
+                <span class="image-text"> 5:45 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/8c/de/b8/8cdeb89889bdd20f2c55876e3169bb37.jpg" alt="">
+                <span class="image-text">6:34 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/22/8a/60/228a6004c594e09117b37deb3e08ea8a.jpg" alt="">
+                <span class="image-text">10:30 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/6b/15/a4/6b15a4a3650fa2edab94f9bb91c0dcba.jpg" alt="">
+                <span class="image-text"> 11:11 am</span>
+            </div>
+            <div class="image-item">
+                <img src="https://i.pinimg.com/736x/79/3c/9b/793c9bb4a22742909b4d6d55691991c1.jpg" alt="">
+                <span class="image-text">05:56pm</span>
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+    <div class="container second">
+        <div class="block">
+            <img class="img1" src="https://i.pinimg.com/736x/b2/48/ed/b248ed48a49e3bd83a6e0e162c7889ae.jpg" alt="">
+            <p class="text1">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+        </div>
+
+        <div class="block inf">
+            <div class="panel">
+                <button class="btn1">Home</button>
+                <button class="btn2">Marketplace</button>
+                <button class="btn3">Bin</button>
+
+            </div>
+
+            <img class="inf-img" src="https://i.pinimg.com/736x/a2/4a/08/a24a08b73c4cbf6c940fd7dc55267f8b.jpg  " alt="">
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non possimus nemo commodi quis tenetur
+                obcaecati dignissimos, qui nam quam veritatis repellendus exercitationem a ipsum voluptates debitis
+                aliquam vel accusamus doloremque. Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum
+                voluptatibus incidunt ipsa odit quaerat error totam adipisci, minima a obcaecati itaque non atque
+                accusantium nam. Earum enim maiores minus magni?</p>
+
+            <a class="inf-link" href="https://i.pinimg.com/736x/b7/88/e0/b788e07a3f6004a32426bfb75b6b0ed3.jpg">Click to
+                visit a page</a>
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semi 9-10</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <style>
+        .container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(29, 83, 200, 0.236);
+            font-size: 1rem;
+            font-family: sans-serif;
+        }
+
+        .content {
+            padding: 7px 12px;
+            border: 1px solid rgba(0, 0, 0, 0.611);
+            background-color: transparent;
+            margin: 3px;
+        }
+
+        .form-control {
+            height: 2rem;
+        }
+
+        .delHomeAddress {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 15px;
+            justify-content: center;
+        }
+
+        .homeFlatWrapper {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+
+            justify-content: space-between;
+        }
+
+        table {
+            background-color: rgba(50, 97, 198, 0.236);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form id="orderForm" class="d-flex flex-column gap-1">
+            <div class="content text-center">
+                <h2>Замовлення на придбання товару</h2>
+            </div>
+            <div class="content">
+                <p>Назва товару</p>
+                <select class="form-select w-50" name="books" id="books" required>
+                    <option value="placeholder" selected>Оберіть книгу</option>
+                    <option value="book1">"Кайдашева сім'я" (Іван Нечуй-Левицький) - 120 грн</option>
+                    <option value="book2">"Тіні забутих предків" (Михайло Коцюбинський) - 130 грн</option>
+                    <option value="book3">"Лісова пісня" (Леся Українка) - 140 грн</option>
+                    <option value="book4">"Маруся Чурай" (Ліна Костенко) - 160 грн</option>
+                    <option value="book5">"Собор" (Олесь Гончар) - 150 грн</option>
+                    <option value="book6">"Енеїда" (Іван Котляревський) - 110 грн</option>
+                    <option value="book7">"Сто років самотності" (Габріель Гарсіа Маркес) - 180 грн</option>
+                    <option value="book8">"Великий Гетсбі" (Френсіс Скотт Фіцджеральд) - 170 грн</option>
+                    <option value="book9">"Маленький принц" (Антуан де Сент-Екзюпері) - 130 грн</option>
+                    <option value="book10">"Алхімік" (Пауло Коельйо) - 140 грн</option>
+                </select>
+            </div>
+
+            <div class="content d-flex flex-row  gap-2 align-items-center">
+                <p>Кількість:</p>
+                <input class="form-control w-25" type="number" id="quantity" min="0" step="1">
+                <p>Вартість:</p>
+                <input class="form-control w-25" type="text" id="price" readonly>
+            </div>
+            <div class="content " id="delivery">
+                <p class=" mb-2">Спосіб доставки замовлення</p>
+
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="delivery" id="post" value="post">
+                    <label class="form-check-label" for="post">Пошта</label>
+                </div>
+
+                <div class="form-check mb-2" id="homeDelContainer">
+                    <input class="form-check-input" type="radio" name="delivery" id="homeDel" value="homeDel">
+                    <label class="form-check-label" for="homeDel">Доставка до дому</label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="wrapper">
+                    <label class="form-check-label" for="wrapper">У святковій упаковці</label>
+                </div>
+            </div>
+
+
+            <div class="content d-flex flex-row justify-content-end align-items-center gap-3">
+                <label class="form-check-label" for="promo"></label>
+                <input class="form-control w-25" type="text" id="promo" min="0" step="1" placeholder="Введіть промокод">
+            </div>
+
+            <div class="content d-flex flex-row gap-3 align-items-center justify-content-end">
+                <p>Загальна вартість замовлення</p>
+                <input id="totalSum" type="text" class="form-control w-25" readonly>
+                <button id="cntTotalSum" class="btn btn-secondary">Підрахувати</button>
+            </div>
+            <div class="content d-flex flex-column">
+                <p>Дані замовника</p>
+                <div class="d-flex flex-column gap-2">
+
+                    <div class="d-flex flex-row gap-3 align-items-center">
+                        <div class="w-50">
+                            <label for="name" class="form-label">Ім'я</label>
+                            <input class="form-control" type="text" id="name" name="name" required>
+                        </div>
+                        <div class="w-50">
+                            <label for="lastname" class="form-label">Прізвище</label>
+                            <input class="form-control" type="text" id="lastname" name="lastname" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-row gap-3 align-items-center">
+                        <div class="w-50">
+                            <label for="address" class="form-label">Адреса</label>
+                            <input class="form-control" type="text" id="address" name="address" required>
+                        </div>
+                        <div class="w-50">
+                            <label for="mobile" class="form-label">Номер телефону</label>
+                            <input type="tel" id="mobile" name="mobile" class="form-control"
+                                placeholder="+38 (044) 123 45 67" pattern="^\+38\s\(\d{3}\)\s\d{3}\s\d{2}\s\d{2}$"
+                                required
+                                oninvalid="this.setCustomValidity('Введіть номер у форматі +38 (044) 123 45 67')"
+                                oninput="this.setCustomValidity('')">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="content d-flex justify-content-end gap-3">
+                <button class="btn btn-primary" type="reset">Відновити початкові значення полів</button>
+                <button class="btn btn-primary" id="sendData" type="submit">Відіслати дані</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container mt-3 w-100">
+        <h2 class="content text-center mb-4">Замовлення клієнтів</h2>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered text-center align-middle">
+                <thead>
+                    <tr>
+                        <th>Ім'я</th>
+                        <th>Прізвище</th>
+                        <th>Адреса</th>
+                        <th>Номер телефону</th>
+                        <th>Назва книги</th>
+                        <th>Кількість</th>
+                        <th>Спосіб доставки</th>
+                        <th>Промокод</th>
+                        <th>Загальна вартість</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+</body>
+<script>
+    const bookChoice = document.getElementById("books");
+    const bookQuantity = document.getElementById("quantity")
+    const booksPrice = document.getElementById("price")
+    const totalPrice = document.getElementById("totalSum")
+    const countTotal = document.getElementById("cntTotalSum")
+
+    const radios = document.querySelectorAll('input[name="delivery"]');
+    const wrapper = document.getElementById('wrapper');
+
+    const nameInput = document.getElementById("name");
+    const lastnameInput = document.getElementById("lastname");
+    const addressInput = document.getElementById("address");
+    const phoneInput = document.getElementById("mobile");
+
+    const finalAddress = document.getElementById("address")
+    const form = document.getElementById("orderForm");
+
+    const booksData = {
+        book1: {
+            name: "Кайдашева сім'я (Іван Нечуй-Левицький)",
+            price: 120
+        },
+        book2: {
+            name: "Тіні забутих предків (Михайло Коцюбинський)",
+            price: 130
+        },
+        book3: {
+            name: "Лісова пісня (Леся Українка)",
+            price: 140
+        },
+        book4: {
+            name: "Маруся Чурай (Ліна Костенко)",
+            price: 160
+        },
+        book5: {
+            name: "Собор (Олесь Гончар)",
+            price: 150
+        },
+        book6: {
+            name: "Енеїда (Іван Котляревський)",
+            price: 110
+        },
+        book7: {
+            name: "Сто років самотності (Габріель Гарсіа Маркес)",
+            price: 180
+        },
+        book8: {
+            name: "Великий Гетсбі (Френсіс Скотт Фіцджеральд)",
+            price: 170
+        },
+        book9: {
+            name: "Маленький принц (Антуан де Сент-Екзюпері)",
+            price: 130
+        },
+        book10: {
+            name: "Алхімік (Пауло Коельйо)",
+            price: 140
+        },
+    };
+
+    const promocodes = [
+        {
+            code: "SALE20",
+            text: "-20% of total sum",
+            discount: 0.2,
+        },
+        {
+            code: "SALE25",
+            text: "-25% of total sum",
+            discount: 0.25,
+        },
+        {
+            code: "SALE10",
+            text: "-10% of total sum",
+            discount: 0.1,
+        },
+
+    ]
+    const delievery = {
+        post: 0.05,
+        homeDel: 0.15,
+    }
+    const deliveryTypes = {
+        post: "Пошта",
+        homeDel: "Доставка до дому"
+    };
+
+    let selectedBook
+
+    bookChoice.addEventListener("change", () => {
+        selectedBook = bookChoice.value;
+
+        if (bookChoice.value !== "placeholder") {
+            bookQuantity.value = 1;
+            const price = booksData[selectedBook].price
+            booksPrice.value = `${price} UAH`
+        }
+        else {
+            bookQuantity.value = "";
+            booksPrice.value = ""
+        }
+
+    })
+
+    bookQuantity.addEventListener("change", () => {
+        const qty = Number(bookQuantity.value);
+        if (qty && selectedBook) {
+            const price = booksData[selectedBook].price
+            booksPrice.value = `${qty * price} UAH`
+
+        }
+
+    })
+
+    const calculateTotal = (promo = 0) => {
+        const qty = Number(bookQuantity.value);
+        if (!selectedBook || selectedBook === "placeholder" || !qty || qty <= 0) {
+            alert("Будь ласка, оберіть книгу та введіть кількість.");
+            return;
+        }
+        const bookTotal = qty * booksData[selectedBook].price;
+        let deliveryPercent = 0;
+        for (const radio of radios) {
+            if (radio.checked) {
+                deliveryPercent = delievery[radio.value];
+                break;
+            }
+        }
+        if (!deliveryPercent) {
+            alert("Оберіть спосіб доставки");
+            return;
+        }
+        let deliveryCost = bookTotal * deliveryPercent;
+        if (wrapper.checked) {
+            deliveryCost += deliveryCost * 0.10;
+        }
+
+        let finalTotal = bookTotal + deliveryCost;
+        typeof (promo)
+        if (promo) finalTotal -= finalTotal * promo.discount;
+
+        totalPrice.value = `${finalTotal.toFixed(2)} UAH`;
+    }
+
+    document.querySelectorAll('input[name="delivery"]').forEach(radio => {
+        radio.addEventListener("change", () => {
+            const container = document.getElementById("homeDelContainer");
+
+            if (radio.value === "homeDel" && radio.checked) {
+                if (!document.getElementById("address-fields")) {
+                    const fieldsWrapper = document.createElement("div");
+                    const homeFlatwrapper = document.createElement("div");
+                    homeFlatwrapper.className = "homeFlatWrapper"
+                    homeFlatwrapper.id = "homeFlatWrapper"
+                    fieldsWrapper.id = "address-fields";
+                    fieldsWrapper.classList.add("delHomeAddress")
+
+                    const createLabeledInput = (id, labelText) => {
+                        const label = document.createElement("label");
+                        label.setAttribute("for", id);
+                        label.textContent = labelText;
+                        label.className = "form-check-label"
+
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.id = id;
+                        input.name = id;
+                        input.className = "form-control w-100"
+                        input.required = true;
+
+                        const wrapper = document.createElement("div");
+                        wrapper.appendChild(label);
+                        wrapper.appendChild(input);
+                        return wrapper;
+                    }
+
+                    fieldsWrapper.appendChild(createLabeledInput("adress", "Адреса"));
+                    homeFlatwrapper.appendChild(createLabeledInput("home", "Дім"));
+                    homeFlatwrapper.appendChild(createLabeledInput("flat", "Квартира"));
+                    fieldsWrapper.appendChild(homeFlatwrapper);
+
+                    container.appendChild(fieldsWrapper);
+                }
+            } else {
+                const existing = document.getElementById("address-fields");
+                if (existing) existing.remove();
+            }
+        });
+    });
+
+
+    countTotal.addEventListener("click", (e) => {
+        e.preventDefault();
+        const enteredCode = document.getElementById("promo").value.trim();
+        const promo = promocodes.find(p => p.code === enteredCode.toUpperCase());
+        if (enteredCode && !promo) {
+            alert("Неправильний промокод");
+            return;
+        }
+
+        let deliveryHomeRadio;
+        for (const r of radios) {
+            if (r.value === "homeDel" && r.checked) {
+                deliveryHomeRadio = r;
+                break;
+            }
+        }
+        if (deliveryHomeRadio) {
+            const home = document.getElementById("home")?.value.trim();
+            const flat = document.getElementById("flat")?.value.trim();
+            const addressInput = document.getElementById("adress")?.value.trim();
+
+            if (!addressInput || !home || !flat) {
+                alert("Будь ласка, заповніть адресу (дім і квартира).");
+                return;
+            }
+
+            if (!finalAddress.textContent) {
+                finalAddress.value = `${addressInput},${home}, ${flat}`;
+            }
+        }
+        calculateTotal(promo);
+    });
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        if (!selectedBook) {
+            alert("Будь ласка, оберіть книгу.");
+            return false;
+        }
+        if (delieverytype() === undefined) {
+            alert("Будь ласка, оберіть спосіб доставки.");
+            return false;
+        }
+        if (form.checkValidity()) {
+            tableFill();
+
+        } else {
+            form.reportValidity();
+        }
+    });
+
+
+    const delieverytype = () => {
+        for (const radio of radios) {
+            if (radio.checked) {
+                return radio.value;
+            }
+        }
+    }
+
+    const tableFill = () => {
+        const table = document.querySelector("table");
+        const newOrder = document.createElement("tr");
+        const promo = document.getElementById("promo").value.trim();
+        if (!totalPrice.value) {
+            calculateTotal();
+        }
+
+
+        const orderData = [
+            nameInput.value,
+            lastnameInput.value,
+            addressInput.value,
+            phoneInput.value,
+            booksData[selectedBook].name,
+            bookQuantity.value,
+            deliveryTypes[delieverytype()],
+            promo || "-",
+            totalPrice.value,
+        ];
+
+        for (let i = 0; i < orderData.length; i++) {
+            const td = document.createElement("td");
+            td.textContent = orderData[i];
+
+            newOrder.appendChild(td);
+        }
+        table.appendChild(newOrder);
+
+    }
+
+</script>
+
+</html>

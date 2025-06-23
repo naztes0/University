@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIN VINYL</title>
+
+    <!-- CSS LINK -->
+    <link rel="stylesheet" href="cssStyles/header.css">
+    <link rel="stylesheet" href="cssStyles/navbar.css">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="cssStyles/slider.css">
+    <link rel="stylesheet" href="cssStyles/text-block.css">
+    <link rel="stylesheet" href="cssStyles/cart.css">
+    <link rel="stylesheet" href="cssStyles/footer.css">
+    <link rel="stylesheet" href="cssStyles/pagination.css">
+    <link rel="stylesheet" href="cssStyles/feedback.css">
+    <!-- FONTS -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lilita+One&family=Pinyon+Script&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+
+
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: #222;
+            transition: transform 0.2s ease, color 0.2s ease;
+            display: inline-block;
+
+        }
+
+        ul li a:hover {
+            transform: scale(1.05);
+            color: #f3f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <header>
+        <div class="logo_block">
+            <img class="logo" src="https://pngimg.com/d/vinyl_PNG95.png" alt="">
+            <div class="name">
+                <h1 class="text">SPIN</h1>
+                <h2 class="text">VINYL</h2>
+            </div>
+        </div>
+        <div class="contact-block">
+            <!-- <h2 class="text">Contact us</h2> -->
+            <div class="socials">
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=KDWXXYcBSEcJ&format=png&color=000000" alt="">
+                </button>
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=vBPr6H1m4buw&format=png&color=000000" alt="">
+                </button>
+                <button>
+                    <img class="" src="https://img.icons8.com/?size=100&id=sklbS8ljpioq&format=png&color=000000" alt="">
+                </button>
+            </div>
+            <a class="feedback text" href="#">Feedback</a>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <div class="menu">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li class="separator">|</li>
+                <li><a class="active" href="cart.html">Cart</a></li>
+                <li class="separator">|</li>
+                <li><a href="delievery.html">Delivery</a></li>
+                <li class="separator">|</li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+
+        </div>
+    </nav>
+
+
+    <content>
+        <div class="container">
+            <div class="list">
+                <div class="item">
+                    <div class="info">
+                        <img class="logo"
+                            src="https://static1.squarespace.com/static/5f4a6763a23dbb3ab86255f7/6204135dc433b4163df4f666/63ea8594c2ac293b7ff36d65/1743882392755/Vinyl++%281080+x+1080+px%29-4.png?format=1500w"
+                            alt="Crystal Castles II">
+                        <div class="text">
+                            <h4 class="item-type">Vinyl</h4>
+                            <h3>Crystal Castles II</h3>
+                            <p>Crystal Castles</p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <h3>4100 uah</h3>
+                        <div class="quantity">
+                            <button>-</button>
+                            <input type="number" min="1" step="1" value="1">
+                            <button>+</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="info">
+                        <img class="logo"
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIDPqOZR_fydXtXPynpT0TbgC70XgZnLUe5A&s"
+                            alt="Predestiny">
+                        <div class="text">
+                            <h4 class="item-type">Vinyl</h4>
+                            <h3>Predestiny</h3>
+                            <p>Mareux</p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <h3>2000uah</h3>
+                        <div class="quantity">
+                            <button>-</button>
+                            <input type="number" min="1" step="1" value="1">
+                            <button>+</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="info">
+                        <img class="logo"
+                            src="https://vinyla.com/files/products/b2/200/201160/vinilovi-plativki-lebanon-hanover-let-them-be-alien.800x800.jpg?09af8ea793d051525c48975940ca2dfe"
+                            alt="Let Them Be Alien">
+                        <div class="text">
+                            <h4 class="item-type">Vinyl</h4>
+                            <h3>Let Them Be Alien</h3>
+                            <p>Lebanon Hanover</p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <h3>2950 uah</h3>
+                        <div class="quantity">
+                            <button>-</button>
+                            <input type="number" min="1" step="1" value="1">
+                            <button>+</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="buy">
+                <h2>Total price:</h2>
+                <h1>9 050</h1>
+
+                <button>Buy</button>
+            </div>
+        </div>
+        <div class="container" style="height: 10vh;"></div>
+    </content>
+
+    <footer>
+        <div>
+            <p>SPIN VINYL</p>
+            <p>© 2025</p>
+        </div>
+        <div class="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="delievery.html">Delievery</a></li>
+                <li><a href="">Contact</a></li>
+            </ul>
+        </div>
+        <div class="contact-block">
+            <h3>Contact us</h3>
+            <ul>
+                <li>
+                    <p>+380991234567</p>
+                </li>
+                <li>
+                    <p>spinvinyl@email.ua</p>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+
+    <!-- FEEDBACK -->
+    <div class="feedback-container">
+        <button class="close-window">✖</button>
+        <form class="feedback-form">
+            <h2>Feedback</h2>
+
+            <label for="name">Name *</label>
+            <input type="text" placeholder="Enter your name" required>
+            <label for="phone">Phone number *</label>
+            <input type="phone" placeholder="Enter your number" required>
+            <label for="email">Email *</label>
+            <input type="email" placeholder="Enter your email" required>
+            <label for="message">Comment *</label>
+            <textarea type="message" name="" id=""></textarea>
+            <button class="feedback-send" place="Leave the comment">Send</button>
+        </form>
+    </div>
+
+</body>
+<script src="script.js"></script>
+
+</html>

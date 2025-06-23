@@ -5,3 +5,5 @@ Tasks for exams:
 2-3: RelCalculus/RelAlgebra/SQL
 
 Tasks for semi-auto pass: 2,3 (without theory test)
+
+(Not totally sure that the whole theory is right!!!)

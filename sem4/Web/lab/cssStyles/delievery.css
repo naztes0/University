@@ -1,0 +1,135 @@
+content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0
+}
+
+content .container {
+    width: 80%;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+content .sections {
+    margin: 25px 0;
+    width: 90%;
+    border: none;
+    font-family: "DM Sans";
+}
+
+content .text {
+    border-radius: 2rem;
+    color: rgb(43, 44, 61);
+    padding: 10px 20px;
+}
+
+content .delievers {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    align-items: center;
+    justify-content: center;
+
+}
+
+content .company {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(241, 241, 241);
+    border-radius: 2rem;
+    padding: 5px 0;
+}
+
+.company .logo {
+    margin: 8px;
+}
+
+#novaposhta {
+    width: 5rem;
+    height: 5rem;
+}
+
+#ukrposhta {
+    height: 5.2rem;
+    margin: 10px
+}
+
+#meest {
+    width: 6.5rem;
+}
+
+.company .text {
+    text-align: center;
+    padding: 10px;
+}
+
+.company .text p {
+    margin: 6px 0;
+}
+
+.company .text h2,
+.company .text h3 {
+    margin: 0;
+}
+
+content .wait {
+    text-align: center;
+    letter-spacing: 2px;
+    color: rgb(46, 47, 61);
+    margin: 20px 0 50px 0;
+}
+
+
+@media (max-width: 1286px) {
+
+    /*CONTENT*/
+    content .container {
+        width: 90%;
+    }
+
+    content .delievers {
+        flex-direction: column;
+    }
+
+    content .company {
+        width: 70%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    /*CONTENT*/
+    content .container {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+        overflow: hidden;
+    }
+
+    content .sections {
+        box-sizing: border-box;
+    }
+
+    content .company {
+        width: 90%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 480px) {}
