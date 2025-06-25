@@ -1,9 +1,9 @@
-# Uni 🍺🚬
+# Uni 📚🚬
 
-## Telegram: [@Naztes](https://t.me/Naztes)  
-## Collection of gained knowledge on FCSC  
+> Telegram: [@Naztes](https://t.me/Naztes)
+### Collection of gained knowledge on FCSC  
 
-### Representation of repo structure:
+Representation of repo structure:
 
 <table>
 <tr>
@@ -14,10 +14,13 @@
 
 <tr>
   <td rowspan="2">1 Course</td>
-  <td>sem 1</td>   
+  <td><a href="https://github.com/naztes0/University/tree/main/sem1">sem 1</a></td>   
   <td>
     <ul>
-      <li>–</li>
+      <li><a href="https://github.com/naztes0/University/tree/main/sem1/DM">Discrete Math</a></li>
+      <li><a href="https://github.com/naztes0/University/tree/main/sem1/FOKE">FOKE</a></li>
+      <li><a href="https://github.com/naztes0/University/tree/main/sem1/MathAnalysis">Math Analysis</a></li>
+      <li><a href="https://github.com/naztes0/University/tree/main/sem1/VDUS">VDUS</a></li>
     </ul>
   </td>
 </tr>
@@ -26,8 +29,8 @@
   <td><a href="https://github.com/naztes0/University/tree/main/sem2">sem 2</a></td>
   <td>
     <ul>
-      <li><a href="https://github.com/naztes0/University/tree/main/sem2/DM">DM</a></li>
-      <li><a href="https://github.com/naztes0/University/tree/main/sem2/foke">Foke</a></li>
+      <li><a href="https://github.com/naztes0/University/tree/main/sem2/DM">Discrete Math</a></li>
+      <li><a href="https://github.com/naztes0/University/tree/main/sem2/foke">FOKE</a></li>
       <li><a href="https://github.com/naztes0/University/tree/main/sem2/mathAnal">Math Analysis</a></li>
       <li><a href="https://github.com/naztes0/University/tree/main/sem2/proga">Programming</a></li>
       <li><a href="https://github.com/naztes0/University/tree/main/sem2/uzk">UZK</a></li>
