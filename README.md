@@ -1,4 +1,5 @@
 # Uni 📚🚬
+**Uni stuff I didn’t wanna forget (but kinda did)**
 
 > Telegram: [@Naztes](https://t.me/Naztes)
 ### Collection of gained knowledge on FCSC  
