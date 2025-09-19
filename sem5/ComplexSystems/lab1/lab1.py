@@ -66,14 +66,12 @@ def plot_dft(dft:np.ndarray,step:float, save_path:str, max_peaks:np.array=None)-
     num_samples=len(dft)//2
     frequencies = np.arange(1, num_samples) * step
     dft_abs_half=dft[:num_samples]
-    peak_frequency = 0
     if(max_peaks):
         peak_frequencies=np.array(max_peaks)*step
-        peak_frequency=max(peak_frequencies)
         peak_magnitude=dft_abs_half[max_peaks]
         plt.scatter(peak_frequencies,peak_magnitude,color='red',zorder=4)
     
-    print("Peak frequence: ", peak_frequency,"Hz")
+    print("Peak frequencies: ", peak_frequencies,"Hz")
     plt.plot(frequencies, dft[1:num_samples], label="DFT Magnitude")
     plt.title("Discrete Fourier Transform Spectrum")
     plt.legend()
@@ -86,15 +84,15 @@ def fit_model(t,data, peak_frequencies):
     """
     Fit polynomial + sinusoidal model to the signal.
     """
-    def model (t, a1,a2,a3,*params):
+    def model (t, a1,a2,a3,a_const, *params):
         k=len(params)//2
-        y=a1*t**3+a2*t**2+a3*t 
+        y=a1*t**3+a2*t**2+a3*t + a_const
         for i in range(k):
             fi=params[i]
             ai=params[i+k]
             y+= ai*np.sin(2*np.pi*fi*t)
         return y
-    initial_guess=[0,0,0]+peak_frequencies+[1]*len(peak_frequencies)
+    initial_guess=[0,0,0,0]+peak_frequencies+[1]*len(peak_frequencies)
     params,covariance = curve_fit(model,t,data,p0=initial_guess)
     fitted_values=model(t, *params)
     return params, fitted_values
@@ -116,7 +114,7 @@ def main():
     #Fitting the model
     params, fitted_values=fit_model(t,observations,peak_frequencies)
     print("Found parameters:", params)
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(8, 5))
     plt.plot(t, observations, label='Observations')
     plt.plot(t, fitted_values, label='Fitted Model', linestyle='--')
     plt.legend()
