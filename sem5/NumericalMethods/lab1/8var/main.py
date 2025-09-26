@@ -105,7 +105,7 @@ def method_of_simple_iteration(f, phi, dphi, a, b, eps)-> tuple[bool, float, flo
         x_next = phi(x_now)
         iterations += 1
         
-        print(f"{iterations:<5} {x_now:<12.4f} {x_next:<12.4f} {f(x_next):<12.4f}")
+        print(f"{iterations:<5} {x_now:<12.3f} {x_next:<12.3f} {f(x_next):<12.3f}")
         
         if (abs(x_next - x_now) <= method_eps):
             print("-" * 44)
@@ -168,7 +168,7 @@ def modif_newtons_method(f, df, d2f, a, b, eps)-> tuple[bool, float, int]:
     # Iteration process
     print(f"\nIteration process")
     print("-" * 60)
-    print(f"{'Iter':<6} {'x_n':<12} {'f(x_n)':<12} {'x_n+1':<12} {'f(x_n+1)':<12}")
+    print(f"{'Iter':<6} {'x_n':<9} {'f(x_n)':<9} {'x_n+1':<9} {'f(x_n+1)':<9}")
     print("-" * 60)
     
     x_now = x0
@@ -181,7 +181,7 @@ def modif_newtons_method(f, df, d2f, a, b, eps)-> tuple[bool, float, int]:
         x_next = x_now - (f_x_now / df_x0)
         iterations += 1
         
-        print(f"{iterations:<5} {x_now:<12.6f} {f_x_now:<12.6f} {x_next:<12.6f} {f(x_next):<12.6f}")
+        print(f"{iterations:<5} {x_now:<9.4f} {f_x_now:<9.4f} {x_next:<9.4f} {f(x_next):<9.4f}")
         
         if np.abs(x_now - x_prev)<= eps: 
             print("-" * 60)
