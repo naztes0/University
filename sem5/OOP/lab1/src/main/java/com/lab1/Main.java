@@ -1,6 +1,12 @@
 package com.lab1;
 
+import com.lab1.model.Instrumental;
+import com.lab1.model.MusicComposition;
 import com.lab1.model.Song;
+import com.lab1.model.Instrumental;
+
+import java.util.ArrayList;
+import java.util.List;
 import com.lab1.controller.Compilation;
 
 public class Main {
@@ -15,9 +21,12 @@ public class Main {
         Song track8 = new Song("Digital Bath", "Deftones", 269, "Alternative Metal", 2000);
         Song track9 = new Song("Collapse", "Hanover", 241, "Nu Metal", 2023);
         Song track10 = new Song("Shut Me Up", "MSI", 195, "Electropunk", 2005);
-        Song[] tracks = {
+        Instrumental track11 = new Instrumental("Adagio for Strings", "Samuel Barber", 600, "Classical", 1938,
+                "Orchestra");
+
+        MusicComposition[] tracks = {
                 track1, track2, track3, track4, track5,
-                track6, track7, track8, track9, track10
+                track6, track7, track8, track9, track10, track11
         };
 
         Compilation playlist = new Compilation("Blablabla");
