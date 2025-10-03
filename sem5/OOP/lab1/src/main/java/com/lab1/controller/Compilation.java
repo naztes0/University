@@ -2,6 +2,7 @@ package com.lab1.controller;
 
 import com.lab1.model.MusicComposition;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Compilation {
@@ -38,6 +39,26 @@ public class Compilation {
             total += comp.getDurationSec();
         }
         return total;
+    }
+
+    // Sorting composition by genre(->then by title) in playlist
+    public void sortByGenre() {
+        playlist.sort(Comparator.comparing(MusicComposition::getGenre)
+                .thenComparing(MusicComposition::getTitle));
+    }
+
+    // Find compositions in the given range of possible duration
+    public List<MusicComposition> findByDuration(int minDur, int maxDur) {
+        if (minDur < 0 || maxDur < minDur)
+            throw new IllegalArgumentException("Invalid renge");
+        List<MusicComposition> result = new ArrayList<>();
+
+        for (MusicComposition comp : playlist) {
+            if ((comp.getDurationSec() >= minDur) && (comp.getDurationSec() <= maxDur)) {
+                result.add(comp);
+            }
+        }
+        return result;
     }
 
     public void printPlaylist() {
