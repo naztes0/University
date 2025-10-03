@@ -4,7 +4,7 @@ import com.lab1.model.Instrumental;
 import com.lab1.model.MusicComposition;
 import com.lab1.model.Song;
 import com.lab1.model.Instrumental;
-
+import com.lab1.model.Remix;
 import java.util.ArrayList;
 import java.util.List;
 import com.lab1.controller.Compilation;
