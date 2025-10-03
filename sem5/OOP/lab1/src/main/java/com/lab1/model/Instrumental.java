@@ -9,7 +9,7 @@ public class Instrumental extends MusicComposition {
         this.instrument = instrument;
     }
 
-    public String getInstruments() {
+    public String getInstrument() {
         return instrument;
     }
 
