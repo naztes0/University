@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import com.lab1.controller.*;
 import com.lab1.util.*;
-import java.util.List;
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
@@ -143,8 +142,8 @@ public class Main {
             System.out.println("5. Sort by genre");
             System.out.println("6. Find by duration range");
             System.out.println("7. Save to file");
-            System.out.println("8. Load from file");
-            System.out.println("9. Move to compilation menu");
+            // System.out.println("8. Load from file");
+            System.out.println("8. Move to compilation menu");
             System.out.println("0. Exit");
             System.out.print("Choose option: ");
 
@@ -175,9 +174,6 @@ public class Main {
                     saveToFile();
                     break;
                 case 8:
-                    loadFromFile();
-                    break;
-                case 9:
                     return;
                 case 0:
                     System.out.println("Goodbye!");
@@ -346,26 +342,33 @@ public class Main {
     }
 
     private static void saveToFile() {
-        System.out.print("Enter filename: ");
-        String filename = scanner.nextLine();
+        String filename = compilation.getTitle();
+
+        // Add .txt extension if not present
+        if (!filename.endsWith(".txt")) {
+            filename += ".txt";
+        }
+
+        // Create full path with compilations_folder
+        String fullPath = compilationFolder + File.separator + filename;
+
         try {
-            CompilationFileManager.saveToFile(compilation, filename);
-            System.out.println("Saved successfully!");
+            CompilationFileManager.saveToFile(compilation, fullPath);
         } catch (Exception e) {
             System.out.println("Error saving: " + e.getMessage());
         }
     }
 
-    private static void loadFromFile() {
-        System.out.print("Enter filename: ");
-        String filename = scanner.nextLine();
-        try {
-            compilation = CompilationFileManager.loadFromFile(filename);
-            System.out.println("Loaded successfully!");
-        } catch (Exception e) {
-            System.out.println("Error loading: " + e.getMessage());
-        }
-    }
+    // private static void loadFromFile() {
+    // System.out.print("Enter filename: ");
+    // String filename = scanner.nextLine();
+    // try {
+    // compilation = CompilationFileManager.loadFromFile(filename);
+    // System.out.println("Loaded successfully!");
+    // } catch (Exception e) {
+    // System.out.println("Error loading: " + e.getMessage());
+    // }
+    // }
 
     private static int getIntInput() {
         while (!scanner.hasNextInt()) {
