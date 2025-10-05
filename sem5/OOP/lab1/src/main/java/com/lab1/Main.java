@@ -13,6 +13,7 @@ public class Main {
     private static Compilation compilation;
     private static Scanner scanner = new Scanner(System.in);
     private static String compilationFolder = "compilations_folder";
+    private static final String FILE_EXTENSION = ".txt";
 
     public static void main(String[] args) {
         // showMenu();
@@ -81,7 +82,7 @@ public class Main {
         if (!folder.exists()) {
             folder.mkdirs();
         }
-        File[] files = folder.listFiles((dir, name) -> name.endsWith(".txt"));
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(FILE_EXTENSION));
         List<String> names = new ArrayList<>();
         if (files == null || files.length == 0) {
             System.out.println("Folder is empty. Create a new compilation");
@@ -343,13 +344,10 @@ public class Main {
 
     private static void saveToFile() {
         String filename = compilation.getTitle();
-
-        // Add .txt extension if not present
-        if (!filename.endsWith(".txt")) {
-            filename += ".txt";
+        if (!filename.endsWith(FILE_EXTENSION)) {
+            filename += FILE_EXTENSION;
         }
 
-        // Create full path with compilations_folder
         String fullPath = compilationFolder + File.separator + filename;
 
         try {
@@ -365,7 +363,7 @@ public class Main {
             System.out.print("Please enter a number: ");
         }
         int result = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
         return result;
     }
 }

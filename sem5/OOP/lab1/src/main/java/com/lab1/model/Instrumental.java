@@ -21,6 +21,6 @@ public class Instrumental extends MusicComposition {
     @Override
     public String toString() {
         return String.format("%s - %s [%s] (%s, %d, %d sec)",
-                title, artist, String.join(",", instrument), genre, yearReleased, durationSec);
+                title, artist, instrument, genre, yearReleased, durationSec);
     }
 }

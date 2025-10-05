@@ -10,6 +10,7 @@ import java.util.List;
  * Manages saving and loading compilations from files
  */
 public class CompilationFileManager {
+    private static final String FILE_EXTENSION = ".txt";
 
     // Method for saving to file
     public static void saveToFile(Compilation compilation, String filename) throws IOException {
@@ -17,10 +18,8 @@ public class CompilationFileManager {
         if (!folder.exists()) {
             folder.mkdirs();
         }
-
-        // Add .txt extension if not present
-        if (!filename.endsWith(".txt")) {
-            filename += ".txt";
+        if (!filename.endsWith(FILE_EXTENSION)) {
+            filename += FILE_EXTENSION;
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             writer.write("COMPILATION:" + compilation.getTitle());
