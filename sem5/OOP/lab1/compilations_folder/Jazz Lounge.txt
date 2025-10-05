@@ -6,4 +6,3 @@ SONG|Feeling Good|Nina Simone|168|Soul|1965
 SONG|My Favorite Things|John Coltrane|799|Jazz|1960
 INSTRUMENTAL|Linus And Lucy|Vince Guaraldi|124|Jazz|1964|Piano
 SONG|Moanin'|Charles Mingus|445|Jazz|1959
-SONG|Song For My Father|Horace Silver|545|Jazz|1965
