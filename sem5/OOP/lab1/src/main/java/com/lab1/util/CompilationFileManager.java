@@ -52,7 +52,7 @@ public class CompilationFileManager {
         return compilation;
     }
 
-    // "Rules" for writing down compositions to file
+    // "Rules" for writing down compositions to compilation file
     private static String serializeComposition(MusicComposition comp) {
         if (comp instanceof Song) {
             Song song = (Song) comp;
@@ -73,7 +73,7 @@ public class CompilationFileManager {
         return "";
     }
 
-    // File reader
+    // Compilation file reader
     private static MusicComposition deserializeComposition(String line) {
         String[] parts = line.split("\\|");
         if (parts.length == 0)
@@ -98,4 +98,5 @@ public class CompilationFileManager {
             return null;
         }
     }
+
 }

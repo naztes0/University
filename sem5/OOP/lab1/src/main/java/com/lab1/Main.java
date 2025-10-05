@@ -7,45 +7,127 @@ import com.lab1.controller.*;
 import com.lab1.util.*;
 import java.util.List;
 import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
 
 public class Main {
     private static Compilation compilation;
     private static Scanner scanner = new Scanner(System.in);
+    private static String compilationFolder = "compilations_folder";
 
     public static void main(String[] args) {
-        initializeCompilation();
+        // showMenu();
+        showCompilationMenu();
+    }
+
+    // Compilation manager menu
+    private static void showCompilationMenu() {
+        while (true) {
+            System.out.println("\n=== COMPILATION MANAGER ===");
+            System.out.println("1. Create a new compilation");
+            System.out.println("2. Select existing compilation");
+            System.out.println("3. Remove compilation");
+            System.out.println("0. Exit");
+            System.out.print("Choose option: ");
+            int choice = getIntInput();
+            switch (choice) {
+                case 1:
+                    createCompilation();
+                    break;
+                case 2:
+                    selectExistingCompilation();
+                    break;
+                case 3:
+                    deleteCompilation();
+                    break;
+                case 0:
+                    System.out.println("Goodbye!");
+                    scanner.close();
+                    return;
+            }
+        }
+    }
+
+    private static void createCompilation() {
+        System.out.print("Enter compilation title: ");
+        String title = scanner.nextLine();
+        compilation = new Compilation(title);
         showMenu();
     }
 
-    private static void initializeCompilation() {
-        compilation = new Compilation("My collection");
-
-        // // Adding songs
-        // compilation.addComposition(new Song("Shiver", "Hanover", 215, "Alternative
-        // Metal", 2022));
-        // compilation.addComposition(new Song("Be Quiet and Drive", "Deftones", 312,
-        // "Alternative Metal", 1997));
-        // compilation.addComposition(new Song("Silver", "Deftones", 262, "Alternative
-        // Metal", 2000));
-        // compilation.addComposition(new Song("Ignite", "Icepeak", 198, "Industrial
-        // Rock", 2021));
-        // compilation.addComposition(new Song("Bites", "MSI", 193, "Electropunk",
-        // 2005));
-        // compilation.addComposition(new Song("Gore", "Icepeak", 224, "Experimental
-        // Rock", 2020));
-
-        // // Adding instrumentals
-        // compilation.addComposition(new Instrumental("Eruption", "Van Halen", 102,
-        // "Hard Rock", 1978, "Guitar"));
-        // compilation.addComposition(new Instrumental("YYZ", "Rush", 264,
-        // "Progressive Rock", 1981, "Bass"));
-
-        // // Adding remixes
-        // compilation.addComposition(new Remix("Digital Bath", "Deftones", "DJ Shadow",
-        // 289, "Electronic", 2005));
-        //
+    private static void selectExistingCompilation() {
+        System.out.println("===== Select a compilation =====");
+        List<String> compilations = compilationsList();
+        if (compilations == null)
+            return;
+        for (int i = 0; i < compilations.size(); i++) {
+            System.out.printf("%2d. %s%n", i + 1, compilations.get(i));
+        }
+        System.out.println("=".repeat(32));
+        System.out.print("Choose the number of compilation: ");
+        int choice = getIntInput();
+        try {
+            compilation = CompilationFileManager
+                    .loadFromFile(compilationFolder + File.separator + compilations.get(choice - 1));
+        } catch (IOException e) {
+            System.out.println("Error while loading compilation: " + e.getMessage());
+        }
+        System.out.println("Compilation " + compilations.get(choice - 1) + " was successfully chosen");
+        showMenu();
     }
 
+    private static List<String> compilationsList() {
+        File folder = new File(compilationFolder);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".txt"));
+        List<String> names = new ArrayList<>();
+        if (files == null || files.length == 0) {
+            System.out.println("Folder is empty. Create a new compilation");
+            return null;
+        }
+        for (File f : files) {
+            names.add(f.getName());
+        }
+        return names;
+
+    }
+
+    private static void deleteCompilation() {
+        System.out.println("===== Delete a compilation =====");
+        List<String> compilations = compilationsList();
+        if (compilations == null || compilations.isEmpty())
+            return;
+        for (int i = 0; i < compilations.size(); i++) {
+            System.out.printf("%2d. %s%n", i + 1, compilations.get(i));
+        }
+        System.out.println("=".repeat(32));
+        System.out.print("Choose the number of compilation to delete: ");
+        int choice = getIntInput();
+        if (choice < 1 || choice > compilations.size()) {
+            System.out.println("Invalid number!");
+            return;
+        }
+        String filename = compilations.get(choice - 1);
+        System.out.print("Are you sure you want to delete \"" + filename + "\"? (y/n): ");
+        String answer = scanner.nextLine().trim().toLowerCase();
+
+        if (answer.equals("y")) {
+            File fileToDelete = new File(compilationFolder, filename);
+            if (fileToDelete.delete()) {
+                System.out.println("Compilation deleted successfully!");
+            } else {
+                System.out.println("Error: Could not delete file.");
+            }
+        } else if (answer.equals("n")) {
+            System.out.println("Deletion cancelled.");
+        } else {
+            System.out.println("Invalid input. Please enter 'y' or 'n'.");
+        }
+    }
+
+    // Chosen compilation menu
     private static void showMenu() {
         while (true) {
             System.out.println("\n=== MUSIC COMPILATION MANAGER ===");
@@ -57,6 +139,7 @@ public class Main {
             System.out.println("6. Find by duration range");
             System.out.println("7. Save to file");
             System.out.println("8. Load from file");
+            System.out.println("9. Move to compilation menu");
             System.out.println("0. Exit");
             System.out.print("Choose option: ");
 
@@ -88,6 +171,9 @@ public class Main {
                     break;
                 case 8:
                     loadFromFile();
+                    break;
+                case 9:
+                    showCompilationMenu();
                     break;
                 case 0:
                     System.out.println("Goodbye!");
