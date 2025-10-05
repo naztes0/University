@@ -6,6 +6,8 @@ public class Instrumental extends MusicComposition {
     public Instrumental(String title, String artist, int durationSec, String genre, int yearReleased,
             String instrument) {
         super(title, artist, durationSec, genre, yearReleased);
+        if (instrument == null || instrument.trim().isEmpty())
+            throw new IllegalArgumentException("Instrument cannot be empty");
         this.instrument = instrument;
     }
 

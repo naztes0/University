@@ -10,16 +10,16 @@ public abstract class MusicComposition {
 
     public MusicComposition(String title, String artist, int durationSec, String genre, int yearReleased) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be null or empty");
+            throw new IllegalArgumentException("Title cannot be empty");
         }
         if (artist == null || artist.trim().isEmpty()) {
-            throw new IllegalArgumentException("Artist cannot be null or empty");
+            throw new IllegalArgumentException("Artist cannot be empty");
         }
         if (durationSec <= 0) {
             throw new IllegalArgumentException("Duration must be positive");
         }
         if (genre == null || genre.trim().isEmpty()) {
-            throw new IllegalArgumentException("Genre cannot be null or empty");
+            throw new IllegalArgumentException("Genre cannot be empty");
         }
         if (yearReleased < 1000 || yearReleased > 2100) {
             throw new IllegalArgumentException("Invalid year");

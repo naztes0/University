@@ -6,6 +6,10 @@ public class Remix extends MusicComposition {
 
     public Remix(String title, String originalArtist, String remixer, int durationSec, String genre, int yearReleased) {
         super(title, originalArtist, durationSec, genre, yearReleased);
+        if (originalArtist == null || originalArtist.trim().isEmpty())
+            throw new IllegalArgumentException("Original artist cannot be empty");
+        if (remixer == null || remixer.trim().isEmpty())
+            throw new IllegalArgumentException("Remixer cannot be empty");
         this.originalArtist = originalArtist;
         this.remixer = remixer;
     }
