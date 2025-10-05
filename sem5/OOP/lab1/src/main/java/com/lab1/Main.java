@@ -130,6 +130,10 @@ public class Main {
 
     // Chosen compilation menu
     private static void showMenu() {
+        if (compilation == null) {
+            System.out.println("No compilation selected!");
+            return;
+        }
         while (true) {
             System.out.println("\n=== MUSIC COMPILATION MANAGER ===");
             System.out.println("1. Show playlist");
@@ -225,12 +229,19 @@ public class Main {
 
         System.out.print("Enter duration (seconds): ");
         int duration = getIntInput();
-
+        if (duration <= 0) {
+            System.out.println("Duration must be positive!");
+            return;
+        }
         System.out.print("Enter genre: ");
         String genre = scanner.nextLine();
 
         System.out.print("Enter year released: ");
         int year = getIntInput();
+        if (year < 1000 || year > 2100) {
+            System.out.println("Invalid year!");
+            return;
+        }
 
         Song song = new Song(title, band, duration, genre, year);
         compilation.addComposition(song);
