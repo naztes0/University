@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompilationsManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab1</a> &gt; <a href="index.source.html" class="el_package">com.lab1.util</a> &gt; <span class="el_source">CompilationsManager.java</span></div><h1>CompilationsManager.java</h1><pre class="source lang-java linenums">package com.lab1.util;
+
+import com.lab1.controller.Compilation;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import com.lab1.util.AppConstants;
+
+public class CompilationsManager {
+    private Scanner scanner;
+
+<span class="nc" id="L14">    public CompilationsManager(Scanner scanner) {</span>
+<span class="nc" id="L15">        this.scanner = scanner;</span>
+<span class="nc" id="L16">    }</span>
+
+    public Compilation createCompilation() {
+<span class="nc" id="L19">        System.out.print(&quot;Enter compilation title: &quot;);</span>
+<span class="nc" id="L20">        String title = scanner.nextLine();</span>
+<span class="nc" id="L21">        Compilation compilation = new Compilation(title);</span>
+<span class="nc" id="L22">        System.out.println(&quot;Compilation created successfully!&quot;);</span>
+<span class="nc" id="L23">        return compilation;</span>
+    }
+
+    public Compilation selectExistingCompilation() {
+<span class="nc" id="L27">        System.out.println(&quot;===== Select a compilation =====&quot;);</span>
+<span class="nc" id="L28">        List&lt;String&gt; compilations = getCompilationsList();</span>
+
+<span class="nc bnc" id="L30" title="All 4 branches missed.">        if (compilations == null || compilations.isEmpty()) {</span>
+<span class="nc" id="L31">            return null;</span>
+        }
+
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        for (int i = 0; i &lt; compilations.size(); i++) {</span>
+<span class="nc" id="L35">            System.out.printf(&quot;%2d. %s%n&quot;, i + 1, compilations.get(i));</span>
+        }
+<span class="nc" id="L37">        System.out.println(&quot;=&quot;.repeat(32));</span>
+<span class="nc" id="L38">        System.out.print(&quot;Choose the number of compilation: &quot;);</span>
+
+<span class="nc" id="L40">        int choice = getIntInput();</span>
+
+<span class="nc bnc" id="L42" title="All 4 branches missed.">        if (choice &lt; 1 || choice &gt; compilations.size()) {</span>
+<span class="nc" id="L43">            System.out.println(&quot;Invalid number!&quot;);</span>
+<span class="nc" id="L44">            return null;</span>
+        }
+
+        try {
+<span class="nc" id="L48">            String filename = compilations.get(choice - 1);</span>
+<span class="nc" id="L49">            Compilation compilation = CompilationFileManager</span>
+<span class="nc" id="L50">                    .loadFromFile(AppConstants.COMPILATION_FOLDER + File.separator + filename);</span>
+<span class="nc" id="L51">            System.out.println(&quot;Compilation \&quot;&quot; + filename + &quot;\&quot; was successfully chosen&quot;);</span>
+<span class="nc" id="L52">            return compilation;</span>
+<span class="nc" id="L53">        } catch (IOException e) {</span>
+<span class="nc" id="L54">            System.out.println(&quot;Error while loading compilation: &quot; + e.getMessage());</span>
+<span class="nc" id="L55">            return null;</span>
+        }
+    }
+
+    public void deleteCompilation() {
+<span class="nc" id="L60">        System.out.println(&quot;===== Delete a compilation =====&quot;);</span>
+<span class="nc" id="L61">        List&lt;String&gt; compilations = getCompilationsList();</span>
+
+<span class="nc bnc" id="L63" title="All 4 branches missed.">        if (compilations == null || compilations.isEmpty()) {</span>
+<span class="nc" id="L64">            return;</span>
+        }
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        for (int i = 0; i &lt; compilations.size(); i++) {</span>
+<span class="nc" id="L68">            System.out.printf(&quot;%2d. %s%n&quot;, i + 1, compilations.get(i));</span>
+        }
+<span class="nc" id="L70">        System.out.println(&quot;=&quot;.repeat(32));</span>
+<span class="nc" id="L71">        System.out.print(&quot;Choose the number of compilation to delete: &quot;);</span>
+
+<span class="nc" id="L73">        int choice = getIntInput();</span>
+
+<span class="nc bnc" id="L75" title="All 4 branches missed.">        if (choice &lt; 1 || choice &gt; compilations.size()) {</span>
+<span class="nc" id="L76">            System.out.println(&quot;Invalid number!&quot;);</span>
+<span class="nc" id="L77">            return;</span>
+        }
+
+<span class="nc" id="L80">        String filename = compilations.get(choice - 1);</span>
+<span class="nc" id="L81">        System.out.print(&quot;Are you sure you want to delete \&quot;&quot; + filename + &quot;\&quot;? (y/n): &quot;);</span>
+<span class="nc" id="L82">        String answer = scanner.nextLine().trim().toLowerCase();</span>
+
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (answer.equals(&quot;y&quot;)) {</span>
+<span class="nc" id="L85">            File fileToDelete = new File(AppConstants.COMPILATION_FOLDER, filename);</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">            if (fileToDelete.delete()) {</span>
+<span class="nc" id="L87">                System.out.println(&quot;Compilation deleted successfully!&quot;);</span>
+<span class="nc" id="L88">            } else {</span>
+<span class="nc" id="L89">                System.out.println(&quot;Error: Could not delete file.&quot;);</span>
+            }
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        } else if (answer.equals(&quot;n&quot;)) {</span>
+<span class="nc" id="L92">            System.out.println(&quot;Deletion cancelled.&quot;);</span>
+<span class="nc" id="L93">        } else {</span>
+<span class="nc" id="L94">            System.out.println(&quot;Invalid input. Please enter 'y' or 'n'.&quot;);</span>
+        }
+<span class="nc" id="L96">    }</span>
+
+    public List&lt;String&gt; getCompilationsList() {
+<span class="nc" id="L99">        File folder = new File(AppConstants.COMPILATION_FOLDER);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (!folder.exists()) {</span>
+<span class="nc" id="L101">            folder.mkdirs();</span>
+        }
+
+<span class="nc" id="L104">        File[] files = folder.listFiles((dir, name) -&gt; name.endsWith(AppConstants.FILE_EXTENSION));</span>
+
+<span class="nc bnc" id="L106" title="All 4 branches missed.">        if (files == null || files.length == 0) {</span>
+<span class="nc" id="L107">            System.out.println(&quot;Folder is empty. Create a new compilation&quot;);</span>
+<span class="nc" id="L108">            return null;</span>
+        }
+
+<span class="nc" id="L111">        List&lt;String&gt; names = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        for (File f : files) {</span>
+<span class="nc" id="L113">            names.add(f.getName());</span>
+        }
+<span class="nc" id="L115">        return names;</span>
+    }
+
+    public void saveCompilation(Compilation compilation) {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (compilation == null) {</span>
+<span class="nc" id="L120">            System.out.println(&quot;No compilation to save!&quot;);</span>
+<span class="nc" id="L121">            return;</span>
+        }
+
+<span class="nc" id="L124">        String filename = compilation.getTitle();</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!filename.endsWith(AppConstants.FILE_EXTENSION)) {</span>
+<span class="nc" id="L126">            filename += AppConstants.FILE_EXTENSION;</span>
+        }
+
+<span class="nc" id="L129">        String fullPath = AppConstants.COMPILATION_FOLDER + File.separator + filename;</span>
+
+        try {
+<span class="nc" id="L132">            CompilationFileManager.saveToFile(compilation, fullPath);</span>
+<span class="nc" id="L133">        } catch (Exception e) {</span>
+<span class="nc" id="L134">            System.out.println(&quot;Error saving: &quot; + e.getMessage());</span>
+        }
+<span class="nc" id="L136">    }</span>
+
+    private int getIntInput() {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        while (!scanner.hasNextInt()) {</span>
+<span class="nc" id="L140">            scanner.next();</span>
+<span class="nc" id="L141">            System.out.print(&quot;Please enter a number: &quot;);</span>
+        }
+<span class="nc" id="L143">        int result = scanner.nextInt();</span>
+<span class="nc" id="L144">        scanner.nextLine(); // consume newline</span>
+<span class="nc" id="L145">        return result;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

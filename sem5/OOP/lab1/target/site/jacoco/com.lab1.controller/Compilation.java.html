@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Compilation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab1</a> &gt; <a href="index.source.html" class="el_package">com.lab1.controller</a> &gt; <span class="el_source">Compilation.java</span></div><h1>Compilation.java</h1><pre class="source lang-java linenums">package com.lab1.controller;
+
+import com.lab1.model.MusicComposition;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+public class Compilation {
+    private String title;
+    private List&lt;MusicComposition&gt; playlist;
+
+<span class="nc" id="L12">    public Compilation(String title) {</span>
+<span class="nc" id="L13">        this.title = title;</span>
+<span class="nc" id="L14">        this.playlist = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L15">    }</span>
+
+    public String getTitle() {
+<span class="nc" id="L18">        return title;</span>
+    }
+
+    public List&lt;MusicComposition&gt; getPlaylist() {
+<span class="nc" id="L22">        return new ArrayList&lt;&gt;(playlist);</span>
+    }
+
+    public void addComposition(MusicComposition composition) {
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        if (composition == null) {</span>
+<span class="nc" id="L27">            throw new IllegalArgumentException(&quot;Composition cannot be null&quot;);</span>
+        }
+<span class="nc" id="L29">        playlist.add(composition);</span>
+<span class="nc" id="L30">    }</span>
+
+    public void removeComposition(MusicComposition composition) {
+<span class="nc" id="L33">        playlist.remove(composition);</span>
+<span class="nc" id="L34">    }</span>
+
+    public int calculateTotalDuration() {
+<span class="nc" id="L37">        int total = 0;</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        for (MusicComposition comp : playlist) {</span>
+<span class="nc" id="L39">            total += comp.getDurationSec();</span>
+        }
+<span class="nc" id="L41">        return total;</span>
+    }
+
+    // Sorting composition by genre(-&gt;then by title) in playlist
+    public void sortByGenre() {
+<span class="nc" id="L46">        playlist.sort(Comparator.comparing(MusicComposition::getGenre)</span>
+<span class="nc" id="L47">                .thenComparing(MusicComposition::getTitle));</span>
+<span class="nc" id="L48">    }</span>
+
+    // Find compositions in the given range of possible duration
+    public List&lt;MusicComposition&gt; findByDuration(int minDur, int maxDur) {
+<span class="nc bnc" id="L52" title="All 4 branches missed.">        if (minDur &lt; 0 || maxDur &lt; minDur)</span>
+<span class="nc" id="L53">            throw new IllegalArgumentException(&quot;Invalid range&quot;);</span>
+<span class="nc" id="L54">        List&lt;MusicComposition&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        for (MusicComposition comp : playlist) {</span>
+<span class="nc bnc" id="L57" title="All 4 branches missed.">            if ((comp.getDurationSec() &gt;= minDur) &amp;&amp; (comp.getDurationSec() &lt;= maxDur)) {</span>
+<span class="nc" id="L58">                result.add(comp);</span>
+            }
+        }
+<span class="nc" id="L61">        return result;</span>
+    }
+
+    public void printPlaylist() {
+<span class="nc" id="L65">        System.out.println(&quot;\n&quot; + &quot;=&quot;.repeat(70));</span>
+<span class="nc" id="L66">        System.out.println(&quot;Compilation: &quot; + title);</span>
+<span class="nc" id="L67">        System.out.println(&quot;Total duration: &quot; + formatDuration(calculateTotalDuration()));</span>
+<span class="nc" id="L68">        System.out.println(&quot;=&quot;.repeat(70));</span>
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        for (int i = 0; i &lt; playlist.size(); i++) {</span>
+<span class="nc" id="L71">            System.out.printf(&quot;%2d. %s%n&quot;, i + 1, playlist.get(i).toString());</span>
+        }
+
+<span class="nc" id="L74">        System.out.println(&quot;=&quot;.repeat(70));</span>
+<span class="nc" id="L75">    }</span>
+
+    private String formatDuration(int seconds) {
+<span class="nc" id="L78">        int minutes = seconds / 60;</span>
+<span class="nc" id="L79">        int secs = seconds % 60;</span>
+<span class="nc" id="L80">        return String.format(&quot;%d:%02d&quot;, minutes, secs);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
