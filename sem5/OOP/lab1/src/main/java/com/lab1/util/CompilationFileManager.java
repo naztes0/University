@@ -1,6 +1,7 @@
 package com.lab1.util;
 
 import com.lab1.model.*;
+import com.lab1.util.AppConstants;
 import com.lab1.controller.Compilation;
 import java.io.*;
 import java.util.ArrayList;
@@ -10,16 +11,15 @@ import java.util.List;
  * Manages saving and loading compilations from files
  */
 public class CompilationFileManager {
-    private static final String FILE_EXTENSION = ".txt";
 
     // Method for saving to file
     public static void saveToFile(Compilation compilation, String filename) throws IOException {
-        File folder = new File("compilations_folder");
+        File folder = new File(AppConstants.COMPILATION_FOLDER);
         if (!folder.exists()) {
             folder.mkdirs();
         }
-        if (!filename.endsWith(FILE_EXTENSION)) {
-            filename += FILE_EXTENSION;
+        if (!filename.endsWith(AppConstants.FILE_EXTENSION)) {
+            filename += AppConstants.FILE_EXTENSION;
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             writer.write("COMPILATION:" + compilation.getTitle());

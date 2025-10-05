@@ -12,11 +12,10 @@ import java.io.IOException;
 public class Main {
     private static Compilation compilation;
     private static Scanner scanner = new Scanner(System.in);
-    private static String compilationFolder = "compilations_folder";
-    private static final String FILE_EXTENSION = ".txt";
+    private static CompilationsManager compilationsManager;
 
     public static void main(String[] args) {
-        // showMenu();
+        compilationsManager = new CompilationsManager(scanner);
         showCompilationMenu();
     }
 
@@ -32,99 +31,27 @@ public class Main {
             int choice = getIntInput();
             switch (choice) {
                 case 1:
-                    createCompilation();
+                    compilation = compilationsManager.createCompilation();
+                    if (compilation != null) {
+                        showMenu();
+                    }
                     break;
                 case 2:
-                    selectExistingCompilation();
+                    compilation = compilationsManager.selectExistingCompilation();
+                    if (compilation != null) {
+                        showMenu();
+                    }
                     break;
                 case 3:
-                    deleteCompilation();
+                    compilationsManager.deleteCompilation();
                     break;
                 case 0:
                     System.out.println("Goodbye!");
                     scanner.close();
                     return;
+                default:
+                    System.out.println("Invalid option!");
             }
-        }
-    }
-
-    private static void createCompilation() {
-        System.out.print("Enter compilation title: ");
-        String title = scanner.nextLine();
-        compilation = new Compilation(title);
-        System.out.println("Compilation created successfully!");
-        showMenu();
-    }
-
-    private static void selectExistingCompilation() {
-        System.out.println("===== Select a compilation =====");
-        List<String> compilations = compilationsList();
-        if (compilations == null)
-            return;
-        for (int i = 0; i < compilations.size(); i++) {
-            System.out.printf("%2d. %s%n", i + 1, compilations.get(i));
-        }
-        System.out.println("=".repeat(32));
-        System.out.print("Choose the number of compilation: ");
-        int choice = getIntInput();
-        try {
-            compilation = CompilationFileManager
-                    .loadFromFile(compilationFolder + File.separator + compilations.get(choice - 1));
-        } catch (IOException e) {
-            System.out.println("Error while loading compilation: " + e.getMessage());
-        }
-        System.out.println("Compilation " + compilations.get(choice - 1) + " was successfully chosen");
-        showMenu();
-    }
-
-    private static List<String> compilationsList() {
-        File folder = new File(compilationFolder);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-        File[] files = folder.listFiles((dir, name) -> name.endsWith(FILE_EXTENSION));
-        List<String> names = new ArrayList<>();
-        if (files == null || files.length == 0) {
-            System.out.println("Folder is empty. Create a new compilation");
-            return null;
-        }
-        for (File f : files) {
-            names.add(f.getName());
-        }
-        return names;
-
-    }
-
-    private static void deleteCompilation() {
-        System.out.println("===== Delete a compilation =====");
-        List<String> compilations = compilationsList();
-        if (compilations == null || compilations.isEmpty())
-            return;
-        for (int i = 0; i < compilations.size(); i++) {
-            System.out.printf("%2d. %s%n", i + 1, compilations.get(i));
-        }
-        System.out.println("=".repeat(32));
-        System.out.print("Choose the number of compilation to delete: ");
-        int choice = getIntInput();
-        if (choice < 1 || choice > compilations.size()) {
-            System.out.println("Invalid number!");
-            return;
-        }
-        String filename = compilations.get(choice - 1);
-        System.out.print("Are you sure you want to delete \"" + filename + "\"? (y/n): ");
-        String answer = scanner.nextLine().trim().toLowerCase();
-
-        if (answer.equals("y")) {
-            File fileToDelete = new File(compilationFolder, filename);
-            if (fileToDelete.delete()) {
-                System.out.println("Compilation deleted successfully!");
-            } else {
-                System.out.println("Error: Could not delete file.");
-            }
-        } else if (answer.equals("n")) {
-            System.out.println("Deletion cancelled.");
-        } else {
-            System.out.println("Invalid input. Please enter 'y' or 'n'.");
         }
     }
 
@@ -172,7 +99,7 @@ public class Main {
                     findByDuration();
                     break;
                 case 7:
-                    saveToFile();
+                    compilationsManager.saveCompilation(compilation);
                     break;
                 case 8:
                     return;
@@ -226,19 +153,11 @@ public class Main {
 
         System.out.print("Enter duration (seconds): ");
         int duration = getIntInput();
-        if (duration <= 0) {
-            System.out.println("Duration must be positive!");
-            return;
-        }
         System.out.print("Enter genre: ");
         String genre = scanner.nextLine();
 
         System.out.print("Enter year released: ");
         int year = getIntInput();
-        if (year < 1000 || year > 2100) {
-            System.out.println("Invalid year!");
-            return;
-        }
 
         Song song = new Song(title, band, duration, genre, year);
         compilation.addComposition(song);
@@ -339,21 +258,6 @@ public class Main {
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
-        }
-    }
-
-    private static void saveToFile() {
-        String filename = compilation.getTitle();
-        if (!filename.endsWith(FILE_EXTENSION)) {
-            filename += FILE_EXTENSION;
-        }
-
-        String fullPath = compilationFolder + File.separator + filename;
-
-        try {
-            CompilationFileManager.saveToFile(compilation, fullPath);
-        } catch (Exception e) {
-            System.out.println("Error saving: " + e.getMessage());
         }
     }
 
