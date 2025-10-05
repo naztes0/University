@@ -1,0 +1,10 @@
+COMPILATION:Hip Hop Beats
+SONG|Sicko Mode|Travis Scott|312|Hip Hop|2018
+SONG|HUMBLE.|Kendrick Lamar|177|Rap|2017
+INSTRUMENTAL|Mask Off|Future|210|Trap|2017|Synthesizer
+REMIX|God's Plan|Drake|210|Hip Hop|2018
+SONG|Lose Yourself|Eminem|326|Rap|2002
+SONG|X Gon' Give It To Ya|DMX|203|Hip Hop|2003
+INSTRUMENTAL|Night Riders|Action Bronson|245|Hip Hop|2016|Synthesizer
+SONG|Mo Money Mo Problems|The Notorious B.I.G.|246|Rap|1997
+SONG|C.R.E.A.M.|Wu-Tang Clan|231|Hip Hop|1993

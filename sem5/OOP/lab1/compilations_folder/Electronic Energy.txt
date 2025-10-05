@@ -1,0 +1,9 @@
+COMPILATION:Electronic Energy
+SONG|Strobe|Deadmau5|612|Progressive House|2009
+SONG|Titanium|David Guetta|245|EDM|2011
+REMIX|Animals|Martin Garrix|215|Big Room|2017
+INSTRUMENTAL|Opus|Eric Prydz|540|House|2016|Synthesizer
+SONG|Get Lucky|Daft Punk|369|Funk|2013
+SONG|Shelter|Porter Robinson|212|Future Bass|2016
+INSTRUMENTAL|Midnight City|M83|240|Synthpop|2011|Synthesizer
+SONG|Clarity|Zedd|245|Electropop|2012

@@ -1,0 +1,9 @@
+COMPILATION:Rock Anthems
+SONG|Bohemian Rhapsody|Queen|354|Rock|1975
+SONG|Enter Sandman|Metallica|331|Heavy Metal|1991
+SONG|Paranoid|Black Sabbath|171|Metal|1970
+REMIX|Smells Like Teen Spirit|Nirvana|DJ Shadow|289|Grunge|2021
+INSTRUMENTAL|Eruption|Van Halen|102|Rock|1978|Guitar
+SONG|Back In Black|AC/DC|255|Hard Rock|1980
+SONG|Seven Nation Army|The White Stripes|231|Alternative Rock|2003
+INSTRUMENTAL|YYZ|Rush|326|Progressive Rock|1981|Drums

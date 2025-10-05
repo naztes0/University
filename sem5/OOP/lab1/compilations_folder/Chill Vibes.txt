@@ -1,0 +1,9 @@
+COMPILATION:Chill Vibes
+SONG|Sunset Lover|Petit Biscuit|203|Chillwave|2015
+SONG|Weightless|Marconi Union|496|Ambient|2011
+INSTRUMENTAL|Night Owl|ODESZA|260|Electronica|2017|Synthesizer
+SONG|Lose It|Oh Wonder|210|Indie Pop|2015
+REMIX|Cold Little Heart|Michael Kiwanuka|Kaytranada|225|Chillhop|2020
+SONG|Retrograde|James Blake|245|Soul|2013
+INSTRUMENTAL|Drifting|Tycho|310|Ambient|2016|Guitar
+SONG|Heartbeats|José González|146|Acoustic|2003
