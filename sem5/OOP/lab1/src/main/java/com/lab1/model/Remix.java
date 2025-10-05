@@ -5,7 +5,7 @@ public class Remix extends MusicComposition {
     private String remixer;
 
     public Remix(String title, String originalArtist, String remixer, int durationSec, String genre, int yearReleased) {
-        super(title, originalArtist, durationSec, genre, yearReleased);
+        super(title, remixer, durationSec, genre, yearReleased);
         if (originalArtist == null || originalArtist.trim().isEmpty())
             throw new IllegalArgumentException("Original artist cannot be empty");
         if (remixer == null || remixer.trim().isEmpty())
