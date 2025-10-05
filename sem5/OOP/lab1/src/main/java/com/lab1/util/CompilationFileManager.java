@@ -13,6 +13,15 @@ public class CompilationFileManager {
 
     // Method for saving to file
     public static void saveToFile(Compilation compilation, String filename) throws IOException {
+        File folder = new File("compilations_folder");
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        // Add .txt extension if not present
+        if (!filename.endsWith(".txt")) {
+            filename += ".txt";
+        }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             writer.write("COMPILATION:" + compilation.getTitle());
             writer.newLine();
