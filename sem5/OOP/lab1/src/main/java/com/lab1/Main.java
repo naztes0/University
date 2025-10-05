@@ -52,6 +52,7 @@ public class Main {
         System.out.print("Enter compilation title: ");
         String title = scanner.nextLine();
         compilation = new Compilation(title);
+        System.out.println("Compilation created successfully!");
         showMenu();
     }
 
@@ -173,8 +174,7 @@ public class Main {
                     loadFromFile();
                     break;
                 case 9:
-                    showCompilationMenu();
-                    break;
+                    return;
                 case 0:
                     System.out.println("Goodbye!");
                     scanner.close();

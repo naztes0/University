@@ -50,7 +50,7 @@ public class Compilation {
     // Find compositions in the given range of possible duration
     public List<MusicComposition> findByDuration(int minDur, int maxDur) {
         if (minDur < 0 || maxDur < minDur)
-            throw new IllegalArgumentException("Invalid renge");
+            throw new IllegalArgumentException("Invalid range");
         List<MusicComposition> result = new ArrayList<>();
 
         for (MusicComposition comp : playlist) {
