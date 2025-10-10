@@ -1,0 +1,36 @@
+Matrix size: 10
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.000173
+Matrix size: 100
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.000108
+Matrix size: 1000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.007946
+Matrix size: 2000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.022908
+Matrix size: 3000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.033346
+Matrix size: 4000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.060655
+Matrix size: 5000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.090663
+Matrix size: 6000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.125725
+Matrix size: 7000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.180447
+Matrix size: 8000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.222982
+Matrix size: 9000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.279784
+Matrix size: 10000
+The results of serial and parallel algorithms are identical.
+Time of execution = 0.343670
