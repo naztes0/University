@@ -185,7 +185,7 @@ def square_root_method(A, b):
 
     #Check sufficient condition
     # A=A^T
-    if(np.all(A!=np.transpose(A))):
+    if np.any(A !=A.T):
         print("Sufficient condition is not satisfied!")
         return
     print("\nThe sufficient condition is satisified: A=A^T \n")
@@ -242,7 +242,7 @@ def square_root_method(A, b):
     norm_A = np.linalg.norm(A, ord=np.inf)
     norm_A_inv = np.linalg.norm(np.linalg.inv(A), ord=np.inf)
     cond_A = norm_A * norm_A_inv
-    print(f"Condition number: {cond_A:.3f}")
+    print(f"Condition number: {cond_A:.3f}\n")
     return x,detA
 
 def main():
