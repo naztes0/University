@@ -245,6 +245,70 @@ def square_root_method(A, b):
     print(f"Condition number: {cond_A:.3f}\n")
     return x,detA
 
+
+def seidels_method(A,b, eps):
+    A = np.array(A, dtype=float)
+    b = np.array(b, dtype=float)
+    n = len(A)
+
+    print ()
+    print ("="*50)
+    print("SEIDELS METHOD")
+    print ("="*50)
+    print ()
+    print("Initial matrix A:")
+    print_matrix(A)
+    print("Vector b:")
+    print_vector(b)
+
+    #Check sufficient conditions 
+    ## for all i:1,n |a_ii|>=sum_j=1(j!=i)_n(|a_ij|)
+    print("-"*40)
+    print("Check the first condition:")
+    for i in range(n):
+        row_sum=0
+        for j in range(n):
+            if(i!=j):
+                row_sum+=np.abs(A[i][j])
+        if(np.abs(A[i][i])<row_sum): 
+            print(f"Row{i}: {np.abs(A[i][i])}<{row_sum}")
+            print("First sufficient condition is not satisfied!")
+            return 
+        print(f"Row {i}: {np.abs(A[i][i])}>={row_sum}")   
+    print("First condition is satisfied!") 
+
+    ##A=A^T>0
+    if np.any(A !=A.T):
+        print("Second sufficient condition is not satisfied!")
+        return
+    print("Second condition is satisfied!")
+    print("-"*40)
+    #initial approximation
+    x_prev = np.zeros(n)
+    x_new = np.zeros(n)
+    iteration = 0
+
+    print("\nIterations:")
+    while True:
+        iteration += 1
+        for i in range(n):
+            s1 = sum(A[i][j] * x_new[j] for j in range(i))       # new vector
+            s2 = sum(A[i][j] * x_prev[j] for j in range(i + 1, n)) # prev vector
+            x_new[i] = (b[i] - s1 - s2) / A[i][i]
+
+        # Condition of break
+        if np.linalg.norm(x_new - x_prev, ord=np.inf) < eps:
+            break
+
+        x_prev = x_new.copy()
+        print(f"Iter {iteration}: {np.round(x_new, 5)}")
+
+    print("\nFinal solution vector x:")
+    print_vector(x_new)
+    print(f"Number of iterations: {iteration}")
+    return x_new
+
+
 def main():
     #Gaussian method
     A_matrix_1 = [[7, 2, 3, 0],
@@ -252,17 +316,27 @@ def main():
                 [2, 5, 1, 0],
                 [0, 1, 4, 2]]
     b_vector_1 = [20, 36, 15, 22]
+    resx1,detA1=gaussian_method(A_matrix_1, b_vector_1)
+    inverseA=gaussian_inverse(A_matrix_1)
 
     #Square root method
     A_matrix_2 = [[1,2,0],
                 [2,2,3],
                 [0,3,2]]
     b_vector_2 = [5,15,12]
-
-    resx,detA=gaussian_method(A_matrix_1, b_vector_1)
-    inverseA=gaussian_inverse(A_matrix_1)
-
-    square_root_method(A_matrix_2,b_vector_2)
+    res_x2,detA2=square_root_method(A_matrix_2,b_vector_2)
 
 
-main()
+    #Seidel's method
+    A_matrix_3=[[4,0,1,0],
+                [0,3,0,2],
+                [1,0,5,1],
+                [0,2,1,4]]
+    b_vector_3=[12,19,27,30]
+
+    epsilon=1e-4
+    res_x3=seidels_method(A_matrix_3,b_vector_3,epsilon)
+
+
+if __name__ == "__main__":
+    main()
