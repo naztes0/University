@@ -1,0 +1,16 @@
+Parallel MM size: 10
+Time of execution =  0.000095
+Parallel MM size: 100
+Time of execution =  0.005667
+Parallel MM size: 500
+Time of execution =  0.292647
+Parallel MM size: 1000
+Time of execution =  2.167750
+Parallel MM size: 1500
+Time of execution =  7.390385
+Parallel MM size: 2000
+Time of execution =  19.391577
+Parallel MM size: 2500
+Time of execution =  59.384673
+Parallel MM size: 3000
+Time of execution =  107.821384
