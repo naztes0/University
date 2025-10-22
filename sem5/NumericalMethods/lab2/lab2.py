@@ -30,63 +30,20 @@ def print_expanded_with_identity(A, E):
         print()
     print()
 
-def gaussian_inverse(A):
-    A = np.array(A, dtype=float)
-    n = len(A)
-    E = np.eye(n)
-
-    print("\n==============================")
-    print("Finding inverse matrix A^-1:")
-    print("==============================")
-    print("Initial A and E:")
-    print_expanded_with_identity(A, E)
-
-    for i in range(n):
-        # Find the main element manually
-        max_row = i
-        max_value = abs(A[i, i])
-        for row in range(i + 1, n):
-            if abs(A[row, i]) > max_value:
-                max_value = abs(A[row, i])
-                max_row = row
-
-        # Swap rows if needed
-        if max_row != i:
-            A[[i, max_row]] = A[[max_row, i]]
-            E[[i, max_row]] = E[[max_row, i]]
-            print(f"Swapped rows {i} and {max_row}")
-
-        # Normalize current row
-        pivot = A[i, i]
-        for col in range(n):
-            A[i, col] /= pivot
-            E[i, col] /= pivot
-
-        # Eliminate other rows
-        for j in range(n):
-            if j != i:
-                factor = A[j, i]
-                for col in range(n):
-                    A[j, col] -= factor * A[i, col]
-                    E[j, col] -= factor * E[i, col]
-
-        print(f"\nAfter step {i + 1}:")
-        print_expanded_with_identity(A, E)
-    
-    print("==============================")
-    print("Inverse matrix A^-1:")
-    print_matrix(E)
-    
-    return E
-
 def gaussian_method(A, b):
     A = np.array(A, dtype=float)
     b = np.array(b, dtype=float)
     n = len(b)
+    A_original=A.copy()
+    E=np.eye(n)
+    invA=np.eye(n) #inverted A
     detA=1
     detAmult=[]
     p=0 #amount of row swapping
+    formulaA="A"
+    formulab="b"
 
+    
     print ()
     print ("="*50)
     print("GAUSSIAN METHOD")
@@ -99,6 +56,8 @@ def gaussian_method(A, b):
 
     # Forward elimination
     for i in range(n):
+        P=np.eye(n)
+        M=np.eye(n) 
         print()
         print(f"Working on column {i}")
 
@@ -110,46 +69,71 @@ def gaussian_method(A, b):
                 max_value = abs(A[row, i])
                 max_row_index = row
 
-        # Swaping rows, if its necessary
-        if max_row_index != i:
-            print(f"Swap row {i} with row {max_row_index} because {max_value} is largest in column")
-            p+=1
-            temp_row = A[i].copy()
-            A[i] = A[max_row_index]
-            A[max_row_index] = temp_row
-
-            temp_b = b[i]
-            b[i] = b[max_row_index]
-            b[max_row_index] = temp_b
-
+        formulaA=f"P{i+1}"+formulaA
+        formulab=f"P{i+1}"+formulab
+        if max_row_index!=i:
             print_expandedmatrix(A,b)
-        # Nulling elements below main one
-        for j in range(i+1, n):
-            factor = A[j, i] / A[i, i]
-            print(f"Eliminate element A[{j},{i}] using factor = {factor:.3f}")
-            for k in range(i, n):
-                A[j, k] = A[j, k] - factor * A[i, k]
-            b[j] = b[j] - factor * b[i]
+            p+=1
+            temp_row=P[i].copy()
+            P[i]=P[max_row_index]
+            P[max_row_index]=temp_row
+            A=P@A
+            b=P@b
+            invA=P@invA
+            print()
+            print("-"*30)
+            print(f"{formulaA} = {formulab}")
+            print("-"*30)
+            print(f"\nMatrix P{i+1}")
+            print_matrix(P)
+            print_expandedmatrix(A,b)
 
-        #Calculating det A
+        for j in range (i+1,n):
+            M[j,i] = -A[j,i]/A[i,i]
+            if abs(M[j, i]) < 1e-10:
+                M[j, i] = 0.0
+        print(f"\nMatrix M{i+1}:")
+        print_matrix(M)
+        
+        #Multiplicate A,b with M_i+1 matrix
+        A=M@A
+        b=M@b
+        invA=M@invA
+         #Calculating det A
         detA*=A[i,i]
         detAmult.append(A[i,i])
 
-
-        print("Matrix after elimination step:")
+        print("Matrix after elimination step:\n")
+        formulaA=f"M{i+1}"+formulaA
+        formulab=f"M{i+1}"+formulab
+        print("-"*30)
+        print(f"{formulaA} = {formulab}")
+        print("-"*30)
         print_expandedmatrix(A,b)
-        print("-----------------------------")
+        print("-"*30)
     #Result of det A
     detA*=(-1)**p
 
-    # Back substitution
-    x = np.zeros(n)
-    for i in range(n-1, -1, -1):
-        sum_ax = 0
-        for j in range(i+1, n):
-            sum_ax += A[i, j] * x[j]
-        x[i] = (b[i] - sum_ax) / A[i, i]
+    # print("Triangle A matrix:\n")
+    # print_matrix(A)
+    # print_vector(b)
+    # print("")
+    # print_matrix(invA)
+     # Back substitution
+    x = np.zeros(n) 
+    for i in range(n-1, -1, -1): 
+        sum_ax = 0 
+        for j in range(i+1, n): 
+            sum_ax += A[i, j] * x[j] 
+        x[i] = (b[i] - sum_ax) / A[i, i] 
         print(f"Back substitution: x[{i}] = ({b[i]:.3f} - {sum_ax:.3f}) / {A[i,i]:.3f} = {x[i]:.3f}")
+
+    for col in range(n): 
+        for i in range(n-1, -1, -1):  
+            sum_ax = 0
+            for j in range(i+1, n):
+                sum_ax += A[i, j] * invA[j, col]  
+            invA[i, col] = (invA[i, col] - sum_ax) / A[i, i]
 
     print("-----------------------------")
     print("Solution vector x:")
@@ -161,8 +145,13 @@ def gaussian_method(A, b):
     print(f"det A: (-1)^{p} * " + " * ".join(det_str))
 
     print(f"Det A:{detA}")
-    print (f"Calculating det A with NumPy: {np.round(np.linalg.det(A))}")
-    return x,detA
+    print (f"Calculating det A with NumPy: {np.round(np.linalg.det(A_original))}")
+    print("Inverted A:\n")
+    print_matrix(invA)
+    if np.allclose(A_original @ invA, E, atol=1e-10): print("A*A^-1=E. The inveted A matrix is correct")
+    else: print("The inveted A matrix is NOT correct")
+    return x,detA,invA
+
 
 def square_root_method(A, b):
     A = np.array(A, dtype=float)
@@ -316,8 +305,7 @@ def main():
                 [2, 5, 1, 0],
                 [0, 1, 4, 2]]
     b_vector_1 = [20, 36, 15, 22]
-    resx1,detA1=gaussian_method(A_matrix_1, b_vector_1)
-    inverseA=gaussian_inverse(A_matrix_1)
+    resx1,detA1, invA=gaussian_method(A_matrix_1, b_vector_1)
 
     #Square root method
     A_matrix_2 = [[1,2,0],
