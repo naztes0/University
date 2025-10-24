@@ -1,0 +1,25 @@
+Parallel Gauss algorithm for solving linear systems
+Gauss system size: 10
+
+ Time of execution: 0.000197
+Gauss system size: 100
+
+ Time of execution: 0.001142
+Gauss system size: 500
+
+ Time of execution: 0.115074
+Gauss system size: 1000
+
+ Time of execution: 0.898956
+Gauss system size: 1500
+
+ Time of execution: 3.005927
+Gauss system size: 2000
+
+ Time of execution: 7.283873
+Gauss system size: 2500
+
+ Time of execution: 14.158676
+Gauss system size: 3000
+
+ Time of execution: 24.561284
