@@ -23,7 +23,36 @@ def read_img():
     return x, y
 
 
+def save_image(matrix, filename="output.bmp"):
+    #make folder if not exists
+    dir_res= "results"
+    if os.path.exists(dir_res):
+        os.mkdir(dir_res)
+    
+    if not filename.endswith(".bmp"):
+        filename=filename + ".bmp"
+    save_path = os.path.join(dir_res,filename)
+
+    #Normalizing matrix to [0,1] values
+    normalized = (matrix - matrix.min()) / (matrix.max() - matrix.min())
+    # Then scale to 0-255 range(as unit8 values)
+    img = (normalized * 255).astype('uint8')
+    # Save the img
+    cv2.imwrite(save_path, img)
+    
+    # Display the image
+    cv2.imshow("Result image", img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
+    return img
+
 
 def main():
     #Firstly init and fill X, Y matrix from imgs
     X,Y= read_img
+
+    save_image(Y,"Y_orig")
+    result={}
+
+    
