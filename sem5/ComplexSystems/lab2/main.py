@@ -54,11 +54,13 @@ def save_image(matrix, filename="output.bmp"):
 def find_operator(X,Y,pim_func,V=None,eps=1e-6, delta=1000):
     if V is None:
         V = np.zeros((Y.shape[0], X.shape[0]))
-    
+    print("\nFinding operator...\n")
+    print("Finding pseudo-inveresed X")
     X_pi=pim_func(X,eps,delta)
 
-    if not (pim.isPseudoInversed(X,X_pi)): return
+    if not (pim.isPseudoInversed(X,X_pi)): return None
 
+    print("Finding A=YX+ + VZ^T(X^T)")
     #General formula: A=YX+ + VZ^T(X^T)
     #Find Z(X^T)=I_m-XX+
     Z=np.identity(X.shape[0])-X@X_pi
@@ -73,20 +75,31 @@ def applyOperator(X,A):
 def main():
     #Firstly init and fill X, Y matrix from imgs
     X,Y= read_img()
-    # print("\nX mtrix:\n")
-    # for i in range (X.shape[0]):
-    #     for j in range(X.shape[1]):
-    #         print(X[i,j])
 
     save_image(Y,"Y_orig")
 
     #Moore-Penrose method
+    print("#"*20)
+    print("MOORE-PENROSE")
+    print("#"*20)
     A_MP=find_operator(X,Y,pim.pim_MoorePenrose, eps=1e-6)
-    Y_MP=applyOperator(X,A_MP)
+    if A_MP is not None:
+        Y_MP=applyOperator(X,A_MP)
+        save_image(Y_MP,"MP_result")
+    else:
+            print("Failed to compute Moore-Penrose operator")
 
+    print("#"*20)
+    print("GREVILLES METHOD")
+    print("#"*20)
     A_MG=find_operator(X,Y, pim.pim_Grevilles, eps=1e-6)
-    save_image(Y_MP,"MP_result")
-    
+    if A_MG is not None:
+        Y_MG=applyOperator(X,A_MG)
+        save_image(Y_MG, "Greville's method")
+    else:
+        print("Failed to compute Greville operator")
+
+
 if __name__ == "__main__":
     main()
 

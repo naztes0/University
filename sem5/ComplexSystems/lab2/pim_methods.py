@@ -4,7 +4,7 @@ import numpy as np
 ##PSEUDO INVERS MATRIX METHODS##
 # pi - pseudo inversed
 
-def isPseudoInversed(A,A_pi, rtol=1e-3, atol=1e-1) -> bool:  # Послабили допуски
+def isPseudoInversed(A,A_pi, rtol=1e-3, atol=1e-1) -> bool:
     #Check PIM properties
     #1. A * A+ * A = A
     cond1 = np.allclose(A @ A_pi @ A, A, rtol=rtol, atol=atol)
@@ -56,7 +56,40 @@ def pim_MoorePenrose(A,eps=1e-6, delta=100):
         delta=delta/2
         A0=A_pim
 
-def pim_Grevilles(A, eps=1e-6,delta=None):
-    m,n=A.shape
+def pim_Grevilles(A, eps, delta=None):
+   
+    A = np.array(A, dtype=float)
+    m, n = A.shape
 
-    
+    a1 = A[0].reshape(-1, 1) 
+    denom = a1.T@a1
+    if np.abs(denom) < eps:
+        A_plus = np.zeros((n, 1))
+    else:
+        A_plus = np.dot(a1, 1 / denom)  # (a1) / (a1^T a1)
+    current_A = np.array([A[0]])
+
+    for i in range(1, m):
+        a = A[i, :].reshape(-1, 1)     
+        Z = np.identity(current_A.shape[1]) - A_plus@current_A
+        aTZa = (a.T@Z@a)[0, 0]
+
+        if aTZa > eps:
+            num1 = Z@a@ a.T@ A_plus
+            left = A_plus - num1 / aTZa
+            right = np.dot(Z, a) / aTZa
+            A_plus = np.hstack((left, right))
+        else:
+            R = A_plus@A_plus.T
+            denom = 1 + (a.T@R@ a)[0, 0]
+            num2 = R@a@a.T@A_plus
+            left = A_plus - num2 / denom
+            right = R@a / denom
+            A_plus = np.hstack((left, right))
+
+        current_A = np.vstack([current_A, A[i]])
+
+    return A_plus
+
+
+
