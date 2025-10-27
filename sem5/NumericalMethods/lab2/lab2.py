@@ -30,6 +30,56 @@ def print_expanded_with_identity(A, E):
         print()
     print()
 
+def invA_fullcalc(A, P_all, M_all, n):
+    print()
+    print("=" * 50)
+    print("FULL CALCULATION OF INVERSE MATRIX")
+    print("=" * 50)
+    print()
+
+    formula = "E"
+    invA = np.eye(n) 
+    A_work = A.copy() 
+
+    print("\nFORWARD ELIMINATION")
+    
+    for i in range(n):
+        print("#" * 30)
+        print(f"Step {i+1}:\n")
+        print(f"P{i+1}:")
+        print_matrix(P_all[i])
+        print(f"M{i+1}:")
+        print_matrix(M_all[i])
+        
+        formula = f"M{i+1} * P{i+1} * " + formula
+        print(f"invA = {formula}\n")
+    
+        invA = M_all[i] @ P_all[i] @ invA
+        A_work = M_all[i] @ P_all[i] @ A_work
+        
+        print("Result of applying M and P on invA:")
+        print_matrix(invA)
+
+    print("\nBACK SUBSTITUTION PHASE")
+    print("=" * 50)
+    print("Upper triangular matrix after forward elimination:")
+    print_matrix(A_work)
+    print("\nMatrix invA after forward elimination (before back substitution):")
+    print_matrix(invA)
+    print("=" * 50)
+    
+    for col in range(n):
+        print(f"\nProcessing column {col}:")
+        for i in range(n-1, -1, -1):
+            sum_ax = 0
+            for j in range(i+1, n):
+                sum_ax += A_work[i, j] * invA[j, col]
+            invA[i, col] = (invA[i, col] - sum_ax) / A_work[i, i]
+            print(f"invA[{i},{col}] = ({invA[i, col] * A_work[i, i] + sum_ax:.3f} - {sum_ax:.3f}) / {A_work[i,i]:.3f} = {invA[i, col]:.3f}")
+        print("-" * 30)
+
+    print("=" * 50)
+
 def gaussian_method(A, b):
     A = np.array(A, dtype=float)
     b = np.array(b, dtype=float)
@@ -43,6 +93,9 @@ def gaussian_method(A, b):
     formulaA="A"
     formulab="b"
 
+    #arrays for detailed printig out of calculation inversed A
+    M_all = []  
+    P_all = []
     
     print ()
     print ("="*50)
@@ -87,7 +140,7 @@ def gaussian_method(A, b):
             print(f"\nMatrix P{i+1}")
             print_matrix(P)
             print_expandedmatrix(A,b)
-
+        P_all.append(P.copy())
         for j in range (i+1,n):
             M[j,i] = -A[j,i]/A[i,i]
             if abs(M[j, i]) < 1e-10:
@@ -111,8 +164,10 @@ def gaussian_method(A, b):
         print("-"*30)
         print_expandedmatrix(A,b)
         print("-"*30)
+        M_all.append(M.copy())
     #Result of det A
     detA*=(-1)**p
+
 
     # print("Triangle A matrix:\n")
     # print_matrix(A)
@@ -146,6 +201,7 @@ def gaussian_method(A, b):
 
     print(f"Det A:{detA}")
     print (f"Calculating det A with NumPy: {np.round(np.linalg.det(A_original))}")
+    invA_fullcalc(A_original, P_all, M_all, n)
     print("Inverted A:\n")
     print_matrix(invA)
     if np.allclose(A_original @ invA, E, atol=1e-10): print("A*A^-1=E. The inveted A matrix is correct")
