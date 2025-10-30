@@ -95,7 +95,7 @@ def main():
     A_MG=find_operator(X,Y, pim.pim_Grevilles, eps=1e-6)
     if A_MG is not None:
         Y_MG=applyOperator(X,A_MG)
-        save_image(Y_MG, "Greville's method")
+        save_image(Y_MG, "Grevilles_result")
     else:
         print("Failed to compute Greville operator")
 
