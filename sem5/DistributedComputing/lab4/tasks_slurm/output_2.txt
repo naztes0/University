@@ -1,0 +1,22 @@
+Parallel bubble sort program
+
+Chosen data size: 10
+Time of execution: 0.000135
+
+Chosen data size: 100
+Time of execution: 0.000039
+
+Chosen data size: 10000
+Time of execution: 0.063212
+
+Chosen data size: 20000
+Time of execution: 0.249450
+
+Chosen data size: 30000
+Time of execution: 0.559761
+
+Chosen data size: 40000
+Time of execution: 0.997838
+
+Chosen data size: 50000
+Time of execution: 1.556872

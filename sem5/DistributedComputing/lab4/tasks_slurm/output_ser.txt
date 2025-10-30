@@ -1,0 +1,57 @@
+Serial bubble sort program
+
+Chosen data size: 10
+
+Serial bubble sort:
+Time of execution: 0.000001
+
+STD sort:
+Time of execution lib alg: 0.000001
+
+Chosen data size: 100
+
+Serial bubble sort:
+Time of execution: 0.000028
+
+STD sort:
+Time of execution lib alg: 0.000008
+
+Chosen data size: 10000
+
+Serial bubble sort:
+Time of execution: 0.171292
+
+STD sort:
+Time of execution lib alg: 0.001489
+
+Chosen data size: 20000
+
+Serial bubble sort:
+Time of execution: 0.685001
+
+STD sort:
+Time of execution lib alg: 0.003217
+
+Chosen data size: 30000
+
+Serial bubble sort:
+Time of execution: 1.553280
+
+STD sort:
+Time of execution lib alg: 0.004983
+
+Chosen data size: 40000
+
+Serial bubble sort:
+Time of execution: 2.744446
+
+STD sort:
+Time of execution lib alg: 0.006720
+
+Chosen data size: 50000
+
+Serial bubble sort:
+Time of execution: 4.366341
+
+STD sort:
+Time of execution lib alg: 0.008859
