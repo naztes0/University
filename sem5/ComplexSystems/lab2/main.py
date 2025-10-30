@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import pim_methods as pim
 import os 
+import comparison
 
 
 #Function for transforming imgs into arrays
@@ -98,6 +99,9 @@ def main():
         save_image(Y_MG, "Grevilles_result")
     else:
         print("Failed to compute Greville operator")
+
+    comparison.compare_and_visualize(X, Y, pim.pim_MoorePenrose, pim.pim_Grevilles, eps=1e-6, delta=1000)
+
 
 
 if __name__ == "__main__":
