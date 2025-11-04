@@ -1,0 +1,395 @@
+Matrix minors:
+ |A1|=4.0
+ |A2|=11.0
+ |A3|=28.0
+ |A4|=48.0
+
+Conditions for power method is satisfied!
+
+Max ||A||= 6
+
+B = ||A||E - A :
+ [[ 2. -1.  0. -1.]
+ [-1.  3. -2.  0.]
+ [ 0. -2.  2.  0.]
+ [-1.  0.  0.  4.]]
+====== POWER METHOD ======
+Initial vector x0: [1. 1. 1. 1.]
+Eps: 0.0001
+Maximum iterations: 100
+------------------------------
+
+Iteration 1:
+A * x = [0. 0. 0. 3.]
+λ_new = x_new[3] / x[3] = 3.000
+||x_new|| = 3.000
+Normalized vector e1 = [0. 0. 0. 1.]
+
+Iteration 2:
+A * x = [-1.  0.  0.  4.]
+λ_new = x_new[3] / x[3] = 4.000
+||x_new|| = 4.123
+Normalized vector e2 = [-0.243  0.     0.     0.97 ]
+
+Iteration 3:
+A * x = [-1.455  0.243  0.     4.123]
+λ_new = x_new[3] / x[3] = 4.250
+||x_new|| = 4.379
+Normalized vector e3 = [-0.332  0.055  0.     0.942]
+
+Iteration 4:
+A * x = [-1.662  0.498 -0.111  4.098]
+λ_new = x_new[3] / x[3] = 4.353
+||x_new|| = 4.452
+Normalized vector e4 = [-0.373  0.112 -0.025  0.921]
+
+Iteration 5:
+A * x = [-1.779  0.759 -0.274  4.056]
+λ_new = x_new[3] / x[3] = 4.405
+||x_new|| = 4.502
+Normalized vector e5 = [-0.395  0.169 -0.061  0.901]
+
+Iteration 6:
+A * x = [-1.86   1.023 -0.459  3.999]
+λ_new = x_new[3] / x[3] = 4.439
+||x_new|| = 4.551
+Normalized vector e6 = [-0.409  0.225 -0.101  0.879]
+
+Iteration 7:
+A * x = [-1.921  1.284 -0.651  3.924]
+λ_new = x_new[3] / x[3] = 4.465
+||x_new|| = 4.600
+Normalized vector e7 = [-0.418  0.279 -0.142  0.853]
+
+Iteration 8:
+A * x = [-1.967  1.538 -0.842  3.83 ]
+λ_new = x_new[3] / x[3] = 4.490
+||x_new|| = 4.649
+Normalized vector e8 = [-0.423  0.331 -0.181  0.824]
+
+Iteration 9:
+A * x = [-2.001  1.778 -1.024  3.718]
+λ_new = x_new[3] / x[3] = 4.514
+||x_new|| = 4.695
+Normalized vector e9 = [-0.426  0.379 -0.218  0.792]
+
+Iteration 10:
+A * x = [-2.023  1.999 -1.194  3.594]
+λ_new = x_new[3] / x[3] = 4.538
+||x_new|| = 4.736
+Normalized vector e10 = [-0.427  0.422 -0.252  0.759]
+
+Iteration 11:
+A * x = [-2.035  2.197 -1.348  3.463]
+λ_new = x_new[3] / x[3] = 4.563
+||x_new|| = 4.773
+Normalized vector e11 = [-0.426  0.46  -0.282  0.726]
+
+Iteration 12:
+A * x = [-2.039  2.372 -1.486  3.329]
+λ_new = x_new[3] / x[3] = 4.588
+||x_new|| = 4.803
+Normalized vector e12 = [-0.424  0.494 -0.309  0.693]
+
+Iteration 13:
+A * x = [-2.036  2.525 -1.606  3.196]
+λ_new = x_new[3] / x[3] = 4.612
+||x_new|| = 4.829
+Normalized vector e13 = [-0.422  0.523 -0.333  0.662]
+
+Iteration 14:
+A * x = [-2.028  2.656 -1.711  3.069]
+λ_new = x_new[3] / x[3] = 4.637
+||x_new|| = 4.849
+Normalized vector e14 = [-0.418  0.548 -0.353  0.633]
+
+Iteration 15:
+A * x = [-2.017  2.767 -1.801  2.95 ]
+λ_new = x_new[3] / x[3] = 4.661
+||x_new|| = 4.865
+Normalized vector e15 = [-0.415  0.569 -0.37   0.606]
+
+Iteration 16:
+A * x = [-2.004  2.861 -1.878  2.84 ]
+λ_new = x_new[3] / x[3] = 4.684
+||x_new|| = 4.878
+Normalized vector e16 = [-0.411  0.587 -0.385  0.582]
+
+Iteration 17:
+A * x = [-1.991  2.94  -1.943  2.74 ]
+λ_new = x_new[3] / x[3] = 4.706
+||x_new|| = 4.888
+Normalized vector e17 = [-0.407  0.602 -0.398  0.561]
+
+Iteration 18:
+A * x = [-1.977  3.007 -1.998  2.649]
+λ_new = x_new[3] / x[3] = 4.727
+||x_new|| = 4.895
+Normalized vector e18 = [-0.404  0.614 -0.408  0.541]
+
+Iteration 19:
+A * x = [-1.963  3.063 -2.045  2.569]
+λ_new = x_new[3] / x[3] = 4.746
+||x_new|| = 4.901
+Normalized vector e19 = [-0.401  0.625 -0.417  0.524]
+
+Iteration 20:
+A * x = [-1.95   3.11  -2.085  2.497]
+λ_new = x_new[3] / x[3] = 4.764
+||x_new|| = 4.905
+Normalized vector e20 = [-0.398  0.634 -0.425  0.509]
+
+Iteration 21:
+A * x = [-1.938  3.15  -2.118  2.434]
+λ_new = x_new[3] / x[3] = 4.781
+||x_new|| = 4.908
+Normalized vector e21 = [-0.395  0.642 -0.432  0.496]
+
+Iteration 22:
+A * x = [-1.928  3.183 -2.147  2.379]
+λ_new = x_new[3] / x[3] = 4.796
+||x_new|| = 4.911
+Normalized vector e22 = [-0.393  0.648 -0.437  0.484]
+
+Iteration 23:
+A * x = [-1.918  3.212 -2.171  2.33 ]
+λ_new = x_new[3] / x[3] = 4.810
+||x_new|| = 4.912
+Normalized vector e23 = [-0.39   0.654 -0.442  0.474]
+
+Iteration 24:
+A * x = [-1.909  3.235 -2.191  2.288]
+λ_new = x_new[3] / x[3] = 4.823
+||x_new|| = 4.914
+Normalized vector e24 = [-0.388  0.658 -0.446  0.466]
+
+Iteration 25:
+A * x = [-1.901  3.256 -2.209  2.251]
+λ_new = x_new[3] / x[3] = 4.834
+||x_new|| = 4.915
+Normalized vector e25 = [-0.387  0.662 -0.449  0.458]
+
+Iteration 26:
+A * x = [-1.894  3.273 -2.224  2.218]
+λ_new = x_new[3] / x[3] = 4.845
+||x_new|| = 4.916
+Normalized vector e26 = [-0.385  0.666 -0.452  0.451]
+
+Iteration 27:
+A * x = [-1.888  3.287 -2.236  2.19 ]
+λ_new = x_new[3] / x[3] = 4.854
+||x_new|| = 4.916
+Normalized vector e27 = [-0.384  0.669 -0.455  0.446]
+
+Iteration 28:
+A * x = [-1.882  3.3   -2.247  2.166]
+λ_new = x_new[3] / x[3] = 4.862
+||x_new|| = 4.917
+Normalized vector e28 = [-0.383  0.671 -0.457  0.441]
+
+Iteration 29:
+A * x = [-1.877  3.31  -2.256  2.145]
+λ_new = x_new[3] / x[3] = 4.869
+||x_new|| = 4.917
+Normalized vector e29 = [-0.382  0.673 -0.459  0.436]
+
+Iteration 30:
+A * x = [-1.873  3.319 -2.264  2.127]
+λ_new = x_new[3] / x[3] = 4.875
+||x_new|| = 4.917
+Normalized vector e30 = [-0.381  0.675 -0.46   0.433]
+
+Iteration 31:
+A * x = [-1.87   3.327 -2.271  2.111]
+λ_new = x_new[3] / x[3] = 4.881
+||x_new|| = 4.917
+Normalized vector e31 = [-0.38   0.677 -0.462  0.429]
+
+Iteration 32:
+A * x = [-1.866  3.334 -2.277  2.098]
+λ_new = x_new[3] / x[3] = 4.886
+||x_new|| = 4.917
+Normalized vector e32 = [-0.38   0.678 -0.463  0.427]
+
+Iteration 33:
+A * x = [-1.864  3.339 -2.282  2.086]
+λ_new = x_new[3] / x[3] = 4.890
+||x_new|| = 4.918
+Normalized vector e33 = [-0.379  0.679 -0.464  0.424]
+
+Iteration 34:
+A * x = [-1.861  3.344 -2.286  2.076]
+λ_new = x_new[3] / x[3] = 4.893
+||x_new|| = 4.918
+Normalized vector e34 = [-0.378  0.68  -0.465  0.422]
+
+Iteration 35:
+A * x = [-1.859  3.348 -2.29   2.067]
+λ_new = x_new[3] / x[3] = 4.897
+||x_new|| = 4.918
+Normalized vector e35 = [-0.378  0.681 -0.466  0.42 ]
+
+Iteration 36:
+A * x = [-1.857  3.352 -2.293  2.059]
+λ_new = x_new[3] / x[3] = 4.900
+||x_new|| = 4.918
+Normalized vector e36 = [-0.378  0.682 -0.466  0.419]
+
+Iteration 37:
+A * x = [-1.856  3.355 -2.296  2.052]
+λ_new = x_new[3] / x[3] = 4.902
+||x_new|| = 4.918
+Normalized vector e37 = [-0.377  0.682 -0.467  0.417]
+
+Iteration 38:
+A * x = [-1.854  3.358 -2.298  2.047]
+λ_new = x_new[3] / x[3] = 4.904
+||x_new|| = 4.918
+Normalized vector e38 = [-0.377  0.683 -0.467  0.416]
+
+Iteration 39:
+A * x = [-1.853  3.36  -2.3    2.042]
+λ_new = x_new[3] / x[3] = 4.906
+||x_new|| = 4.918
+Normalized vector e39 = [-0.377  0.683 -0.468  0.415]
+
+Iteration 40:
+A * x = [-1.852  3.362 -2.302  2.038]
+λ_new = x_new[3] / x[3] = 4.908
+||x_new|| = 4.918
+Normalized vector e40 = [-0.377  0.684 -0.468  0.414]
+
+Iteration 41:
+A * x = [-1.851  3.364 -2.303  2.034]
+λ_new = x_new[3] / x[3] = 4.909
+||x_new|| = 4.918
+Normalized vector e41 = [-0.376  0.684 -0.468  0.414]
+
+Iteration 42:
+A * x = [-1.85   3.365 -2.305  2.031]
+λ_new = x_new[3] / x[3] = 4.910
+||x_new|| = 4.918
+Normalized vector e42 = [-0.376  0.684 -0.469  0.413]
+
+Iteration 43:
+A * x = [-1.85   3.366 -2.306  2.028]
+λ_new = x_new[3] / x[3] = 4.911
+||x_new|| = 4.918
+Normalized vector e43 = [-0.376  0.685 -0.469  0.412]
+
+Iteration 44:
+A * x = [-1.849  3.368 -2.307  2.026]
+λ_new = x_new[3] / x[3] = 4.912
+||x_new|| = 4.918
+Normalized vector e44 = [-0.376  0.685 -0.469  0.412]
+
+Iteration 45:
+A * x = [-1.849  3.368 -2.308  2.024]
+λ_new = x_new[3] / x[3] = 4.913
+||x_new|| = 4.918
+Normalized vector e45 = [-0.376  0.685 -0.469  0.411]
+
+Iteration 46:
+A * x = [-1.848  3.369 -2.308  2.022]
+λ_new = x_new[3] / x[3] = 4.914
+||x_new|| = 4.918
+Normalized vector e46 = [-0.376  0.685 -0.469  0.411]
+
+Iteration 47:
+A * x = [-1.848  3.37  -2.309  2.02 ]
+λ_new = x_new[3] / x[3] = 4.914
+||x_new|| = 4.918
+Normalized vector e47 = [-0.376  0.685 -0.47   0.411]
+
+Iteration 48:
+A * x = [-1.848  3.371 -2.31   2.019]
+λ_new = x_new[3] / x[3] = 4.915
+||x_new|| = 4.918
+Normalized vector e48 = [-0.376  0.685 -0.47   0.411]
+
+Iteration 49:
+A * x = [-1.847  3.371 -2.31   2.018]
+λ_new = x_new[3] / x[3] = 4.915
+||x_new|| = 4.918
+Normalized vector e49 = [-0.376  0.685 -0.47   0.41 ]
+
+Iteration 50:
+A * x = [-1.847  3.372 -2.31   2.017]
+λ_new = x_new[3] / x[3] = 4.915
+||x_new|| = 4.918
+Normalized vector e50 = [-0.376  0.686 -0.47   0.41 ]
+
+Iteration 51:
+A * x = [-1.847  3.372 -2.311  2.016]
+λ_new = x_new[3] / x[3] = 4.916
+||x_new|| = 4.918
+Normalized vector e51 = [-0.376  0.686 -0.47   0.41 ]
+
+Iteration 52:
+A * x = [-1.847  3.372 -2.311  2.015]
+λ_new = x_new[3] / x[3] = 4.916
+||x_new|| = 4.918
+Normalized vector e52 = [-0.376  0.686 -0.47   0.41 ]
+
+Iteration 53:
+A * x = [-1.847  3.373 -2.311  2.015]
+λ_new = x_new[3] / x[3] = 4.916
+||x_new|| = 4.918
+Normalized vector e53 = [-0.375  0.686 -0.47   0.41 ]
+
+Iteration 54:
+A * x = [-1.846  3.373 -2.312  2.014]
+λ_new = x_new[3] / x[3] = 4.917
+||x_new|| = 4.918
+Normalized vector e54 = [-0.375  0.686 -0.47   0.41 ]
+
+Iteration 55:
+A * x = [-1.846  3.373 -2.312  2.014]
+λ_new = x_new[3] / x[3] = 4.917
+||x_new|| = 4.918
+Normalized vector e55 = [-0.375  0.686 -0.47   0.409]
+
+Iteration 56:
+A * x = [-1.846  3.373 -2.312  2.013]
+λ_new = x_new[3] / x[3] = 4.917
+||x_new|| = 4.918
+Normalized vector e56 = [-0.375  0.686 -0.47   0.409]
+
+Iteration 57:
+A * x = [-1.846  3.373 -2.312  2.013]
+λ_new = x_new[3] / x[3] = 4.917
+||x_new|| = 4.918
+Normalized vector e57 = [-0.375  0.686 -0.47   0.409]
+
+Iteration 58:
+A * x = [-1.846  3.373 -2.312  2.013]
+λ_new = x_new[3] / x[3] = 4.917
+||x_new|| = 4.918
+Normalized vector e58 = [-0.375  0.686 -0.47   0.409]
+
+Iteration 59:
+A * x = [-1.846  3.374 -2.312  2.012]
+λ_new = x_new[3] / x[3] = 4.917
+||x_new|| = 4.918
+Normalized vector e59 = [-0.375  0.686 -0.47   0.409]
+
+Iteration 60:
+A * x = [-1.846  3.374 -2.312  2.012]
+λ_new = x_new[3] / x[3] = 4.917
+||x_new|| = 4.918
+Normalized vector e60 = [-0.375  0.686 -0.47   0.409]
+
+
+------------------------------
+Converged after 60 iterations.
+Dominant eigenvalue λ ≈ 4.9173
+==============================
+
+max_lam(B)= 4.917286195679672
+
+min_lam(A)=||A||-max_lam_B
+
+min_lam(A)=6-4.917286195679672
+
+min_lam(A)=1.0827138043203277
+
