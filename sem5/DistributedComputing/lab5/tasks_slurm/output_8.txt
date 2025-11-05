@@ -1,0 +1,22 @@
+Parallel Floyd algorithm 
+
+Chosen size: 10 
+Time of execution: 0.043886
+
+Chosen size: 500 
+Time of execution: 0.217067
+
+Chosen size: 600 
+Time of execution: 0.372875
+
+Chosen size: 700 
+Time of execution: 0.589356
+
+Chosen size: 800 
+Time of execution: 0.875121
+
+Chosen size: 900 
+Time of execution: 1.245631
+
+Chosen size: 1000 
+Time of execution: 1.700243
