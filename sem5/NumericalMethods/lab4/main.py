@@ -72,11 +72,11 @@ def newton_interpolation(func, nodes_num, a,b):
 
 def newton_polynomial_string(nodes, coef):
     n = len(coef)
-    terms = [f"{coef[0]:.2f}"]
+    terms = [f"{coef[0]:.4f}"]
     for i in range(1, n):
-        term = f"{coef[i]:.2f}"
+        term = f"{coef[i]:.4f}"
         for j in range(i):
-            term += f"*(x - {nodes[j]:.3f})"
+            term += f"*(x - {nodes[j]:.4f})"
         terms.append(term)
     poly_str = " +\n".join(terms)
     return poly_str
@@ -230,6 +230,8 @@ def inverse_interpolation(func, nodes_num, a, b):
     table_inv = divided_differences(y_nodes, x_nodes)
     coef_inv = table_inv[0, 2:]
 
+    print(f"\nP_{nodes_num-1}:")
+    print(newton_polynomial_string(y_nodes,coef_inv))
     root = newton_polynomial_eval(y_nodes, coef_inv, 0)
 
     print("\n=========== Result (Inverse) ==========")
