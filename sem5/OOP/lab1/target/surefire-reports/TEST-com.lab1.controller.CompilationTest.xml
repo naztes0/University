@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.lab1.model.InstrumentalTest" time="0.124" tests="9" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.lab1.controller.CompilationTest" time="0.106" tests="12" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -56,13 +56,16 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testInheritedValidation" classname="com.lab1.model.InstrumentalTest" time="0.0"/>
-  <testcase name="testToString" classname="com.lab1.model.InstrumentalTest" time="0.0"/>
-  <testcase name="testVariousInstruments" classname="com.lab1.model.InstrumentalTest" time="0.01"/>
-  <testcase name="testValidInstrumentalCreation" classname="com.lab1.model.InstrumentalTest" time="0.0"/>
-  <testcase name="testInvalidInstrument(String)[1]" classname="com.lab1.model.InstrumentalTest" time="0.049"/>
-  <testcase name="testInvalidInstrument(String)[2]" classname="com.lab1.model.InstrumentalTest" time="0.001"/>
-  <testcase name="testInvalidInstrument(String)[3]" classname="com.lab1.model.InstrumentalTest" time="0.001"/>
-  <testcase name="testInvalidInstrument(String)[4]" classname="com.lab1.model.InstrumentalTest" time="0.001"/>
-  <testcase name="testInvalidInstrument(String)[5]" classname="com.lab1.model.InstrumentalTest" time="0.001"/>
+  <testcase name="testCompilationCreation" classname="com.lab1.controller.CompilationTest" time="0.034"/>
+  <testcase name="testFindByDuration" classname="com.lab1.controller.CompilationTest" time="0.0"/>
+  <testcase name="testFindByDurationInvalidRange" classname="com.lab1.controller.CompilationTest" time="0.006"/>
+  <testcase name="testAddComposition" classname="com.lab1.controller.CompilationTest" time="0.001"/>
+  <testcase name="testRemoveComposition" classname="com.lab1.controller.CompilationTest" time="0.002"/>
+  <testcase name="testCalculateTotalDuration" classname="com.lab1.controller.CompilationTest" time="0.0"/>
+  <testcase name="testSortByGenreSameGenre" classname="com.lab1.controller.CompilationTest" time="0.002"/>
+  <testcase name="testCalculateTotalDurationEmpty" classname="com.lab1.controller.CompilationTest" time="0.001"/>
+  <testcase name="testSortByGenre" classname="com.lab1.controller.CompilationTest" time="0.001"/>
+  <testcase name="testFindByDurationNoResults" classname="com.lab1.controller.CompilationTest" time="0.001"/>
+  <testcase name="testGetPlaylistDefensiveCopy" classname="com.lab1.controller.CompilationTest" time="0.002"/>
+  <testcase name="testAddNullComposition" classname="com.lab1.controller.CompilationTest" time="0.001"/>
 </testsuite>
