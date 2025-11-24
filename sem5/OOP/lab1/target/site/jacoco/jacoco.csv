@@ -1,9 +1,9 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-lab1,com.lab1.util,CompilationFileManager,354,0,28,0,56,0,20,0,5,0
-lab1,com.lab1.util,CompilationsManager,332,0,40,0,82,0,28,0,8,0
+lab1,com.lab1.util,CompilationFileManager,19,335,6,22,8,48,7,13,1,4
+lab1,com.lab1.util,CompilationsManager,35,297,11,29,11,71,11,17,0,8
 lab1,com.lab1,Main,476,0,37,0,169,0,38,0,13,0
 lab1,com.lab1.model,Instrumental,0,64,0,4,0,9,0,6,0,4
 lab1,com.lab1.model,MusicComposition,0,96,0,18,0,23,0,16,0,7
 lab1,com.lab1.model,Remix,5,76,2,6,1,12,2,7,0,5
 lab1,com.lab1.model,Song,0,28,0,0,0,6,0,4,0,4
-lab1,com.lab1.controller,Compilation,191,0,16,0,37,0,18,0,10,0
+lab1,com.lab1.controller,Compilation,0,191,0,16,0,37,0,18,0,10
