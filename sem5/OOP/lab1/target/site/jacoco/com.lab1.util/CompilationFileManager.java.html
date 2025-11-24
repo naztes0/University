@@ -14,90 +14,90 @@ import java.util.List;
 
     // Method for saving to file
     public static void saveToFile(Compilation compilation, String filename) throws IOException {
-<span class="nc" id="L17">        File folder = new File(AppConstants.COMPILATION_FOLDER);</span>
-<span class="nc bnc" id="L18" title="All 2 branches missed.">        if (!folder.exists()) {</span>
+<span class="fc" id="L17">        File folder = new File(AppConstants.COMPILATION_FOLDER);</span>
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if (!folder.exists()) {</span>
 <span class="nc" id="L19">            folder.mkdirs();</span>
         }
-<span class="nc bnc" id="L21" title="All 2 branches missed.">        if (!filename.endsWith(AppConstants.FILE_EXTENSION)) {</span>
-<span class="nc" id="L22">            filename += AppConstants.FILE_EXTENSION;</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (!filename.endsWith(AppConstants.FILE_EXTENSION)) {</span>
+<span class="fc" id="L22">            filename += AppConstants.FILE_EXTENSION;</span>
         }
-<span class="nc" id="L24">        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {</span>
-<span class="nc" id="L25">            writer.write(&quot;COMPILATION:&quot; + compilation.getTitle());</span>
-<span class="nc" id="L26">            writer.newLine();</span>
+<span class="fc" id="L24">        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {</span>
+<span class="fc" id="L25">            writer.write(&quot;COMPILATION:&quot; + compilation.getTitle());</span>
+<span class="fc" id="L26">            writer.newLine();</span>
 
-<span class="nc bnc" id="L28" title="All 2 branches missed.">            for (MusicComposition comp : compilation.getPlaylist()) {</span>
-<span class="nc" id="L29">                writer.write(serializeComposition(comp));</span>
-<span class="nc" id="L30">                writer.newLine();</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            for (MusicComposition comp : compilation.getPlaylist()) {</span>
+<span class="fc" id="L29">                writer.write(serializeComposition(comp));</span>
+<span class="fc" id="L30">                writer.newLine();</span>
             }
         }
-<span class="nc" id="L33">    }</span>
+<span class="fc" id="L33">    }</span>
 
     // Method for loading compilation from file
     public static Compilation loadFromFile(String filename) throws IOException {
-<span class="nc" id="L37">        List&lt;String&gt; lines = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L37">        List&lt;String&gt; lines = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L39">        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {</span>
+<span class="fc" id="L39">        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {</span>
             String line;
-<span class="nc bnc" id="L41" title="All 2 branches missed.">            while ((line = reader.readLine()) != null) {</span>
-<span class="nc" id="L42">                lines.add(line);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            while ((line = reader.readLine()) != null) {</span>
+<span class="fc" id="L42">                lines.add(line);</span>
             }
         }
 
-<span class="nc bnc" id="L46" title="All 4 branches missed.">        if (lines.isEmpty() || !lines.get(0).startsWith(&quot;COMPILATION:&quot;)) {</span>
-<span class="nc" id="L47">            throw new IOException(&quot;Invalid file format&quot;);</span>
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if (lines.isEmpty() || !lines.get(0).startsWith(&quot;COMPILATION:&quot;)) {</span>
+<span class="fc" id="L47">            throw new IOException(&quot;Invalid file format&quot;);</span>
         }
 
-<span class="nc" id="L50">        String title = lines.get(0).substring(&quot;COMPILATION:&quot;.length());</span>
-<span class="nc" id="L51">        Compilation compilation = new Compilation(title);</span>
+<span class="fc" id="L50">        String title = lines.get(0).substring(&quot;COMPILATION:&quot;.length());</span>
+<span class="fc" id="L51">        Compilation compilation = new Compilation(title);</span>
 
-<span class="nc bnc" id="L53" title="All 2 branches missed.">        for (int i = 1; i &lt; lines.size(); i++) {</span>
-<span class="nc" id="L54">            MusicComposition comp = deserializeComposition(lines.get(i));</span>
-<span class="nc bnc" id="L55" title="All 2 branches missed.">            if (comp != null) {</span>
-<span class="nc" id="L56">                compilation.addComposition(comp);</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (int i = 1; i &lt; lines.size(); i++) {</span>
+<span class="fc" id="L54">            MusicComposition comp = deserializeComposition(lines.get(i));</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (comp != null) {</span>
+<span class="fc" id="L56">                compilation.addComposition(comp);</span>
             }
         }
 
-<span class="nc" id="L60">        return compilation;</span>
+<span class="fc" id="L60">        return compilation;</span>
     }
 
     // &quot;Rules&quot; for writing down compositions to compilation file
     private static String serializeComposition(MusicComposition comp) {
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (comp instanceof Song) {</span>
-<span class="nc" id="L66">            Song song = (Song) comp;</span>
-<span class="nc" id="L67">            return String.format(&quot;SONG|%s|%s|%d|%s|%d&quot;,</span>
-<span class="nc" id="L68">                    song.getTitle(), song.getBand(), song.getDurationSec(),</span>
-<span class="nc" id="L69">                    song.getGenre(), song.getYearReleased());</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        } else if (comp instanceof Instrumental) {</span>
-<span class="nc" id="L71">            Instrumental inst = (Instrumental) comp;</span>
-<span class="nc" id="L72">            return String.format(&quot;INSTRUMENTAL|%s|%s|%d|%s|%d|%s&quot;,</span>
-<span class="nc" id="L73">                    inst.getTitle(), inst.getArtist(), inst.getDurationSec(),</span>
-<span class="nc" id="L74">                    inst.getGenre(), inst.getYearReleased(), inst.getInstrument());</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">        } else if (comp instanceof Remix) {</span>
-<span class="nc" id="L76">            Remix remix = (Remix) comp;</span>
-<span class="nc" id="L77">            return String.format(&quot;REMIX|%s|%s|%s|%d|%s|%d&quot;,</span>
-<span class="nc" id="L78">                    remix.getTitle(), remix.getOriginalArtist(), remix.getRemixer(),</span>
-<span class="nc" id="L79">                    remix.getDurationSec(), remix.getGenre(), remix.getYearReleased());</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (comp instanceof Song) {</span>
+<span class="fc" id="L66">            Song song = (Song) comp;</span>
+<span class="fc" id="L67">            return String.format(&quot;SONG|%s|%s|%d|%s|%d&quot;,</span>
+<span class="fc" id="L68">                    song.getTitle(), song.getBand(), song.getDurationSec(),</span>
+<span class="fc" id="L69">                    song.getGenre(), song.getYearReleased());</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        } else if (comp instanceof Instrumental) {</span>
+<span class="fc" id="L71">            Instrumental inst = (Instrumental) comp;</span>
+<span class="fc" id="L72">            return String.format(&quot;INSTRUMENTAL|%s|%s|%d|%s|%d|%s&quot;,</span>
+<span class="fc" id="L73">                    inst.getTitle(), inst.getArtist(), inst.getDurationSec(),</span>
+<span class="fc" id="L74">                    inst.getGenre(), inst.getYearReleased(), inst.getInstrument());</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        } else if (comp instanceof Remix) {</span>
+<span class="fc" id="L76">            Remix remix = (Remix) comp;</span>
+<span class="fc" id="L77">            return String.format(&quot;REMIX|%s|%s|%s|%d|%s|%d&quot;,</span>
+<span class="fc" id="L78">                    remix.getTitle(), remix.getOriginalArtist(), remix.getRemixer(),</span>
+<span class="fc" id="L79">                    remix.getDurationSec(), remix.getGenre(), remix.getYearReleased());</span>
         }
 <span class="nc" id="L81">        return &quot;&quot;;</span>
     }
 
     // Compilation file reader
     private static MusicComposition deserializeComposition(String line) {
-<span class="nc" id="L86">        String[] parts = line.split(&quot;\\|&quot;);</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (parts.length == 0)</span>
+<span class="fc" id="L86">        String[] parts = line.split(&quot;\\|&quot;);</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (parts.length == 0)</span>
 <span class="nc" id="L88">            return null;</span>
 
         try {
-<span class="nc bnc" id="L91" title="All 4 branches missed.">            switch (parts[0]) {</span>
+<span class="pc bpc" id="L91" title="1 of 4 branches missed.">            switch (parts[0]) {</span>
                 case &quot;SONG&quot;:
-<span class="nc" id="L93">                    return new Song(parts[1], parts[2], Integer.parseInt(parts[3]),</span>
-<span class="nc" id="L94">                            parts[4], Integer.parseInt(parts[5]));</span>
+<span class="fc" id="L93">                    return new Song(parts[1], parts[2], Integer.parseInt(parts[3]),</span>
+<span class="fc" id="L94">                            parts[4], Integer.parseInt(parts[5]));</span>
                 case &quot;INSTRUMENTAL&quot;:
-<span class="nc" id="L96">                    return new Instrumental(parts[1], parts[2], Integer.parseInt(parts[3]),</span>
-<span class="nc" id="L97">                            parts[4], Integer.parseInt(parts[5]), parts[6]);</span>
+<span class="fc" id="L96">                    return new Instrumental(parts[1], parts[2], Integer.parseInt(parts[3]),</span>
+<span class="fc" id="L97">                            parts[4], Integer.parseInt(parts[5]), parts[6]);</span>
                 case &quot;REMIX&quot;:
-<span class="nc" id="L99">                    return new Remix(parts[1], parts[2], parts[3],</span>
-<span class="nc" id="L100">                            Integer.parseInt(parts[4]), parts[5], Integer.parseInt(parts[6]));</span>
+<span class="fc" id="L99">                    return new Remix(parts[1], parts[2], parts[3],</span>
+<span class="fc" id="L100">                            Integer.parseInt(parts[4]), parts[5], Integer.parseInt(parts[6]));</span>
                 default:
 <span class="nc" id="L102">                    return null;</span>
             }
