@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://example.com/knives"
+           xmlns:tns="http://example.com/knives"
+           elementFormDefault="qualified">
+
+    <!-- Simple types with enumerations -->
+    <xs:simpleType name="KnifeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="KNIFE"/>
+            <xs:enumeration value="DAGGER"/>
+            <xs:enumeration value="SABER"/>
+            <xs:enumeration value="SWORD"/>
+            <xs:enumeration value="MACHETE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="HandyType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ONE_HANDED"/>
+            <xs:enumeration value="TWO_HANDED"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="BladeMaterial">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="STEEL"/>
+            <xs:enumeration value="CAST_IRON"/>
+            <xs:enumeration value="COPPER"/>
+            <xs:enumeration value="DAMASCUS_STEEL"/>
+            <xs:enumeration value="BRONZE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="HandleMaterial">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="WOOD"/>
+            <xs:enumeration value="PLASTIC"/>
+            <xs:enumeration value="METAL"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="WoodType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OAK"/>
+            <xs:enumeration value="MAPLE"/>
+            <xs:enumeration value="WALNUT"/>
+            <xs:enumeration value="EBONY"/>
+            <xs:enumeration value="ROSEWOOD"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Simple types with patterns and restrictions -->
+    <xs:simpleType name="BladeLength">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="10"/>
+            <xs:maxInclusive value="1000"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="BladeWidth">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="10"/>
+            <xs:maxInclusive value="500"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="CountryPattern">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Z][a-zA-Z\s]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Complex types -->
+    <xs:complexType name="BladeType">
+        <xs:sequence>
+            <xs:element name="length" type="tns:BladeLength"/>
+            <xs:element name="width" type="tns:BladeWidth"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MaterialType">
+        <xs:sequence>
+            <xs:element name="blade" type="tns:BladeMaterial"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="HandleType">
+        <xs:sequence>
+            <xs:element name="material" type="tns:HandleMaterial"/>
+            <xs:element name="woodType" type="tns:WoodType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="VisualType">
+        <xs:sequence>
+            <xs:element name="blade" type="tns:BladeType"/>
+            <xs:element name="material" type="tns:MaterialType"/>
+            <xs:element name="handle" type="tns:HandleType"/>
+            <xs:element name="bloodGroove" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValueType">
+        <xs:simpleContent>
+            <xs:extension base="xs:boolean">
+                <xs:attribute name="collectible" type="xs:boolean" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="KnifeElement">
+        <xs:sequence>
+            <xs:element name="type" type="tns:KnifeType"/>
+            <xs:element name="handy" type="tns:HandyType"/>
+            <xs:element name="origin" type="tns:CountryPattern"/>
+            <xs:element name="visual" type="tns:VisualType" maxOccurs="unbounded"/>
+            <xs:element name="value" type="tns:ValueType"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="knives">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="knife" type="tns:KnifeElement" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
