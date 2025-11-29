@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<knifeSummary>
+  <totalCount>5</totalCount>
+  <collectibleCount>3</collectibleCount>
+  <knives>
+    <knife id="K004">
+      <type>KNIFE</type>
+      <origin>Ukraine</origin>
+      <collectible>false</collectible>
+    </knife>
+    <knife id="K003">
+      <type>SWORD</type>
+      <origin>United Kingdom</origin>
+      <collectible>false</collectible>
+    </knife>
+    <knife id="K001">
+      <type>DAGGER</type>
+      <origin>Germany</origin>
+      <collectible>true</collectible>
+    </knife>
+    <knife id="K005">
+      <type>MACHETE</type>
+      <origin>Brazil</origin>
+      <collectible>true</collectible>
+    </knife>
+    <knife id="K002">
+      <type>SABER</type>
+      <origin>Japan</origin>
+      <collectible>true</collectible>
+    </knife>
+  </knives>
+</knifeSummary>
