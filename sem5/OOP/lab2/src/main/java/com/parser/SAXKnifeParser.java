@@ -42,6 +42,11 @@ public class SAXKnifeParser {
         private StringBuilder elementValue = new StringBuilder();
         private String currentElement;
 
+        // Context flags to track where we are in the XML structure
+        private boolean inVisualBlade = false;
+        private boolean inMaterialBlade = false;
+        private boolean inHandleMaterial = false;
+
         @Override
         public void startElement(String uri, String localName, String qName,
                 Attributes attributes) throws SAXException {
@@ -57,13 +62,22 @@ public class SAXKnifeParser {
                     currentVisual = new Visual();
                     break;
                 case "blade":
-                    if (currentVisual != null) {
+                    // Check if we're inside visual but not inside material
+                    if (currentVisual != null && currentMaterial == null) {
                         currentBlade = new Blade();
+                        inVisualBlade = true;
+                    } else if (currentMaterial != null) {
+                        // We're inside material element
+                        inMaterialBlade = true;
                     }
                     break;
                 case "material":
-                    if (currentVisual != null) {
+                    // Check if we're inside visual but not inside handle
+                    if (currentVisual != null && currentHandle == null) {
                         currentMaterial = new Material();
+                    } else if (currentHandle != null) {
+                        // We're inside handle element
+                        inHandleMaterial = true;
                     }
                     break;
                 case "handle":
@@ -94,10 +108,14 @@ public class SAXKnifeParser {
                     currentKnife = null;
                     break;
                 case "type":
-                    currentKnife.setType(KnifeType.valueOf(value));
+                    if (!value.isEmpty()) {
+                        currentKnife.setType(KnifeType.valueOf(value));
+                    }
                     break;
                 case "handy":
-                    currentKnife.setHandy(HandyType.valueOf(value));
+                    if (!value.isEmpty()) {
+                        currentKnife.setHandy(HandyType.valueOf(value));
+                    }
                     break;
                 case "origin":
                     currentKnife.setOrigin(value);
@@ -107,29 +125,36 @@ public class SAXKnifeParser {
                     currentVisual = null;
                     break;
                 case "length":
-                    if (currentBlade != null) {
+                    if (currentBlade != null && inVisualBlade && !value.isEmpty()) {
                         currentBlade.setLength(Integer.parseInt(value));
                     }
                     break;
                 case "width":
-                    if (currentBlade != null) {
+                    if (currentBlade != null && inVisualBlade && !value.isEmpty()) {
                         currentBlade.setWidth(Integer.parseInt(value));
                     }
                     break;
                 case "blade":
-                    if (currentBlade != null) {
+                    if (inVisualBlade && currentBlade != null) {
+                        // Ending the blade element inside visual
                         currentVisual.setBlade(currentBlade);
                         currentBlade = null;
-                    } else if (currentMaterial != null && !value.isEmpty()) {
+                        inVisualBlade = false;
+                    } else if (inMaterialBlade && !value.isEmpty()) {
+                        // Ending the blade element inside material
                         currentMaterial.setBlade(BladeMaterial.valueOf(value));
+                        inMaterialBlade = false;
                     }
                     break;
                 case "material":
-                    if (currentMaterial != null) {
+                    if (currentMaterial != null && !inHandleMaterial) {
+                        // Ending the material element inside visual
                         currentVisual.setMaterial(currentMaterial);
                         currentMaterial = null;
-                    } else if (currentHandle != null && !value.isEmpty()) {
+                    } else if (inHandleMaterial && !value.isEmpty()) {
+                        // Ending the material element inside handle
                         currentHandle.setMaterial(HandleMaterial.valueOf(value));
+                        inHandleMaterial = false;
                     }
                     break;
                 case "woodType":
@@ -138,11 +163,15 @@ public class SAXKnifeParser {
                     }
                     break;
                 case "handle":
-                    currentVisual.setHandle(currentHandle);
+                    if (currentVisual != null && currentHandle != null) {
+                        currentVisual.setHandle(currentHandle);
+                    }
                     currentHandle = null;
                     break;
                 case "bloodGroove":
-                    currentVisual.setBloodGroove(Boolean.parseBoolean(value));
+                    if (currentVisual != null && !value.isEmpty()) {
+                        currentVisual.setBloodGroove(Boolean.parseBoolean(value));
+                    }
                     break;
                 case "value":
                     currentKnife.setValue(currentValue);
