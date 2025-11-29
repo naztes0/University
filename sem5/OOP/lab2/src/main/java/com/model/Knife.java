@@ -1,7 +1,5 @@
-package model;
+package com.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -12,19 +10,18 @@ public class Knife {
     private KnifeType type;
     private HandyType handy;
     private String origin;
-    private List<Visual> visuals;
+    private Visual visual;
     private Value value;
 
     public Knife() {
-        this.visuals = new ArrayList<>();
     }
 
-    public Knife(String id, KnifeType type, HandyType handy, String origin, List<Visual> visuals, Value value) {
+    public Knife(String id, KnifeType type, HandyType handy, String origin, Visual visual, Value value) {
         this.id = id;
         this.type = type;
         this.handy = handy;
         this.origin = origin;
-        this.visuals = visuals != null ? new ArrayList<>(visuals) : new ArrayList<>();
+        this.visual = visual;
         this.value = value;
     }
 
@@ -61,16 +58,12 @@ public class Knife {
         this.origin = origin;
     }
 
-    public List<Visual> getVisuals() {
-        return visuals;
+    public Visual getVisual() {
+        return visual;
     }
 
-    public void setVisuals(List<Visual> visuals) {
-        this.visuals = visuals;
-    }
-
-    public void addVisual(Visual visual) {
-        this.visuals.add(visual);
+    public void setVisual(Visual visual) {
+        this.visual = visual;
     }
 
     public Value getValue() {
@@ -92,8 +85,13 @@ public class Knife {
                 type == knife.type &&
                 handy == knife.handy &&
                 Objects.equals(origin, knife.origin) &&
-                Objects.equals(visuals, knife.visuals) &&
+                Objects.equals(visual, knife.visual) &&
                 Objects.equals(value, knife.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, handy, origin, visual, value);
     }
 
     @Override
@@ -103,7 +101,7 @@ public class Knife {
                 ", type=" + type +
                 ", handy=" + handy +
                 ", origin='" + origin + '\'' +
-                ", visuals=" + visuals +
+                ", visual=" + visual +
                 ", value=" + value +
                 '}';
     }
