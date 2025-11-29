@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knives xmlns="http://example.com/knives"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://example.com/knives knives.xsd">
+
+    <knife id="K001">
+        <type>DAGGER</type>
+        <handy>ONE_HANDED</handy>
+        <origin>Germany</origin>
+        <visual>
+            <blade>
+                <length>250</length>
+                <width>30</width>
+            </blade>
+            <material>
+                <blade>DAMASCUS_STEEL</blade>
+            </material>
+            <handle>
+                <material>WOOD</material>
+                <woodType>OAK</woodType>
+            </handle>
+            <bloodGroove>true</bloodGroove>
+        </visual>
+        <value collectible="true">true</value>
+    </knife>
+
+    <knife id="K002">
+        <type>SABER</type>
+        <handy>ONE_HANDED</handy>
+        <origin>Japan</origin>
+        <visual>
+            <blade>
+                <length>700</length>
+                <width>40</width>
+            </blade>
+            <material>
+                <blade>STEEL</blade>
+            </material>
+            <handle>
+                <material>WOOD</material>
+                <woodType>EBONY</woodType>
+            </handle>
+            <bloodGroove>false</bloodGroove>
+        </visual>
+        <visual>
+            <blade>
+                <length>720</length>
+                <width>42</width>
+            </blade>
+            <material>
+                <blade>DAMASCUS_STEEL</blade>
+            </material>
+            <handle>
+                <material>METAL</material>
+            </handle>
+            <bloodGroove>true</bloodGroove>
+        </visual>
+        <value collectible="true">true</value>
+    </knife>
+
+    <knife id="K003">
+        <type>SWORD</type>
+        <handy>TWO_HANDED</handy>
+        <origin>United Kingdom</origin>
+        <visual>
+            <blade>
+                <length>900</length>
+                <width>80</width>
+            </blade>
+            <material>
+                <blade>STEEL</blade>
+            </material>
+            <handle>
+                <material>METAL</material>
+            </handle>
+            <bloodGroove>false</bloodGroove>
+        </visual>
+        <value collectible="false">false</value>
+    </knife>
+
+    <knife id="K004">
+        <type>KNIFE</type>
+        <handy>ONE_HANDED</handy>
+        <origin>Ukraine</origin>
+        <visual>
+            <blade>
+                <length>150</length>
+                <width>25</width>
+            </blade>
+            <material>
+                <blade>STEEL</blade>
+            </material>
+            <handle>
+                <material>PLASTIC</material>
+            </handle>
+            <bloodGroove>false</bloodGroove>
+        </visual>
+        <value collectible="false">false</value>
+    </knife>
+
+    <knife id="K005">
+        <type>MACHETE</type>
+        <handy>ONE_HANDED</handy>
+        <origin>Brazil</origin>
+        <visual>
+            <blade>
+                <length>450</length>
+                <width>50</width>
+            </blade>
+            <material>
+                <blade>CAST_IRON</blade>
+            </material>
+            <handle>
+                <material>WOOD</material>
+                <woodType>WALNUT</woodType>
+            </handle>
+            <bloodGroove>false</bloodGroove>
+        </visual>
+        <value collectible="true">true</value>
+    </knife>
+
+</knives>
