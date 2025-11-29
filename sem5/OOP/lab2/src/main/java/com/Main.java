@@ -26,9 +26,9 @@ public class Main {
             // Step 1: Validate XML against XSD
             System.out.println("1. Validating XML against XSD schema...");
             if (XMLValidator.validate(XML_FILE, XSD_FILE)) {
-                System.out.println("✓ Validation successful!\n");
+                System.out.println(" Validation successful!\n");
             } else {
-                System.out.println("✗ Validation failed!\n");
+                System.out.println(" Validation failed!\n");
                 return;
             }
 
@@ -36,19 +36,19 @@ public class Main {
             System.out.println("2. Parsing with SAX parser...");
             SAXKnifeParser saxParser = new SAXKnifeParser();
             List<Knife> saxKnives = saxParser.parse(XML_FILE);
-            System.out.println("✓ SAX parsed " + saxKnives.size() + " knives\n");
+            System.out.println(" SAX parsed " + saxKnives.size() + " knives\n");
 
             // Step 3: Parse using DOM
             System.out.println("3. Parsing with DOM parser...");
             DOMKnifeParser domParser = new DOMKnifeParser();
             List<Knife> domKnives = domParser.parse(XML_FILE);
-            System.out.println("✓ DOM parsed " + domKnives.size() + " knives\n");
+            System.out.println(" DOM parsed " + domKnives.size() + " knives\n");
 
             // Step 4: Parse using StAX
             System.out.println("4. Parsing with StAX parser...");
             StAXKnifeParser staxParser = new StAXKnifeParser();
             List<Knife> staxKnives = staxParser.parse(XML_FILE);
-            System.out.println("✓ StAX parsed " + staxKnives.size() + " knives\n");
+            System.out.println(" StAX parsed " + staxKnives.size() + " knives\n");
 
             // Step 5: Display parsed data
             System.out.println("5. Displaying knife collection (using DOM results):");
@@ -99,12 +99,12 @@ public class Main {
             // Step 7: Transform to HTML
             System.out.println("10. Transforming to HTML table...");
             XMLTransformer.transformToHTML(domKnives, HTML_OUTPUT);
-            System.out.println("✓ HTML output saved to: " + HTML_OUTPUT + "\n");
+            System.out.println(" HTML output saved to: " + HTML_OUTPUT + "\n");
 
             // Step 8: Transform to summary XML
             System.out.println("11. Transforming to summary XML...");
             XMLTransformer.transformToSummary(domKnives, SUMMARY_OUTPUT);
-            System.out.println("✓ Summary XML saved to: " + SUMMARY_OUTPUT + "\n");
+            System.out.println(" Summary XML saved to: " + SUMMARY_OUTPUT + "\n");
 
             System.out.println("=== All operations completed successfully! ===");
 
