@@ -42,19 +42,6 @@
             </handle>
             <bloodGroove>false</bloodGroove>
         </visual>
-        <visual>
-            <blade>
-                <length>720</length>
-                <width>42</width>
-            </blade>
-            <material>
-                <blade>DAMASCUS_STEEL</blade>
-            </material>
-            <handle>
-                <material>METAL</material>
-            </handle>
-            <bloodGroove>true</bloodGroove>
-        </visual>
         <value collectible="true">true</value>
     </knife>
 
