@@ -6,7 +6,7 @@ const PropertyNoSQL = require('../model/PropertyNoSQL.js');
 const migrate = async () => {
     await connectMongo();
 
-    console.log('🚀 Починаємо міграцію даних в хмару...');
+    console.log('Starting migration to MongoDb');
 
     try {
         //Getting data from PostgreSql
