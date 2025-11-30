@@ -55,7 +55,7 @@ const runBenchmark = async () => {
     console.log('\n--- RESULTS ---');
     if (avgMongo < avgSql) {
         const factor = (avgSql / avgMongo).toFixed(1);
-        console.log(`🚀 MongoDB ${factor} times faster!`);
+        console.log(`MongoDB ${factor} times faster!`);
     } else {
         console.log('SQL faster');
     }
