@@ -1,6 +1,6 @@
 # Lab1 - Music Compilation Manager
 
-## 📋 Requirements
+## Requirements
 
 Створити консольну програму, що задовольняє наступним вимогам:
 
@@ -179,7 +179,7 @@ Contains application constants.
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Test Architecture
 
@@ -218,7 +218,7 @@ mvn test
 
 ---
 
-## 📊 Summary
+## Summary
 
 - **7 main classes** implemented with full OOP principles
 - **66 unit tests** covering 67% of codebase
