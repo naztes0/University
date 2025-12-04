@@ -141,21 +141,26 @@ def gaussian_method(A, b):
             print_matrix(P)
             print_expandedmatrix(A,b)
         P_all.append(P.copy())
+
+        # Normalizing diagonal element of M matrix
+        M[i, i] = 1.0 / A[i, i]
+
+        # Then nulling elems under the dia
         for j in range (i+1,n):
             M[j,i] = -A[j,i]/A[i,i]
             if abs(M[j, i]) < 1e-10:
                 M[j, i] = 0.0
+
         print(f"\nMatrix M{i+1}:")
         print_matrix(M)
-        
+        detA*=A[i,i]
+        detAmult.append(A[i,i])
+
         #Multiplicate A,b with M_i+1 matrix
         A=M@A
         b=M@b
         invA=M@invA
-         #Calculating det A
-        detA*=A[i,i]
-        detAmult.append(A[i,i])
-
+         
         print("Matrix after elimination step:\n")
         formulaA=f"M{i+1}"+formulaA
         formulab=f"M{i+1}"+formulab
@@ -180,15 +185,15 @@ def gaussian_method(A, b):
         sum_ax = 0 
         for j in range(i+1, n): 
             sum_ax += A[i, j] * x[j] 
-        x[i] = (b[i] - sum_ax) / A[i, i] 
-        print(f"Back substitution: x[{i}] = ({b[i]:.3f} - {sum_ax:.3f}) / {A[i,i]:.3f} = {x[i]:.3f}")
+        x[i] = b[i] - sum_ax
+        print(f"Back substitution: x[{i}] = {b[i]:.3f} - {sum_ax:.3f} = {x[i]:.3f}")
 
     for col in range(n): 
         for i in range(n-1, -1, -1):  
             sum_ax = 0
             for j in range(i+1, n):
                 sum_ax += A[i, j] * invA[j, col]  
-            invA[i, col] = (invA[i, col] - sum_ax) / A[i, i]
+            invA[i, col] = invA[i, col] - sum_ax
 
     print("-----------------------------")
     print("Solution vector x:")
@@ -207,7 +212,6 @@ def gaussian_method(A, b):
     if np.allclose(A_original @ invA, E, atol=1e-10): print("A*A^-1=E. The inveted A matrix is correct")
     else: print("The inveted A matrix is NOT correct")
     return x,detA,invA
-
 
 def square_root_method(A, b):
     A = np.array(A, dtype=float)
