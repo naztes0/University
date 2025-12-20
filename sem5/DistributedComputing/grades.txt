@@ -1,0 +1,9 @@
+6 labs 
+Final grades automaticaly based on labs practice grades
+
+max grade per lab: 10
+lab 1-6: 10
+
+!!!!!
+    Here is in readme file described in detail task to the all labs. Shown the exapmles of creation of slurm files for cluster exectuion and all instructions to execute it (both for local and for cluster executions). Added requirements that were used 
+!!!!!

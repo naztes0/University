@@ -1,0 +1,7 @@
+Grading of labs: pract+report+defense 
+
+max for lab: 30
+
+lab1: 29
+lab2: 26
+lab3: 26
