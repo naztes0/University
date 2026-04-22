@@ -1,4 +1,7 @@
+
 CREATE TYPE user_role AS ENUM ('CLIENT', 'ADMIN', 'KITCHEN');
+CREATE TYPE order_status AS ENUM ('NEW', 'CONFIRMED', 'IN_KITCHEN', 'READY', 'BILLED', 'PAID');
+CREATE TYPE bill_status AS ENUM ('UNPAID', 'PAID');
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -22,7 +25,7 @@ CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
     table_number INTEGER NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'NEW',
+    status order_status NOT NULL DEFAULT 'NEW',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -38,7 +41,7 @@ CREATE TABLE bills (
     id SERIAL PRIMARY KEY,
     order_id INTEGER REFERENCES orders(id) UNIQUE,
     total_amount DECIMAL(10,2) NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'UNPAID',
+    status bill_status NOT NULL DEFAULT 'UNPAID',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
