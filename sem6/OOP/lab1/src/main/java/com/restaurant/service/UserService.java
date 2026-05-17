@@ -27,12 +27,12 @@ public class UserService {
     /**
      * Finds or creates a user after Auth0 login
      */
-    public UserDTO findOrCreate(String auth0Id, String name, String email) {
+    public User findOrCreate(String auth0Id, String name, String email) {
         Optional<User> existing = userRepository.findByAuth0Id(auth0Id);
 
         if (existing.isPresent()) {
             logger.info("Existing user logged in: {}", email);
-            return userMapper.toDTO(existing.get());
+            return existing.get();
         }
 
         // First time login — create new user with CLIENT role
@@ -45,7 +45,7 @@ public class UserService {
 
         User saved = userRepository.save(newUser);
         logger.info("New user registered: {}", email);
-        return userMapper.toDTO(saved);
+        return saved;
     }
 
     /**
