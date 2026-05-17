@@ -138,14 +138,29 @@
 
       <!-- Tomcat -->
       <plugin>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
-        <version>2.2</version>
+    <groupId>org.codehaus.cargo</groupId>
+    <artifactId>cargo-maven3-plugin</artifactId>
+    <version>1.10.9</version>
+    <configuration>
+        <container>
+            <containerId>tomcat10x</containerId>
+            <artifactInstaller>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat</artifactId>
+                <version>10.1.20</version>
+            </artifactInstaller>
+            <systemProperties>
+                <user.dir>${project.basedir}</user.dir>
+            </systemProperties>
+        </container>
         <configuration>
-          <port>8080</port>
-          <path>/api</path>
+            <properties>
+                <cargo.servlet.port>8081</cargo.servlet.port>
+                <cargo.context>/api</cargo.context>
+            </properties>
         </configuration>
-      </plugin>
+    </configuration>
+</plugin>
 
     </plugins>
   </build>
