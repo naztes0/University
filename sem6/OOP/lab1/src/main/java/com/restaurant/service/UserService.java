@@ -65,6 +65,10 @@ public class UserService {
         return userRepository.findByAuth0Id(auth0Id);
     }
 
+    public Optional<User> getById(Long id) {
+        return userRepository.findById(id);
+    }
+
     /**
      * Updates a user's role (admin only)
      */

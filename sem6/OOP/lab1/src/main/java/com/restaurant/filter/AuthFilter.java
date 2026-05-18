@@ -1,21 +1,10 @@
 package com.restaurant.filter;
 
-import java.io.IOException;
-import java.net.URL;
-import java.security.interfaces.RSAPublicKey;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.JwkProviderBuilder;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.restaurant.model.entity.User;
 import com.restaurant.service.UserService;
-
-import io.github.cdimascio.dotenv.Dotenv;
+import com.restaurant.util.JwtUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -25,32 +14,27 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.util.Optional;
+
+/**
+ * Auth Filter — validates JWT token on every request.
+ * Skips validation for /auth/* endpoints (login/register).
+ */
 @WebFilter("/*")
 public class AuthFilter implements Filter {
 
     private static final Logger logger = LogManager.getLogger(AuthFilter.class);
 
-    private String domain;
-    private String audience;
-    private JwkProvider jwkProvider;
     private UserService userService;
 
     @Override
     public void init(FilterConfig filterConfig) {
-        Dotenv dotenv = Dotenv.load();
-        this.domain = dotenv.get("AUTH0_DOMAIN");
-        this.audience = dotenv.get("AUTH0_AUDIENCE");
         this.userService = new UserService();
-
-        try {
-            this.jwkProvider = new JwkProviderBuilder(new URL("https://" + domain))
-                    .build();
-            logger.info("AuthFilter initialized with domain: {}", domain);
-        } catch (Exception e) {
-            logger.error("Failed to initialize AuthFilter", e);
-            throw new RuntimeException("AuthFilter initialization failed", e);
-        }
+        logger.info("AuthFilter initialized");
     }
 
     @Override
@@ -60,6 +44,15 @@ public class AuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        String path = httpRequest.getServletPath();
+
+        // Skip auth check for login and register endpoints
+        if (path.startsWith("/auth")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // Extract token from Authorization header
         String authHeader = httpRequest.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -70,39 +63,30 @@ public class AuthFilter implements Filter {
         String token = authHeader.substring(7);
 
         try {
-            DecodedJWT decodedJWT = verifyToken(token);
-            String auth0Id = decodedJWT.getSubject();
+            // Validate token and extract claims
+            DecodedJWT decodedJWT = JwtUtil.validateToken(token);
 
-            String name = decodedJWT.getClaim("name").asString();
+            Long userId = Long.parseLong(decodedJWT.getSubject());
+            String role = decodedJWT.getClaim("role").asString();
             String email = decodedJWT.getClaim("email").asString();
 
-            User user = userService.findOrCreate(auth0Id, name, email);
+            // Find user in DB
+            Optional<User> userOptional = userService.getById(userId);
+            if (userOptional.isEmpty()) {
+                sendUnauthorized(httpResponse, "User not found");
+                return;
+            }
 
-            httpRequest.setAttribute("currentUser", user);
-
+            // Attach user to request for Servlets to use
+            httpRequest.setAttribute("currentUser", userOptional.get());
             logger.debug("Authenticated user: {}", email);
+
             chain.doFilter(request, response);
 
-        } catch (Exception e) {
+        } catch (JWTVerificationException e) {
             logger.warn("JWT verification failed: {}", e.getMessage());
             sendUnauthorized(httpResponse, "Invalid or expired token");
         }
-    }
-
-    private DecodedJWT verifyToken(String token) throws Exception {
-
-        DecodedJWT unverified = JWT.decode(token);
-        String keyId = unverified.getKeyId();
-
-        RSAPublicKey publicKey = (RSAPublicKey) jwkProvider.get(keyId).getPublicKey();
-
-        Algorithm algorithm = Algorithm.RSA256(publicKey, null);
-
-        return JWT.require(algorithm)
-                .withIssuer("https://" + domain + "/")
-                .withAudience(audience)
-                .build()
-                .verify(token);
     }
 
     private void sendUnauthorized(HttpServletResponse response, String message) throws IOException {

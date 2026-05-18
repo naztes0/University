@@ -130,6 +130,53 @@ public class UserRepository {
     }
 
     /**
+     * Finds a user by email — used for login.
+     */
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapRow(rs));
+            }
+
+        } catch (SQLException e) {
+            logger.error("Failed to fetch user by email: {}", email, e);
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Saves a new user with password hash.
+     */
+    public User saveWithPassword(User user) {
+        String sql = "INSERT INTO users (name, email, password_hash, role) " +
+                "VALUES (?, ?, ?, ?::user_role) RETURNING id, created_at";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPasswordHash());
+            stmt.setString(4, user.getRole().name());
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                user.setId(rs.getLong("id"));
+                user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            }
+
+        } catch (SQLException e) {
+            logger.error("Failed to save user with password", e);
+        }
+
+        return user;
+    }
+
+    /**
      * Maps a single database row to a User object.
      */
     private User mapRow(ResultSet rs) throws SQLException {
@@ -138,6 +185,7 @@ public class UserRepository {
                 .auth0Id(rs.getString("auth0_id"))
                 .name(rs.getString("name"))
                 .email(rs.getString("email"))
+                .passwordHash(rs.getString("password_hash"))
                 .role(UserRole.valueOf(rs.getString("role")))
                 .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
                 .build();
