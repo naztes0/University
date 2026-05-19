@@ -28,3 +28,5 @@ Makefile
 *.log
 *.tmp
 *.ipch
+
+target/
