@@ -43,7 +43,8 @@ function Navbar({ onLogout, role }: Props) {
             </span>
 
             <Link to="/menu" style={linkStyle('/menu')}>Menu</Link>
-            <Link to="/orders" style={linkStyle('/orders')}>My Orders</Link>
+            {role === 'CLIENT' && <Link to="/orders" style={linkStyle('/orders')}>My Orders</Link>}
+            {role === 'KITCHEN' && <Link to="/orders" style={linkStyle('/orders')}>All Orders</Link>}
             {role === 'ADMIN' && <Link to="/admin" style={linkStyle('/admin')}>Admin Panel</Link>}
             {role === 'KITCHEN' && <Link to="/kitchen" style={linkStyle('/kitchen')}>Kitchen</Link>}
 
