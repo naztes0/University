@@ -1,5 +1,11 @@
 package com.restaurant.model.dto;
 
-public class OrderItemDTO {
+import java.math.BigDecimal;
 
+public record OrderItemDTO(
+        Long id,
+        Long menuItemId,
+        String menuItemName,
+        Integer quantity,
+        BigDecimal priceAtOrder) {
 }
