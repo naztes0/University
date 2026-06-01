@@ -2,6 +2,9 @@ package com.restaurant.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -25,6 +28,7 @@ public class Bill {
     private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "bill_status")
     private BillStatus status;
 

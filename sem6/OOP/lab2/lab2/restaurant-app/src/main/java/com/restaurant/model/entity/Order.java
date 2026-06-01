@@ -2,6 +2,9 @@ package com.restaurant.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,6 +28,7 @@ public class Order {
     private Integer tableNumber;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "order_status")
     private OrderStatus status;
 
