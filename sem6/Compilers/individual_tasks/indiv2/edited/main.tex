@@ -1,0 +1,120 @@
+\documentclass[12pt,openany]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[ukrainian]{babel}
+
+%%% preamble.tex %%%%
+
+\usepackage{bezier}
+\usepackage{amssymb}
+% ...
+\usepackage{lipsum}
+\usepackage{imakeidx}
+\makeindex[intoc, program=texindy, options=-L ukrainian -C utf8]
+
+
+\voffset=0in
+\hoffset=-0.1in
+\parskip=0.01in
+\textwidth=132mm
+\textheight=200mm
+\oddsidemargin=22mm
+\evensidemargin=22mm
+
+
+
+
+\newtheorem{theorem}{\ \ \ \ ���६�}[chapter]
+
+\begin{document}
+
+%%% titlepage.tex %%%
+
+\thispagestyle{empty}
+\begin{center}
+    ������������ ������ � ����� �������\\
+
+              ��������� ������������  �����������\\
+                 ����� ������ ��������
+
+\end{center}
+
+\vspace{5cm}
+\begin{center}
+{\large{\bf ����� ������\\ ...}}
+\end{center}
+\vspace{3cm}
+\begin{center}
+     {\bf  ���砫쭨� ��������\\
+           (�����஭�� �������)}
+\end{center}
+
+\vspace*{\fill}\centerline{���� 2026}
+\vspace{1cm}
+
+\newpage
+\thispagestyle{empty}
+{\footnotesize
+\hspace{-0.70cm}��� ...
+
+\vspace{0.3cm}
+
+� ���������  ஧��鸞����� ...
+
+{\footnotesize
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+}
+
+%%% chapters.tex %%%
+
+\newpage
+
+\chapter{������������ ...}
+
+\lipsum[2]
+
+������� {\em ����ࠪ���} ...\index{����ࠪ���}.
+
+% more chapters
+\lipsum[11-21]
+
+\begin{thebibliography}{999}
+\addcontentsline{toc}{section}{���᮪ �������}
+\thispagestyle{empty}
+{\scriptsize
+\bibitem{textbook1} {\em Author A.}
+\newblock Textbook 1.
+\newblock {\em -- UniPress. 1970 -- v. 1. -- 333 p.}
+
+% more entries
+}
+\end{thebibliography}{999}
+
+%%% index %%%
+
+{\scriptsize
+\printindex
+}
+
+%%% backcover.tex %%%
+
+\newpage
+\thispagestyle{empty}
+\vspace{2cm}
+\vspace*{\fill}
+
+{\footnotesize
+\begin{center}
+                      {\Huge\bfseries ������ઠ}
+\end{center}
+
+\vspace{1cm}
+% ...
+
+}
+\vspace*{\fill}
+
+\end{document}

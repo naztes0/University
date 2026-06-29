@@ -1,0 +1,7 @@
+here are tasks for labs
+folders with completed labs in this repo: https://github.com/naztes0/compil-course
+
+individual tasks in this repo in folder individual_tasks
+
+a part of his lectures could be find here: https://web.stanford.edu/class/cs143/
+some labs info: https://compilation-course.github.io/
