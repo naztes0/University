@@ -105,8 +105,14 @@ class PlayerController(QObject):
     @Slot(QUrl)
     def openFile(self, file_url: QUrl) -> None:
         path = Path(file_url.toLocalFile()).resolve()
-        if not self._is_supported(path):
-            self.noticeRequested.emit("Обраний файл не підтримується або не існує.")
+        if not path.is_file():
+            self.noticeRequested.emit("Обраний файл не існує.")
+            return
+
+        extension = path.suffix.casefold()
+        if extension not in self.SUPPORTED_EXTENSIONS:
+            extension_name = extension.lstrip(".").upper() or "без розширення"
+            self.noticeRequested.emit(f"Формат {extension_name} не підтримується.")
             return
 
         self._scan_directory(path.parent)
@@ -118,7 +124,7 @@ class PlayerController(QObject):
         self.mediaRequested.emit(
             QUrl.fromLocalFile(str(path)).toString(),
             path.name,
-            path.suffix.casefold() in self.AUDIO_EXTENSIONS,
+            extension in self.AUDIO_EXTENSIONS,
         )
 
     @Slot(QUrl)

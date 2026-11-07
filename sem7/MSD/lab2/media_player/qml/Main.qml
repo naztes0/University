@@ -250,11 +250,7 @@ ApplicationWindow {
         id: fileDialog
         title: "Відкрити медіафайл"
         fileMode: FileDialog.OpenFile
-        nameFilters: [
-            "Підтримувані медіафайли (*.mp4 *.avi *.mov *.mp3 *.wav)",
-            "Відео (*.mp4 *.avi *.mov)",
-            "Аудіо (*.mp3 *.wav)"
-        ]
+        nameFilters: ["Усі файли (*)"]
         
         onAccepted: controller.openFile(selectedFile)
     }
@@ -440,6 +436,7 @@ ApplicationWindow {
         id: controlButton
         implicitWidth: 44
         implicitHeight: 40
+        hoverEnabled: true
         focusPolicy: Qt.NoFocus
         activeFocusOnTab: false
         font.pixelSize: 18
@@ -465,6 +462,7 @@ ApplicationWindow {
     component PanelButton: Button {
         id: panelButton
         implicitHeight: 38
+        hoverEnabled: true
         focusPolicy: Qt.NoFocus
         activeFocusOnTab: false
         leftPadding: 12
@@ -475,9 +473,11 @@ ApplicationWindow {
             radius: 8
             color: panelButton.down
                    ? "#503033"
-                   : panelButton.hovered ? "#3a292b" : "#29292e"
+                   : panelButton.hovered ? "#453033" : "#29292e"
             border.width: 1
             border.color: panelButton.hovered ? accentColor : "#3a3a40"
+
+            Behavior on color { ColorAnimation { duration: 120 } }
         }
 
         contentItem: Text {
@@ -521,6 +521,7 @@ ApplicationWindow {
         }
 
         ColumnLayout {
+            z: 10
             anchors.centerIn: parent
             spacing: 18
             visible: mediaPlayer.source.toString().length === 0
@@ -554,8 +555,10 @@ ApplicationWindow {
                 spacing: 10
 
                 Button {
+                    id: openFileButton
                     implicitWidth: 150
                     implicitHeight: 48
+                    hoverEnabled: true
                     focusPolicy: Qt.NoFocus
                     activeFocusOnTab: false
                     text: "Відкрити файл"
@@ -566,7 +569,9 @@ ApplicationWindow {
 
                     background: Rectangle {
                         radius: 8
-                        color: parent.hovered ? "#d66f6a" : accentColor
+                        color: openFileButton.hovered ? "#df7772" : accentColor
+
+                        Behavior on color { ColorAnimation { duration: 120 } }
                     }
 
                     contentItem: Text {
@@ -958,11 +963,17 @@ ApplicationWindow {
                     Slider {
                         id: progressSlider
                         Layout.fillWidth: true
+                        hoverEnabled: true
                         from: 0
                         to: Math.max(1, mediaPlayer.duration)
                         value: mediaPlayer.position
                         enabled: mediaPlayer.seekable
                         onMoved: mediaPlayer.setPosition(value)
+
+                        HoverHandler {
+                            enabled: progressSlider.enabled
+                            cursorShape: Qt.PointingHandCursor
+                        }
 
                         background: Rectangle {
                             x: progressSlider.leftPadding
@@ -1051,6 +1062,7 @@ ApplicationWindow {
                     Slider {
                         id: volumeSlider
                         Layout.preferredWidth: 120
+                        hoverEnabled: true
                         from: 0
                         to: 1
                         value: audioOutput.volume
@@ -1059,6 +1071,8 @@ ApplicationWindow {
                             if (value > 0)
                                 audioOutput.muted = false
                         }
+
+                        HoverHandler { cursorShape: Qt.PointingHandCursor }
 
                         background: Rectangle {
                             x: volumeSlider.leftPadding
