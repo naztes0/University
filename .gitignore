@@ -30,3 +30,5 @@ Makefile
 *.ipch
 
 target/
+
+*.DS_Store
