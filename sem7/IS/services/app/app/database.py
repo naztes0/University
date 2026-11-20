@@ -3,6 +3,7 @@ from datetime import datetime
 from uuid import UUID
 
 from psycopg.conninfo import make_conninfo
+from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 
 
@@ -39,6 +40,23 @@ class Database:
 
     async def close(self) -> None:
         await self.pool.close()
+
+    async def latest_stations(self):
+        async with self.pool.connection(timeout=2) as connection:
+            async with connection.cursor(row_factory=dict_row) as cursor:
+                await cursor.execute("""
+                    SELECT s.id, s.code, r.status, r.measured_at, r.power_kw,
+                           r.voltage_v, r.current_a, r.temperature_c, r.energy_delta_kwh
+                    FROM stations s
+                    LEFT JOIN LATERAL (
+                        SELECT status, measured_at, power_kw, voltage_v, current_a,
+                               temperature_c, energy_delta_kwh
+                        FROM readings WHERE station_id = s.id
+                        ORDER BY measured_at DESC LIMIT 1
+                    ) r ON true
+                    ORDER BY s.id
+                """)
+                return await cursor.fetchall()
 
     async def is_ready(self) -> bool:
         try:

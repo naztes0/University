@@ -1,6 +1,9 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Response, status
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from .database import Database
 from .generator import AlreadyRunningError, LoadGenerator
@@ -32,14 +35,21 @@ app = FastAPI(
 )
 
 
+static_path = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=static_path), name="static")
+
+
 @app.get("/")
-async def root() -> dict[str, str]:
-    return {
-        "service": "charging-station-load-generator",
-        "docs": "/docs",
-        "health": "/healthz",
-        "readiness": "/readyz",
-    }
+async def root():
+    return FileResponse(static_path / "index.html")
+
+
+@app.get("/api/stations")
+async def stations():
+    try:
+        return await database.latest_stations()
+    except Exception as error:
+        raise HTTPException(status_code=503, detail="PostgreSQL недоступний") from error
 
 
 @app.get("/healthz")

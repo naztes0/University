@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Вхід / Charge Control</title>
+    <link rel="stylesheet" href="/auth/static/style.css" />
+    <script src="/auth/static/login.js" defer></script>
+  </head>
+  <body data-login-csrf="{{LOGIN_CSRF}}">
+    <header>
+      <div class="brand">
+        ϟ <span>CHARGE<span class="muted"> / CONTROL</span></span>
+      </div>
+      <span class="muted hint">Моніторинг зарядної мережі</span>
+    </header>
+    <main class="login-layout">
+      <section class="login-intro">
+        <div class="login-art" aria-hidden="true">ϟ</div>
+        <p class="eyebrow">ЕНЕРГІЯ ПІД КОНТРОЛЕМ</p>
+        <h1>Одна мережа.<br />Повна картина<span class="accent">.</span></h1>
+        <p class="muted">
+          Керуйте навантаженням, спостерігайте за станціями<br />та досліджуйте
+          роботу системи.
+        </p>
+      </section>
+      <section class="panel login-card">
+        <p class="eyebrow">КАБІНЕТ ОПЕРАТОРА</p>
+        <h2>Увійти до системи</h2>
+        <p class="muted">Використайте свій обліковий запис.</p>
+        <form id="login-form">
+          <label
+            >Ім’я користувача<input
+              name="username"
+              autocomplete="username"
+              required
+              autofocus
+              maxlength="64" /></label
+          ><label
+            >Пароль<input
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              maxlength="256" /></label
+          ><button class="primary" type="submit">Увійти →</button>
+          <div id="message" role="alert"></div>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

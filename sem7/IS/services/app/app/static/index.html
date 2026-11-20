@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Charge / Моніторинг станцій</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/"
+        >ϟ <span>CHARGE<span class="muted"> / CONTROL</span></span></a
+      >
+      <nav>
+        <span id="connection" class="badge">Перевіряємо БД…</span
+        ><span id="username">Оператор</span
+        ><button id="logout" class="quiet">Вийти ↗</button>
+      </nav>
+    </header>
+    <main>
+      <div class="heading">
+        <div>
+          <p class="eyebrow">МЕРЕЖА ЗАРЯДНИХ СТАНЦІЙ</p>
+          <h1>Усе під контролем<span class="accent">.</span></h1>
+          <p class="muted">
+            Керуйте навантаженням і спостерігайте за станціями в реальному часі.
+          </p>
+        </div>
+        <a class="link-button" href="/grafana/" target="_blank" rel="noopener"
+          >Відкрити Grafana ↗</a
+        >
+      </div>
+      <div id="notice" role="status" aria-live="polite" hidden></div>
+      <section class="metrics" aria-label="Показники запуску">
+        <article>
+          <span>Задана швидкість</span><strong id="requested">—</strong
+          ><small>вимірювань / с</small>
+        </article>
+        <article>
+          <span>Фактична середня</span><strong id="actual">—</strong
+          ><small>від початку запуску</small>
+        </article>
+        <article>
+          <span>Успішні записи</span><strong id="success">—</strong
+          ><small>підтверджені операції</small>
+        </article>
+        <article>
+          <span>Невдалі операції</span><strong id="errors">—</strong
+          ><small>після повторних спроб</small>
+        </article>
+      </section>
+      <div class="workspace">
+        <aside class="panel controls">
+          <div class="section-title">
+            <h2>Навантаження</h2>
+            <span id="run-state" class="badge">Очікування</span>
+          </div>
+          <p class="muted hint">Параметри генерації імітованих показників.</p>
+          <form id="config-form">
+            <label
+              >Кількість станцій<input
+                name="station_count"
+                type="number"
+                min="1"
+                max="200"
+                step="1"
+                required
+                value="20"
+              /><small>Від 1 до 200 станцій</small></label
+            ><label
+              >Інтервал, секунди<input
+                name="interval_seconds"
+                type="number"
+                min="1"
+                max="10"
+                step="0.001"
+                required
+                value="2" /></label
+            ><label
+              >Тривалість, секунди<input
+                name="duration_seconds"
+                type="number"
+                min="5"
+                max="600"
+                step="1"
+                required
+                value="60"
+              /><small>До 10 хвилин від початку запуску</small></label
+            ><label
+              >Паралельні операції<input
+                name="max_concurrency"
+                type="number"
+                min="1"
+                max="10"
+                step="1"
+                required
+                value="5"
+              /><small>Одночасні задачі Python; пул БД — до 5 з’єднань</small></label
+            >
+            <p id="estimate" class="estimate">10 вимірювань / с</p>
+            <div class="actions">
+              <button type="submit" id="start" class="primary">
+                ▶ Запустити</button
+              ><button type="button" id="stop" class="danger" disabled>
+                ■ Стоп
+              </button>
+            </div>
+          </form>
+          <div class="run-info">
+            <span>Час роботи</span><strong id="elapsed">00:00</strong
+            ><span>Поточний запуск</span
+            ><code id="run-id">Ще не запускався</code>
+          </div>
+        </aside>
+        <section class="panel fleet">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">ОГЛЯД МЕРЕЖІ</p>
+              <h2>
+                Зарядні станції
+                <span id="station-count" class="muted">200</span>
+              </h2>
+            </div>
+            <span id="updated" class="muted hint">Очікуємо дані</span>
+          </div>
+          <div class="filters" role="group" aria-label="Фільтр станцій">
+            <button data-filter="all" class="selected">Усі</button
+            ><button data-filter="charging">● Заряджають</button
+            ><button data-filter="idle">● Очікують</button
+            ><button data-filter="offline">● Без зв’язку</button
+            ><button data-filter="error">● Помилки</button
+            ><button data-filter="historical">Вимкнені</button
+            ><button data-filter="unknown">Без даних</button>
+          </div>
+          <p id="fleet-note" class="muted hint">
+            Натисніть на станцію, щоб переглянути останнє вимірювання.
+          </p>
+          <div id="stations" class="station-grid" aria-label="Станції"></div>
+          <p id="empty" class="muted" hidden>
+            Станцій із таким статусом немає.
+          </p>
+        </section>
+      </div>
+      <footer>
+        Імітована мережа · PostgreSQL
+        <span>Метрики, логи й трейси — у Grafana ↗</span>
+      </footer>
+    </main>
+    <dialog id="detail">
+      <div class="section-title">
+        <h2 id="detail-title"></h2>
+        <button id="close-detail" class="quiet" aria-label="Закрити">✕</button>
+      </div>
+      <div id="detail-body"></div>
+    </dialog>
+  </body>
+</html>

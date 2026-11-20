@@ -1,11 +1,13 @@
 import asyncio
 import html
+from pathlib import Path
 import os
 import time
 from contextlib import asynccontextmanager
 
 from fastapi import Cookie, FastAPI, Header, HTTPException, Request, Response, status
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .database import AuthDatabase
@@ -57,6 +59,9 @@ app = FastAPI(
 )
 
 
+static_path = Path(__file__).parent / "static"
+app.mount("/auth/static", StaticFiles(directory=static_path), name="auth-static")
+
 def set_cookie(
     response: Response,
     key: str,
@@ -92,30 +97,7 @@ async def login_page() -> HTMLResponse:
     csrf_token = new_token()
     database.create_login_challenge(hash_token(csrf_token), int(time.time()) + 600)
     escaped_token = html.escape(csrf_token, quote=True)
-    page = f"""<!doctype html>
-<html lang="uk">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Вхід — Charging Monitor</title>
-  <style>
-    body {{ font-family: system-ui, sans-serif; max-width: 26rem; margin: 12vh auto; padding: 1rem; }}
-    form {{ display: grid; gap: .8rem; }}
-    input, button {{ font: inherit; padding: .7rem; }}
-    #message {{ min-height: 1.4rem; color: #b42318; }}
-  </style>
-</head>
-<body data-login-csrf="{escaped_token}">
-  <h1>Вхід до системи</h1>
-  <form id="login-form">
-    <label>Користувач <input name="username" autocomplete="username" required></label>
-    <label>Пароль <input name="password" type="password" autocomplete="current-password" required></label>
-    <button type="submit">Увійти</button>
-    <div id="message" role="alert"></div>
-  </form>
-  <script src="/auth/login.js" defer></script>
-</body>
-</html>"""
+    page = (static_path / "login.html").read_text().replace("{{LOGIN_CSRF}}", escaped_token)
     response = HTMLResponse(page)
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
@@ -129,35 +111,6 @@ async def login_page() -> HTMLResponse:
         httponly=True,
     )
     return response
-
-
-@app.get("/auth/login.js")
-async def login_script() -> Response:
-    script = """
-const form = document.querySelector('#login-form');
-const message = document.querySelector('#message');
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  message.textContent = '';
-  const data = new FormData(form);
-  const response = await fetch('/auth/login', {
-    method: 'POST',
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': document.body.dataset.loginCsrf
-    },
-    body: JSON.stringify({ username: data.get('username'), password: data.get('password') })
-  });
-  if (response.ok) {
-    window.location.assign('/');
-    return;
-  }
-  const payload = await response.json().catch(() => ({}));
-  message.textContent = payload.detail || 'Не вдалося виконати вхід';
-});
-"""
-    return Response(script, media_type="application/javascript")
 
 
 @app.post("/auth/login")
