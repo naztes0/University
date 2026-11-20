@@ -1,0 +1,32 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python development artifacts
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Runtime data kept outside Git
+/data/
+/logs/
+/secrets/
+*.sqlite
+*.sqlite3
+*.db
+*.log
+
+# Editor and macOS files
+.DS_Store
+.idea/
+.vscode/
+
+notes/
+material/
