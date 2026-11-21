@@ -43,6 +43,50 @@ services:
     networks:
       - backend
       - frontend
+      - monitoring
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.17.1
+    command:
+      - --config.file=/etc/postgres_exporter/postgres_exporter.yml
+      - --collector.stat_checkpointer
+    environment:
+      DATA_SOURCE_URI: postgres:5432/${POSTGRES_DB:?Set POSTGRES_DB in .env}?sslmode=disable
+      DATA_SOURCE_USER: charging_monitor
+      DATA_SOURCE_PASS: ${MONITOR_DB_PASSWORD:?Set MONITOR_DB_PASSWORD in .env}
+    volumes:
+      - ./config/postgres-exporter/postgres_exporter.yml:/etc/postgres_exporter/postgres_exporter.yml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - backend
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+      - --storage.tsdb.retention.size=1GB
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      app:
+        condition: service_started
+      postgres-exporter:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:9090/-/healthy"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    restart: unless-stopped
+    networks:
+      - monitoring
 
   auth:
     build:
@@ -86,6 +130,12 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./config/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      prometheus:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:3000/api/health"]
       interval: 10s
@@ -94,6 +144,7 @@ services:
     restart: unless-stopped
     networks:
       - frontend
+      - monitoring
 
   nginx:
     image: nginx:1.27-alpine
@@ -122,6 +173,7 @@ volumes:
   postgres_data:
   auth_data:
   grafana_data:
+  prometheus_data:
 
 networks:
   backend:
@@ -130,3 +182,5 @@ networks:
     ipam:
       config:
         - subnet: 172.30.0.0/24
+  monitoring:
+    internal: true

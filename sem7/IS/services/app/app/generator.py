@@ -9,6 +9,17 @@ from psycopg import Error as PsycopgError
 from psycopg_pool import PoolTimeout
 
 from .database import Database
+from .metrics import (
+    CONFIGURED_STATIONS,
+    DB_WRITE_ATTEMPTS,
+    DB_WRITE_DURATION,
+    GENERATOR_RUNNING,
+    MAX_CONCURRENCY,
+    READINGS_INSERTED,
+    REQUESTED_RATE,
+    STATION_READINGS,
+    WRITE_OPERATIONS,
+)
 from .models import LoadConfig
 
 
@@ -34,10 +45,18 @@ class LoadGenerator:
         self._deduplicated_operations = 0
         self._last_error: str | None = None
         self._random = random.Random()
+        self._update_config_metrics(self._config)
+
+    @staticmethod
+    def _update_config_metrics(config: LoadConfig) -> None:
+        REQUESTED_RATE.set(config.requested_readings_per_second)
+        CONFIGURED_STATIONS.set(config.station_count)
+        MAX_CONCURRENCY.set(config.max_concurrency)
 
     async def configure(self, config: LoadConfig) -> dict[str, object]:
         async with self._state_lock:
             self._config = config
+            self._update_config_metrics(config)
             return self._status_unlocked()
 
     async def start(self) -> dict[str, object]:
@@ -64,6 +83,7 @@ class LoadGenerator:
             self._last_error = None
             self._requested_final_status = "stopped"
             self._stop_event = asyncio.Event()
+            GENERATOR_RUNNING.set(1)
             self._task = asyncio.create_task(self._run(), name=f"load-run-{run_id}")
             return self._status_unlocked()
 
@@ -145,6 +165,7 @@ class LoadGenerator:
         finally:
             self._run_status = final_status
             self._finished_monotonic = time.monotonic()
+            GENERATOR_RUNNING.set(0)
             try:
                 await self.database.finish_run(self._run_id, final_status)
             except Exception as error:
@@ -169,6 +190,7 @@ class LoadGenerator:
                     return
                 if delay:
                     await asyncio.sleep(delay)
+                attempt_started = time.monotonic()
                 try:
                     inserted = await self.database.write_reading(
                         operation_id=operation_id,
@@ -177,15 +199,25 @@ class LoadGenerator:
                         measured_at=datetime.now(UTC),
                         **reading,
                     )
+                    DB_WRITE_ATTEMPTS.labels(result="success").inc()
                     self._successful_readings += 1
                     if not inserted:
                         self._deduplicated_operations += 1
+                        WRITE_OPERATIONS.labels(result="deduplicated").inc()
+                    else:
+                        READINGS_INSERTED.inc()
+                        STATION_READINGS.labels(status=reading["status"]).inc()
+                        WRITE_OPERATIONS.labels(result="success").inc()
                     self._last_error = None
                     return
                 except (PsycopgError, PoolTimeout, OSError) as error:
+                    DB_WRITE_ATTEMPTS.labels(result="error").inc()
                     self._last_error = f"{type(error).__name__}: {error}"
                     if attempt == len(delays):
                         self._failed_operations += 1
+                        WRITE_OPERATIONS.labels(result="failed").inc()
+                finally:
+                    DB_WRITE_DURATION.observe(time.monotonic() - attempt_started)
 
     def _make_reading(self, interval_ms: int) -> dict[str, float | str]:
         status_roll = self._random.random()

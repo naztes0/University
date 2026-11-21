@@ -1,0 +1,130 @@
+{
+  "annotations": { "list": [] },
+  "editable": false,
+  "graphTooltip": 1,
+  "id": null,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "mappings": [{ "options": { "0": { "color": "text", "text": "Зупинено" }, "1": { "color": "green", "text": "Працює" } }, "type": "value" }], "thresholds": { "mode": "absolute", "steps": [{ "color": "dark-gray", "value": null }, { "color": "green", "value": 1 }] } }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "colorMode": "background", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "expr": "charging_generator_running", "legendFormat": "Генератор", "refId": "A" }],
+      "title": "Стан генератора",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "decimals": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 5, "x": 4, "y": 0 },
+      "id": 2,
+      "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "expr": "charging_readings_inserted_total", "legendFormat": "Рядки", "refId": "A" }],
+      "title": "Записано від старту app",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "decimals": 1, "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "ops" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 5, "x": 9, "y": 0 },
+      "id": 3,
+      "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "expr": "charging_generator_requested_readings_per_second", "legendFormat": "Задано / с", "refId": "A" }],
+      "title": "Задане навантаження",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }, "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 5, "x": 14, "y": 0 },
+      "id": 4,
+      "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "expr": "pg_database_size_bytes{datname=\"$database\"}", "legendFormat": "Розмір БД", "refId": "A" }],
+      "title": "Розмір PostgreSQL",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "mappings": [{ "options": { "0": { "color": "red", "text": "Недоступна" }, "1": { "color": "green", "text": "Доступна" } }, "type": "value" }], "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] } }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 5, "x": 19, "y": 0 },
+      "id": 5,
+      "options": { "colorMode": "background", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "expr": "pg_up", "legendFormat": "PostgreSQL", "refId": "A" }],
+      "title": "Доступність БД",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "fillOpacity": 12, "lineInterpolation": "linear", "lineWidth": 2, "showPoints": "never", "spanNulls": true, "stacking": { "group": "A", "mode": "none" } }, "unit": "ops" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "id": 6,
+      "options": { "legend": { "calcs": ["lastNotNull", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [{ "expr": "rate(charging_readings_inserted_total[$__rate_interval])", "legendFormat": "Фактично записано / с", "refId": "A" }, { "expr": "charging_generator_requested_readings_per_second", "legendFormat": "Задано / с", "refId": "B" }],
+      "title": "Швидкість запису",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "fillOpacity": 55, "lineInterpolation": "smooth", "lineWidth": 1, "showPoints": "never", "spanNulls": true, "stacking": { "group": "A", "mode": "normal" } }, "unit": "ops" }, "overrides": [{ "matcher": { "id": "byName", "options": "Помилка" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }, { "matcher": { "id": "byName", "options": "Без зв’язку" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] }, { "matcher": { "id": "byName", "options": "Заряджає" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "id": 7,
+      "options": { "legend": { "calcs": ["lastNotNull", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [{ "expr": "rate(charging_station_readings_total{status=\"charging\"}[$__rate_interval])", "legendFormat": "Заряджає", "refId": "A" }, { "expr": "rate(charging_station_readings_total{status=\"idle\"}[$__rate_interval])", "legendFormat": "Очікує", "refId": "B" }, { "expr": "rate(charging_station_readings_total{status=\"offline\"}[$__rate_interval])", "legendFormat": "Без зв’язку", "refId": "C" }, { "expr": "rate(charging_station_readings_total{status=\"error\"}[$__rate_interval])", "legendFormat": "Помилка", "refId": "D" }],
+      "title": "Записані стани станцій / с",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Червона лінія — частка записаних показників зі станом станції «Помилка». Помаранчева — частка операцій, які не вдалося записати в PostgreSQL навіть після повторних спроб.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "fillOpacity": 18, "lineInterpolation": "smooth", "lineWidth": 2, "showPoints": "never", "spanNulls": true, "stacking": { "group": "A", "mode": "none" } }, "decimals": 2, "max": 100, "min": 0, "unit": "percent" }, "overrides": [{ "matcher": { "id": "byName", "options": "Станція повідомила помилку" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }, { "matcher": { "id": "byName", "options": "Запис у БД не виконано" }, "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }] }] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
+      "id": 8,
+      "options": { "legend": { "calcs": ["lastNotNull", "mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [{ "expr": "100 * sum(rate(charging_station_readings_total{status=\"error\"}[$__rate_interval])) / clamp_min(sum(rate(charging_station_readings_total[$__rate_interval])), 0.001)", "legendFormat": "Станція повідомила помилку", "refId": "A" }, { "expr": "100 * sum(rate(charging_write_operations_total{result=\"failed\"}[$__rate_interval])) / clamp_min(sum(rate(charging_write_operations_total[$__rate_interval])), 0.001)", "legendFormat": "Запис у БД не виконано", "refId": "B" }],
+      "title": "Частка помилок: станції та запис у БД",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "linear", "lineWidth": 2, "showPoints": "never", "spanNulls": true, "stacking": { "group": "A", "mode": "none" } }, "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
+      "id": 9,
+      "options": { "legend": { "calcs": ["lastNotNull", "mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [{ "expr": "rate(charging_db_write_duration_seconds_sum[$__rate_interval]) / rate(charging_db_write_duration_seconds_count[$__rate_interval])", "legendFormat": "Середній час", "refId": "A" }, { "expr": "histogram_quantile(0.95, sum by (le) (rate(charging_db_write_duration_seconds_bucket[$__rate_interval])))", "legendFormat": "p95", "refId": "B" }],
+      "title": "Тривалість операції запису",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "linear", "lineWidth": 2, "showPoints": "never", "spanNulls": true, "stacking": { "group": "A", "mode": "none" } }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 21 },
+      "id": 10,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [{ "expr": "pg_stat_database_numbackends{datname=\"$database\"}", "legendFormat": "З’єднання", "refId": "A" }],
+      "title": "З’єднання PostgreSQL",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "fillOpacity": 10, "lineInterpolation": "linear", "lineWidth": 2, "showPoints": "never", "spanNulls": true, "stacking": { "group": "A", "mode": "none" } }, "unit": "ops" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 21 },
+      "id": 11,
+      "options": { "legend": { "calcs": ["lastNotNull", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [{ "expr": "rate(pg_stat_database_xact_commit{datname=\"$database\"}[$__rate_interval])", "legendFormat": "Commit / с", "refId": "A" }, { "expr": "rate(pg_stat_database_xact_rollback{datname=\"$database\"}[$__rate_interval])", "legendFormat": "Rollback / с", "refId": "B" }],
+      "title": "Транзакції PostgreSQL",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": ["charging", "postgresql", "course-project"],
+  "templating": { "list": [{ "current": { "selected": false, "text": "charging_monitor", "value": "charging_monitor" }, "datasource": { "type": "prometheus", "uid": "prometheus" }, "definition": "label_values(pg_stat_database_numbackends, datname)", "hide": 0, "includeAll": false, "label": "База даних", "multi": false, "name": "database", "options": [], "query": { "query": "label_values(pg_stat_database_numbackends, datname)", "refId": "StandardVariableQuery" }, "refresh": 1, "regex": "", "skipUrlSync": false, "sort": 1, "type": "query" }] },
+  "time": { "from": "now-15m", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Charging Stations / Database Monitoring",
+  "uid": "charging-db-overview",
+  "version": 2,
+  "weekStart": ""
+}

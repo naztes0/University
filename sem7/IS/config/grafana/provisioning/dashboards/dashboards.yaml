@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: Charging monitoring
+    orgId: 1
+    folder: Charging Stations
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards
