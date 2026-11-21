@@ -35,7 +35,9 @@ class Database:
             max_size=5,
             max_waiting=20,
             timeout=3,
-            reconnect_timeout=15,
+            # Keep reconnect workers alive through short database outages. The
+            # previous 15-second window was too aggressive for Docker restarts.
+            reconnect_timeout=300,
             open=False,
         )
 
