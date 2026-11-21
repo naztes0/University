@@ -1,4 +1,8 @@
 fastapi==0.115.6
+opentelemetry-api==1.45.2
+opentelemetry-exporter-otlp-proto-http==1.45.2
+opentelemetry-instrumentation-fastapi==0.66b2
+opentelemetry-sdk==1.45.2
 psycopg[binary]==3.2.4
 psycopg-pool==3.3.3
 prometheus-client==0.21.1

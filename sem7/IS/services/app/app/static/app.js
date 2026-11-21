@@ -74,6 +74,7 @@ function config() {
 function updateControls() {
   $("#start").disabled = busy || !current || current.running || !dbOnline;
   $("#stop").disabled = busy || !current?.running;
+  $("#demo-error").disabled = busy || !dbOnline;
 }
 function renderStatus(s) {
   current = s;
@@ -274,6 +275,14 @@ $("#stop").addEventListener("click", () =>
     notice("Завершуємо поточні операції…");
     renderStatus(await request("/api/load/stop", "POST"));
     notice("Генерацію зупинено.");
+  }),
+);
+$("#demo-error").addEventListener("click", () =>
+  act(async () => {
+    const result = await request("/api/demo/failed-write", "POST");
+    notice(
+      `Тестову операцію відхилено PostgreSQL. trace_id: ${result.trace_id}. Лог і повну трасу можна знайти в Grafana.`,
+    );
   }),
 );
 $("#logout").addEventListener("click", () =>

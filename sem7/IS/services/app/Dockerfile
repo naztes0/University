@@ -10,6 +10,8 @@ RUN pip install --no-cache-dir --requirement requirements.txt
 
 RUN useradd --create-home --uid 10001 appuser
 
+RUN install -d -o appuser -g appuser /var/log/charging
+
 COPY --chown=appuser:appuser app ./app
 
 USER appuser

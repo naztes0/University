@@ -114,6 +114,26 @@
       "targets": [{ "expr": "rate(pg_stat_database_xact_commit{datname=\"$database\"}[$__rate_interval])", "legendFormat": "Commit / с", "refId": "A" }, { "expr": "rate(pg_stat_database_xact_rollback{datname=\"$database\"}[$__rate_interval])", "legendFormat": "Rollback / с", "refId": "B" }],
       "title": "Транзакції PostgreSQL",
       "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 29 },
+      "id": 12,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": true, "showCommonLabels": false, "showLabels": false, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "{service=\"charging-app\", event=~\"load_started|load_progress|load_finished\"} | json", "queryType": "range", "refId": "A" }],
+      "title": "Логи запусків генератора",
+      "type": "logs"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 29 },
+      "id": 13,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": true, "showCommonLabels": false, "showLabels": false, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "{service=\"charging-app\", level=\"error\"} | json", "queryType": "range", "refId": "A" }],
+      "title": "Помилки застосунку та PostgreSQL",
+      "type": "logs"
     }
   ],
   "refresh": "5s",
@@ -125,6 +145,6 @@
   "timezone": "browser",
   "title": "Charging Stations / Database Monitoring",
   "uid": "charging-db-overview",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }

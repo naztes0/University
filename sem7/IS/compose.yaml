@@ -28,6 +28,13 @@ services:
       DB_NAME: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
       DB_USER: charging_app
       DB_PASSWORD: ${APP_DB_PASSWORD:?Set APP_DB_PASSWORD in .env}
+      APP_LOG_PATH: /var/log/charging/app.jsonl
+      APP_LOG_MAX_BYTES: 5242880
+      APP_LOG_BACKUP_COUNT: 3
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://alloy:4318/v1/traces
+      OTEL_TRACE_SAMPLE_RATIO: 0.1
+    volumes:
+      - app_logs:/var/log/charging
     healthcheck:
       test:
         - CMD
@@ -88,6 +95,50 @@ services:
     networks:
       - monitoring
 
+  loki:
+    image: grafana/loki:3.7.8
+    command:
+      - -config.file=/etc/loki/loki.yaml
+    volumes:
+      - ./config/loki/loki.yaml:/etc/loki/loki.yaml:ro
+      - loki_data:/loki
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  tempo:
+    image: grafana/tempo:3.1.1
+    command:
+      - -config.file=/etc/tempo/tempo.yaml
+    volumes:
+      - ./config/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+      - tempo_data:/var/tempo
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  alloy:
+    image: grafana/alloy:v1.21.3
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    volumes:
+      - ./config/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - app_logs:/var/log/charging:ro
+      - alloy_data:/var/lib/alloy/data
+    depends_on:
+      app:
+        condition: service_started
+      loki:
+        condition: service_started
+      tempo:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - monitoring
+
   auth:
     build:
       context: ./services/auth
@@ -117,7 +168,7 @@ services:
   grafana:
     image: grafana/grafana:11.2.0
     environment:
-      GF_SERVER_ROOT_URL: http://localhost:8080/grafana/
+      GF_SERVER_ROOT_URL: http://127.0.0.1:8080/grafana/
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
       GF_AUTH_PROXY_ENABLED: "true"
       GF_AUTH_PROXY_HEADER_NAME: X-WEBAUTH-USER
@@ -136,6 +187,10 @@ services:
     depends_on:
       prometheus:
         condition: service_healthy
+      loki:
+        condition: service_started
+      tempo:
+        condition: service_started
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:3000/api/health"]
       interval: 10s
@@ -174,6 +229,10 @@ volumes:
   auth_data:
   grafana_data:
   prometheus_data:
+  app_logs:
+  alloy_data:
+  loki_data:
+  tempo_data:
 
 networks:
   backend:

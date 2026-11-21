@@ -1,0 +1,94 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+loki.source.file "charging_app" {
+  targets = [
+    {
+      __path__ = "/var/log/charging/app.jsonl*",
+      job      = "charging_app",
+    },
+  ]
+  forward_to   = [loki.process.charging_app.receiver]
+  tail_from_end = false
+
+  file_match {
+    enabled     = true
+    sync_period = "5s"
+  }
+}
+
+loki.process "charging_app" {
+  forward_to = [loki.write.local.receiver]
+
+  stage.json {
+    expressions = {
+      timestamp = "timestamp",
+      service   = "service",
+      level     = "level",
+      event     = "event",
+    }
+  }
+
+  stage.timestamp {
+    source            = "timestamp"
+    format            = "RFC3339"
+    action_on_failure = "skip"
+  }
+
+  stage.labels {
+    values = {
+      service = "service",
+      level   = "level",
+      event   = "event",
+    }
+  }
+}
+
+loki.write "local" {
+  endpoint {
+    url                 = "http://loki:3100/loki/api/v1/push"
+    batch_size          = "256KiB"
+    batch_wait          = "1s"
+    remote_timeout      = "5s"
+    min_backoff_period  = "500ms"
+    max_backoff_period  = "5s"
+    max_backoff_retries = 10
+    retry_on_http_429   = true
+  }
+}
+
+otelcol.receiver.otlp "charging_app" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+
+  output {
+    traces = [otelcol.processor.batch.traces.input]
+  }
+}
+
+otelcol.processor.batch "traces" {
+  timeout             = "1s"
+  send_batch_size     = 512
+  send_batch_max_size = 1024
+
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "tempo:4317"
+
+    tls {
+      insecure = true
+    }
+  }
+}

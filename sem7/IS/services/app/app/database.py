@@ -2,9 +2,14 @@ import os
 from datetime import datetime
 from uuid import UUID
 
+from opentelemetry import trace
+from opentelemetry.trace import SpanKind
 from psycopg.conninfo import make_conninfo
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
+
+
+tracer = trace.get_tracer("charging-app.database")
 
 
 class Database:
@@ -120,41 +125,81 @@ class Database:
         temperature_c: float,
         status: str,
     ) -> bool:
-        async with self.pool.connection(timeout=3) as connection:
-            async with connection.transaction():
-                cursor = await connection.execute(
-                    """
-                    INSERT INTO readings (
-                        operation_id, station_id, run_id, measured_at,
-                        power_kw, voltage_v, current_a, energy_delta_kwh,
-                        temperature_c, status
+        with tracer.start_as_current_span(
+            "postgresql.write_reading",
+            kind=SpanKind.CLIENT,
+            attributes={
+                "db.system.name": "postgresql",
+                "db.namespace": os.environ["DB_NAME"],
+                "server.address": os.environ["DB_HOST"],
+                "server.port": int(os.environ["DB_PORT"]),
+                "db.operation.name": "INSERT",
+                "db.collection.name": "readings",
+                "station.id": station_id,
+            },
+        ) as span:
+            async with self.pool.connection(timeout=3) as connection:
+                async with connection.transaction():
+                    cursor = await connection.execute(
+                        """
+                        INSERT INTO readings (
+                            operation_id, station_id, run_id, measured_at,
+                            power_kw, voltage_v, current_a, energy_delta_kwh,
+                            temperature_c, status
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (operation_id) DO NOTHING
+                        RETURNING id
+                        """,
+                        (
+                            operation_id,
+                            station_id,
+                            run_id,
+                            measured_at,
+                            power_kw,
+                            voltage_v,
+                            current_a,
+                            energy_delta_kwh,
+                            temperature_c,
+                            status,
+                        ),
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON CONFLICT (operation_id) DO NOTHING
-                    RETURNING id
-                    """,
-                    (
-                        operation_id,
-                        station_id,
-                        run_id,
-                        measured_at,
-                        power_kw,
-                        voltage_v,
-                        current_a,
-                        energy_delta_kwh,
-                        temperature_c,
-                        status,
-                    ),
-                )
-                inserted = await cursor.fetchone()
-                if inserted is not None:
+                    inserted = await cursor.fetchone()
+                    if inserted is not None:
+                        await connection.execute(
+                            """
+                            UPDATE stations
+                            SET status = %s, updated_at = %s
+                            WHERE id = %s AND status IS DISTINCT FROM %s
+                            """,
+                            (status, measured_at, station_id, status),
+                        )
+                    result = "inserted" if inserted else "deduplicated"
+                    span.set_attribute("db.operation.result", result)
+                    return inserted is not None
+
+    async def demonstrate_constraint_violation(self, operation_id: UUID) -> None:
+        """Execute an invalid INSERT that PostgreSQL must reject and roll back."""
+        with tracer.start_as_current_span(
+            "postgresql.demo_constraint_violation",
+            kind=SpanKind.CLIENT,
+            attributes={
+                "db.system.name": "postgresql",
+                "db.namespace": os.environ["DB_NAME"],
+                "server.address": os.environ["DB_HOST"],
+                "server.port": int(os.environ["DB_PORT"]),
+                "db.operation.name": "INSERT",
+                "db.collection.name": "stations",
+                "operation.id": str(operation_id),
+            },
+        ):
+            async with self.pool.connection(timeout=3) as connection:
+                async with connection.transaction():
                     await connection.execute(
                         """
-                        UPDATE stations
-                        SET status = %s, updated_at = %s
-                        WHERE id = %s AND status IS DISTINCT FROM %s
+                        INSERT INTO stations (id, code, status)
+                        VALUES (201, %s, 'idle')
                         """,
-                        (status, measured_at, station_id, status),
+                        (f"DEMO-{operation_id}",),
                     )
-                return inserted is not None
 

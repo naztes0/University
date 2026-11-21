@@ -263,6 +263,19 @@ small {
   font-size: 10px;
   overflow-wrap: anywhere;
 }
+.demo-error {
+  width: 100%;
+  margin-top: 18px;
+  color: #f3c26b;
+  border-color: #69512d;
+  background: #30291d;
+}
+.demo-note {
+  display: block;
+  margin-top: 7px;
+  font-size: 10px;
+  line-height: 1.45;
+}
 .filters {
   display: flex;
   gap: 6px;
